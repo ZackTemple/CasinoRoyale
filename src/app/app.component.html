@@ -1,12 +1,33 @@
-<nav class='navbar navbar-expand navbar-light bg-light'>
+<p>
+  <mat-toolbar>
+   <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span> Casino Royale </span>
+  <span class="example-spacer"></span>
+  <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+   <mat-icon>share</mat-icon>
+ </button>
+</mat-toolbar>
+</p>
+
+<mat-menu #appMenu="matMenu">
+  <ng-template matMenuContent>
+    <button mat-menu-item>Settings</button>
+    <button mat-menu-item>Help</button>
+  </ng-template>
+</mat-menu>
+<!-- <nav class='navbar navbar-expand navbar-light bg-light'>
   <a class='navbar-brand'>{{title}}</a>
   <ul class='nav nav-pills'>
     <li><a class='nav-link' routerLink="/home" style='color:black'><u>Home</u></a></li>
     <li><a class='nav-link' routerLink="/games" style='color:black'><u>Games</u></a></li>
-    <fa-icon [icon]="faCoffee"></fa-icon>
     <li><a class='nav-link' routerLink="/deposit-money" style='color:black'><u>Deposit Money</u></a></li>
   </ul>
-</nav>
+</nav> -->
 <div class = 'container'>
 <router-outlet></router-outlet>
 </div>

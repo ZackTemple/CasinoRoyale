@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 
 import { DepositMoneyModule } from './deposit-money/deposit-money.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,6 +20,7 @@ import { AppComponent } from './app.component';
     GamesModule,
     DepositMoneyModule,
     AppRoutingModule,
+    FontAwesomeModule
   ],
   bootstrap: [AppComponent]
 })

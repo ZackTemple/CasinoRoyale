@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { GamesComponent } from './games.component';
 
-
-
 @NgModule({
   declarations: [],
   imports: [

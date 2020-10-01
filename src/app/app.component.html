@@ -1,34 +1,33 @@
-<p>
-  <mat-toolbar>
-   <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+<mat-toolbar>
+  <mat-menu #appMenu="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item routerLink="/games">Local Games</button>
+      <button mat-menu-item>Multiplayer Games</button>
+      <button mat-menu-item routerLink="/deposit-money">Deposit Money</button>
+      <button mat-menu-item *ngIf= 'loggedIn'>Account Settings</button>
+      <button mat-menu-item routerLink="/logIn"
+        (click)='toggleLogIn()'>
+        Log {{loggedIn ? 'Out': 'In'}}
+      </button>
+    </ng-template>
+  </mat-menu>
+
+  <button mat-icon-button [matMenuTriggerFor]="appMenu" style="margin-right:10px">
     <mat-icon>menu</mat-icon>
   </button>
-  <span> Casino Royale </span>
-  <span class="example-spacer"></span>
-  <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-    <mat-icon>favorite</mat-icon>
+  <button mat-button class="title" routerLink="/home">
+    <span class="title">{{title}}</span>
   </button>
-  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-   <mat-icon>share</mat-icon>
- </button>
+  <span class="example-spacer"></span>
+  <button mat-icon-button class="personal-settings">
+    <!--Add route to Personal Account here-->
+    <span class="material-icons md-36">
+      account_box
+    </span>
+  </button>
+
 </mat-toolbar>
-</p>
 
-<mat-menu #appMenu="matMenu">
-  <ng-template matMenuContent>
-    <button mat-menu-item>Settings</button>
-    <button mat-menu-item>Help</button>
-  </ng-template>
-</mat-menu>
-<!-- <nav class='navbar navbar-expand navbar-light bg-light'>
-  <a class='navbar-brand'>{{title}}</a>
-  <ul class='nav nav-pills'>
-    <li><a class='nav-link' routerLink="/home" style='color:black'><u>Home</u></a></li>
-    <li><a class='nav-link' routerLink="/games" style='color:black'><u>Games</u></a></li>
-    <li><a class='nav-link' routerLink="/deposit-money" style='color:black'><u>Deposit Money</u></a></li>
-  </ul>
-
-</nav> -->
-<div class = 'container'>
 <router-outlet></router-outlet>
-</div>
+
+

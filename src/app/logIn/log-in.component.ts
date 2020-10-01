@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LogInComponent implements OnInit {
   input: string;
+  hide = true;
 
   constructor() { }
 
@@ -14,7 +15,7 @@ export class LogInComponent implements OnInit {
   }
 
   onEnter(input): void {
-    this.input = input.toString();
+    this.input = input;
     console.log(this.input);
   }
 

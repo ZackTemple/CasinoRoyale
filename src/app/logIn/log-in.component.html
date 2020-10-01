@@ -1,2 +1,24 @@
-<input #box (keyup.enter)="onEnter(box.input)">
-<p>{{input}}</p>
+ <mat-card class="login">
+   <mat-card-header>
+    <mat-card-title>Log In</mat-card-title>
+    <mat-card-subtitle>Please input your login information.</mat-card-subtitle>
+   </mat-card-header>
+    <div class="example-container">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" class="example-right-align">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <pre></pre>
+
+      <button mat-stroked-button>ENTER</button>
+    </div>
+</mat-card>

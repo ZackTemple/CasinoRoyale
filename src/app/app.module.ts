@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { DepositMoneyModule } from './deposit-money/deposit-money.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -26,6 +28,8 @@ import { MatCardModule } from '@angular/material/card';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    HttpClientModule,
     GamesModule,
     DepositMoneyModule,
     AppRoutingModule,

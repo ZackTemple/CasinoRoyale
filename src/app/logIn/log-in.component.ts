@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-log-in',
@@ -8,15 +10,27 @@ import { Component, OnInit } from '@angular/core';
 export class LogInComponent implements OnInit {
   input: string;
   hide = true;
+  username: string;
+  password: string;
+  errorMessage = '';
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router,
+    ) { }
 
   ngOnInit(): void {
   }
 
-  onEnter(input): void {
-    this.input = input;
-    console.log(this.input);
+  onClickEnter(): void {
+    // call returns true if user could be logged in
+    const logInSuccessful = this.authService.logIn(this.username, this.password);
+    if (logInSuccessful) {
+      this.router.navigate(['/home']);
+    }
+    else {
+      // console.log('foo');
+    }
   }
-
 }

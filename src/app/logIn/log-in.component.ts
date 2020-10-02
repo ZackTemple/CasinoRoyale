@@ -30,7 +30,7 @@ export class LogInComponent implements OnInit {
       this.router.navigate(['/home']);
     }
     else {
-      // console.log('foo');
+      console.log('login failed :(');
     }
   }
 }

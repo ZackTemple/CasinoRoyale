@@ -9,22 +9,29 @@ import { IPlayer } from './interfaces/player';
 })
 export class AuthService {
 
-  databaseUrl = 'http://localhost:5000/api';
+  databaseUrl = 'http://localhost:4200/api';
   currentPlayer$: BehaviorSubject<IPlayer> = new BehaviorSubject(null);
   loggedIn = false;
   allPlayers: IPlayer[];
   playersMap$: Subject<Map<string, IPlayer>> = new Subject();
+  playersMap: Map<string, IPlayer>;
 
   constructor(private httpClient: HttpClient) { }
 
-  getPlayers(): Observable<any[]> {
+  getPlayers(): Observable<IPlayer[]> {
     const playersPath = this.databaseUrl.concat('/players');
-    return this.httpClient.get<any[]>(playersPath).pipe(
+    return this.httpClient.get<IPlayer[]>(playersPath).pipe(
       tap(players => {
-        // this.allPlayers = players;
+        this.allPlayers = players;
+        const playersMap: Map<string, IPlayer> = new Map();
+
+        players.forEach(player => {
+          playersMap.set(player.username, player);
+        });
+        this.playersMap$.next(playersMap);
         console.log({ players });
-      })
-      // catchError(this.handleError)
+      }),
+      catchError(this.handleError)
     );
   }
 
@@ -32,15 +39,26 @@ export class AuthService {
     // check database for the username and validate password
     // if login info is correct, set player Subject to the player information, and return true
     // if not correct, alert user and reset... do not tell them which info is incorrect. Just say 'incorrect username or password'
-    // this.getPlayers().subscribe({
-    //   next: players => {
-        // if (Object.keys(players).includes(username)) {
-        //   this.loggedIn = true;
-        // }
-        this.getPlayers();
-    //   }
-    // });
-    return true; // this.loggedIn;
+    this.getPlayers().subscribe({
+      next: players => {
+        const userInfo = this.playersMap.get(username);
+        console.log(userInfo);
+        if (userInfo.password === password) {
+          this.loggedIn = true;
+          // how to set current player info here? so that other components have the information? I could return the userInfo back...
+          // this.currentPlayer$ = userInfo;
+          console.log('login successful!');
+        }
+      }
+    });
+
+    this.playersMap$.subscribe({
+      next: playersMap => {
+          this.playersMap = playersMap;
+      }
+    });
+
+    return this.loggedIn;
   }
 
   signUp(username: string, password: string): boolean {

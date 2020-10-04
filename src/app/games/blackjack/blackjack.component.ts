@@ -10,14 +10,17 @@ import { ICardBlackjack } from '../../interfaces/cards';
 export class BlackjackComponent implements OnInit {
 
   deck: ICardBlackjack[];
-  shuffledDeck: ICardBlackjack[];
 
   constructor(private cardDeckService: CardDeckService) { }
 
   ngOnInit(): void {
-    this.deck = this.cardDeckService.getDeckBlackjack();
+    // Get deck of cards
+    const deck = this.cardDeckService.getDeck();
+    // Add weights to cards for Blackjack game
+    const weightedDeck = this.cardDeckService.gatherWeightsForBlackjack(deck);
+    // shuffle cards
+    this.deck = this.cardDeckService.shuffleDeck(weightedDeck);
     console.log(this.deck);
-    console.log(this.cardDeckService.shuffleDeck(this.deck));
   }
 
 }

@@ -11,38 +11,6 @@ export class CardDeckService {
 
   constructor() { }
 
-  // sets up blackjack deck where each card has a suit, value, and weight
-  getDeckBlackjack(): ICardBlackjack[] {
-    let i = 0;
-    let j = 0;
-    let currentSuit: string;
-    let currentValue: string;
-    let currentWeight: number;
-    let card: ICardBlackjack;
-    const deck = new Array();
-
-    for (i = 0; i < this.suits.length; i++ ) {
-      for (j = 0; j < this.values.length; j++ ) {
-        currentSuit = this.suits[i];
-        currentValue = this.values[j];
-
-        if (currentValue === 'J' || currentValue === 'Q' || currentValue === 'K') {
-          currentWeight = 10;
-        }
-        else if (currentValue === 'A') {
-          currentWeight = 11;
-        }
-        else {
-          currentWeight = parseInt(currentValue, 10);
-        }
-
-        card = {suit: currentSuit, value: currentValue, weight: currentWeight};
-        deck.push(card);
-      }
-    }
-
-    return deck;
-  }
 
   // Use in the future for implementing more games
   getDeck(): any[] {
@@ -64,6 +32,28 @@ export class CardDeckService {
     }
     return deck;
   }
+
+
+  // map over getWeight() method, which grabs the weight for each card
+  gatherWeightsForBlackjack(deck: ICard[]): ICardBlackjack[] {
+    return deck.map(this.getWeight);
+  }
+
+  // Function gets the weight for a specific card based on it's value
+  getWeight(card: ICard): ICardBlackjack {
+    let cardWeight: number;
+    if (card.value === 'J' || card.value === 'Q' || card.value === 'K') {
+      cardWeight = 10;
+    }
+    else if (card.value === 'A') {
+      cardWeight = 11;
+    }
+    else {
+      cardWeight = parseInt(card.value, 10);
+    }
+    return {...card, weight: cardWeight};
+  }
+
 
   // Implements the Fisher-Yates (aka Knuth) Shuffle method found at:
   // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array

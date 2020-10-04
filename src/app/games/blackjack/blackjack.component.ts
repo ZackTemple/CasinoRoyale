@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CardDeckService } from 'src/app/card-deck.service';
+import { ICard } from '../../interfaces/cards';
 
 @Component({
   selector: 'app-blackjack',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BlackjackComponent implements OnInit {
 
-  constructor() { }
+  deck: ICard[];
+
+  constructor(private cardDeckService: CardDeckService) { }
 
   ngOnInit(): void {
+    this.deck = this.cardDeckService.getDeckBlackjack();
+    console.log(this.deck);
   }
 
 }

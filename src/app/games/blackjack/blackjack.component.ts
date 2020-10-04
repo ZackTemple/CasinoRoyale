@@ -14,13 +14,11 @@ export class BlackjackComponent implements OnInit {
   constructor(private cardDeckService: CardDeckService) { }
 
   ngOnInit(): void {
-    // Get deck of cards
-    const deck = this.cardDeckService.getDeck();
-    // Add weights to cards for Blackjack game
-    const weightedDeck = this.cardDeckService.gatherWeightsForBlackjack(deck);
-    // shuffle cards
-    this.deck = this.cardDeckService.shuffleDeck(weightedDeck);
-    console.log(this.deck);
+    // Get deck of cards for Blackjack
+    this.deck = this.cardDeckService.getBlackjackDeck();
+    // Print out shuffled cards for testing
+    console.log( this.cardDeckService.shuffleDeck(this.deck) );
   }
+
 
 }

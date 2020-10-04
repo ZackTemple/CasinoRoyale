@@ -11,6 +11,10 @@ export class CardDeckService {
 
   constructor() { }
 
+  getBlackjackDeck(): ICardBlackjack[] {
+    const cardDeck = this.getDeck();
+    return this.appendWeightsForBlackjack(cardDeck);
+  }
 
   // Use in the future for implementing more games
   getDeck(): any[] {
@@ -35,8 +39,8 @@ export class CardDeckService {
 
 
   // map over getWeight() method, which grabs the weight for each card
-  gatherWeightsForBlackjack(deck: ICard[]): ICardBlackjack[] {
-    return deck.map(this.getWeight);
+  appendWeightsForBlackjack(cardDeck: ICard[]): ICardBlackjack[] {
+    return cardDeck.map(this.getWeight);
   }
 
   // Function gets the weight for a specific card based on it's value

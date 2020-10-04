@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CardDeckService } from 'src/app/card-deck.service';
-import { ICard } from '../../interfaces/cards';
+import { ICardBlackjack } from '../../interfaces/cards';
 
 @Component({
   selector: 'app-blackjack',
@@ -9,13 +9,15 @@ import { ICard } from '../../interfaces/cards';
 })
 export class BlackjackComponent implements OnInit {
 
-  deck: ICard[];
+  deck: ICardBlackjack[];
+  shuffledDeck: ICardBlackjack[];
 
   constructor(private cardDeckService: CardDeckService) { }
 
   ngOnInit(): void {
     this.deck = this.cardDeckService.getDeckBlackjack();
     console.log(this.deck);
+    console.log(this.cardDeckService.shuffleDeck(this.deck));
   }
 
 }

@@ -65,5 +65,26 @@ export class CardDeckService {
     return deck;
   }
 
-  // Talk to Shawn about a shuffleDeck() method
+  // Implements the Fisher-Yates (aka Knuth) Shuffle method found at:
+  // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+  shuffleDeck(deck: any): any {
+      let currentIndex = deck.length;
+      let temporaryValue: number;
+      let randomIndex: number;
+
+      // While there remain elements to shuffle...
+      while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = deck[currentIndex];
+        deck[currentIndex] = deck[randomIndex];
+        deck[randomIndex] = temporaryValue;
+      }
+
+      return deck;
+  }
 }

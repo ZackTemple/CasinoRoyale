@@ -1,0 +1,37 @@
+div.container {
+  background-color: black;
+}
+
+.tile-button {
+  border: none;
+  color: white;
+  padding: 2vh 1vw;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+  margin: 4px 2px;
+  background-color: #810000;
+  font-family: 'Times New Roman'
+
+}
+
+.blackjack{
+  background-image: url('../../assets/images/blackjack-2.jpeg');
+  background-size: cover;
+}
+
+.texas-holdem{
+  background-image: url('../../assets/images/home-image-7.jpg');
+  background-size: cover;
+}
+
+.omaha-holdem{
+  background-image: url('../../assets/images/poker.jpg');
+  background-size: cover;
+}
+
+.personal-account{
+  background-image: url('../../assets/images/home-image-11.jpg');
+  background-size: cover;
+}

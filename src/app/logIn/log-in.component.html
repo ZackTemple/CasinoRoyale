@@ -19,6 +19,12 @@
 
       <button mat-stroked-button (click)='onClickEnter()'>
         ENTER
+        <!-- <button mat-button *ngIf='loggedIn' (click)="openDialog()">Launch dialog</button> -->
       </button>
     </div>
+    <mat-card-content>
+      <p>
+        Haven't signed up? <button mat-button routerLink="/home">Sign up here!</button>
+      </p>
+    </mat-card-content>
 </mat-card>

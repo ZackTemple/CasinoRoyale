@@ -2,21 +2,31 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Observable, BehaviorSubject, Subject, throwError} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { IPlayer } from './interfaces/player';
+import { IPlayer } from '../interfaces/player';
+import { MatDialog } from '@angular/material/dialog';
+import { FailedLoginDialogComponent } from './dialog/failed-login-dialog.component';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService{
 
   databaseUrl = 'http://localhost:4200/api';
   currentPlayer$: BehaviorSubject<IPlayer> = new BehaviorSubject(null);
-  loggedIn = false;
+  loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(null);
   allPlayers: IPlayer[];
   playersMap$: Subject<Map<string, IPlayer>> = new Subject();
   playersMap: Map<string, IPlayer>;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private dialog: MatDialog ) { }
+
+  initializePlayersMap(): void {
+    this.playersMap$.subscribe({
+      next: playersMap => {
+          this.playersMap = playersMap;
+      }
+    });
+  }
 
   getPlayers(): Observable<IPlayer[]> {
     const playersPath = this.databaseUrl.concat('/players');
@@ -29,36 +39,35 @@ export class AuthService {
           playersMap.set(player.username, player);
         });
         this.playersMap$.next(playersMap);
-        console.log({ players });
       }),
       catchError(this.handleError)
     );
   }
 
-  logIn(username: string, password: string): boolean {
-    // check database for the username and validate password
-    // if login info is correct, set player Subject to the player information, and return true
-    // if not correct, alert user and reset... do not tell them which info is incorrect. Just say 'incorrect username or password'
+  logIn(username: string, password: string): void {
+    this.initializePlayersMap();
     this.getPlayers().subscribe({
       next: players => {
+
         const userInfo = this.playersMap.get(username);
         console.log(userInfo);
-        if (userInfo.password === password) {
-          this.loggedIn = true;
-          // how to set current player info here? so that other components have the information? I could return the userInfo back...
-          // this.currentPlayer$ = userInfo;
+
+        if (userInfo === undefined || userInfo.password !== password) {
+          console.log('user not available or password incorrect');
+          this.dialog.open(FailedLoginDialogComponent);
+        }
+        else if (userInfo.password === password) {
+          this.loggedIn$.next(true);
+          this.currentPlayer$.next(userInfo);
           console.log('login successful!');
+          localStorage.setItem('Authorization', userInfo.username);
+        }
+        else {
+          console.log('login failed :(');
+          this.dialog.open(FailedLoginDialogComponent);
         }
       }
     });
-
-    this.playersMap$.subscribe({
-      next: playersMap => {
-          this.playersMap = playersMap;
-      }
-    });
-
-    return this.loggedIn;
   }
 
   signUp(username: string, password: string): boolean {
@@ -68,6 +77,25 @@ export class AuthService {
     // post info to database
     return true; // if sign up is correct
   }
+
+
+  validUserQ(authorizationKey: string): boolean {
+    this.initializePlayersMap();
+    this.getPlayers().subscribe();
+    let validUser: boolean;
+    const currentPlayer = this.playersMap.get(authorizationKey);
+
+    if (currentPlayer) {
+      validUser = true;
+      this.currentPlayer$.next(currentPlayer);
+    }
+    else{
+      validUser = false;
+    }
+
+    return true;
+  }
+
 
   private handleError(err: HttpErrorResponse) {
     let errorMessage = '';

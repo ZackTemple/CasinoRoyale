@@ -1,4 +1,4 @@
-<button routerLink='./blackjack'>
+<!-- <button routerLink='./blackjack'>
   Play Blackjack
 </button>
 
@@ -8,6 +8,30 @@
 
 <button routerLink='./omaha-holdem'>
   Play Omaha Hold'em
-</button>
+</button> -->
 
-<router-outlet></router-outlet>
+<!-- <div class="container">
+  <mat-grid-list cols="3" rowHeight="25vh" rowWidth="100vh">
+    <ng-container *ngFor="let tile of tiles">
+      <mat-grid-tile class="grid-tile" [ngClass]='tile.class'
+          [colspan]="tile.cols"
+          [rowspan]="tile.rows">
+          <button mat-raised-button class="tile-button" [routerLink]="tile.route">
+            Play {{tile.text}}
+          </button>
+      </mat-grid-tile>
+    </ng-container>
+  </mat-grid-list>
+  </div> -->
+
+  <!-- <mat-tab-group>
+    <mat-tab label="Blackjack" routerLink='./blackjack'>
+      <div routerLink='blackjack'></div>
+    </mat-tab>
+    <mat-tab label="Texas Hold'em">
+       <div routerLink='./texas-holdem'></div>
+    </mat-tab>
+    <mat-tab label="Blackjack">
+       <div routerLink='./blackjack'></div>
+    </mat-tab>
+  </mat-tab-group> -->

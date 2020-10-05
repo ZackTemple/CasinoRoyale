@@ -5,6 +5,7 @@ import { GamesComponent } from './games.component';
 import { BlackjackComponent } from './blackjack/blackjack.component';
 import { TexasHoldemComponent } from './texas-holdem/texas-holdem.component';
 import { OmahaHoldemComponent } from './omaha-holdem/omaha-holdem.component';
+import { AuthGuard } from '../auth/auth.guard';
 
 @NgModule({
   declarations: [],
@@ -13,11 +14,12 @@ import { OmahaHoldemComponent } from './omaha-holdem/omaha-holdem.component';
     RouterModule.forChild([
       {
         path: 'games',
+        canActivate: [AuthGuard],
         component: GamesComponent,
         children: [
-          {path: 'blackjack', component: BlackjackComponent},
-          {path: 'texas-holdem', component: TexasHoldemComponent},
-          {path: 'omaha-holdem', component: OmahaHoldemComponent}
+          {path: 'blackjack', canActivate: [AuthGuard], component: BlackjackComponent},
+          {path: 'texas-holdem', canActivate: [AuthGuard], component: TexasHoldemComponent},
+          {path: 'omaha-holdem', canActivate: [AuthGuard], component: OmahaHoldemComponent}
         ]
       }
     ])

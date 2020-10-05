@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ICard, ICardBlackjack } from './interfaces/cards';
+import { ICard, ICardBlackjack } from '../interfaces/cards';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -61,10 +62,11 @@ export class CardDeckService {
 
   // Implements the Fisher-Yates (aka Knuth) Shuffle method found at:
   // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-  shuffleDeck(deck: any): any {
+  shuffleDeck(deck: ICard[] | ICardBlackjack[]): ICard[] | ICardBlackjack[] {
       let currentIndex = deck.length;
       let temporaryValue: number;
       let randomIndex: number;
+      const shuffledDeck = _.cloneDeep(deck);
 
       // While there remain elements to shuffle...
       while (0 !== currentIndex) {
@@ -74,11 +76,11 @@ export class CardDeckService {
         currentIndex -= 1;
 
         // And swap it with the current element.
-        temporaryValue = deck[currentIndex];
-        deck[currentIndex] = deck[randomIndex];
-        deck[randomIndex] = temporaryValue;
+        temporaryValue = shuffledDeck[currentIndex];
+        shuffledDeck[currentIndex] = shuffledDeck[randomIndex];
+        shuffledDeck[randomIndex] = temporaryValue;
       }
 
-      return deck;
+      return shuffledDeck;
   }
 }

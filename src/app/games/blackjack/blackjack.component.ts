@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CardDeckService } from 'src/app/card-deck.service';
+import { CardDeckService } from '../../card-deck/card-deck.service';
 import { ICardBlackjack } from '../../interfaces/cards';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-blackjack',
@@ -16,8 +17,11 @@ export class BlackjackComponent implements OnInit {
   ngOnInit(): void {
     // Get deck of cards for Blackjack
     this.deck = this.cardDeckService.getBlackjackDeck();
-    // Print out shuffled cards for testing
-    console.log( this.cardDeckService.shuffleDeck(this.deck) );
+    console.log( this.deck );
+    const deck = this.cardDeckService.shuffleDeck(this.deck);
+
+    //   Print out shuffled cards for testing
+    console.log( deck );
   }
 
 

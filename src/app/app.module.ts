@@ -19,12 +19,16 @@ import { MatInputModule } from '@angular/material/input';
 import { LogInComponent } from './logIn/log-in.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FailedLoginDialogComponent } from './auth/dialog/failed-login-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    LogInComponent
+    LogInComponent,
+    FailedLoginDialogComponent
+
   ],
   imports: [
     BrowserModule,
@@ -41,8 +45,10 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatCardModule
+    MatCardModule,
+    MatDialogModule
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [FailedLoginDialogComponent]
 })
 export class AppModule { }

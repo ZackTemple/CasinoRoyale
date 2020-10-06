@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 
     this.authService.currentPlayer$.next(null);
     localStorage.removeItem('Authorization');
-    this.loggedIn$.next(false);
+    this.authService.loggedIn$.next(false);
   }
 
   // toggleLogIn(): void {

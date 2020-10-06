@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Observable, BehaviorSubject, Subject, throwError} from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subject, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
 import { MatDialog } from '@angular/material/dialog';
 import { FailedLoginDialogComponent } from './dialog/failed-login-dialog.component';
@@ -18,56 +18,53 @@ export class AuthService{
   playersMap$: Subject<Map<string, IPlayer>> = new Subject();
   playersMap: Map<string, IPlayer>;
 
-  constructor(private httpClient: HttpClient, private dialog: MatDialog ) { }
-
-  initializePlayersMap(): void {
-    this.playersMap$.subscribe({
-      next: playersMap => {
-          this.playersMap = playersMap;
-      }
-    });
+  constructor(private httpClient: HttpClient, private dialog: MatDialog ) {
+    this.getPlayers().subscribe(data => this.playersMap = data);
   }
 
-  getPlayers(): Observable<IPlayer[]> {
+  // initializePlayersMap(): void {
+  //   this.playersMap$.subscribe({
+  //     next: playersMap => {
+  //         this.playersMap = playersMap;
+  //     }
+  //   });
+  // }
+
+  // Fetches player data, builds map, and returns that map
+  getPlayers(): Observable<Map<string, IPlayer>> {
     const playersPath = this.databaseUrl.concat('/players');
-    return this.httpClient.get<IPlayer[]>(playersPath).pipe(
-      tap(players => {
-        this.allPlayers = players;
+    return this.httpClient.get<Map<string, IPlayer>>(playersPath).pipe(
+      map(players => {
         const playersMap: Map<string, IPlayer> = new Map();
 
         players.forEach(player => {
           playersMap.set(player.username, player);
         });
-        this.playersMap$.next(playersMap);
+        return playersMap;
       }),
       catchError(this.handleError)
     );
   }
 
   logIn(username: string, password: string): void {
-    this.initializePlayersMap();
-    this.getPlayers().subscribe({
-      next: players => {
 
-        const userInfo = this.playersMap.get(username);
-        console.log(userInfo);
+    const userInfo = this.playersMap.get(username);
+    console.log(userInfo);
 
-        if (userInfo === undefined || userInfo.password !== password) {
-          console.log('user not available or password incorrect');
-          this.dialog.open(FailedLoginDialogComponent);
-        }
-        else if (userInfo.password === password) {
-          this.loggedIn$.next(true);
-          this.currentPlayer$.next(userInfo);
-          console.log('login successful!');
-          localStorage.setItem('Authorization', userInfo.username);
-        }
-        else {
-          console.log('login failed :(');
-          this.dialog.open(FailedLoginDialogComponent);
-        }
-      }
-    });
+    if (userInfo === undefined || userInfo.password !== password) {
+      console.log('user not available or password incorrect');
+      this.dialog.open(FailedLoginDialogComponent);
+    }
+    else if (userInfo.password === password) {
+      this.loggedIn$.next(true);
+      this.currentPlayer$.next(userInfo);
+      console.log('login successful!');
+      localStorage.setItem('Authorization', userInfo.username);
+    }
+    else {
+      console.log('login failed :(');
+      this.dialog.open(FailedLoginDialogComponent);
+    }
   }
 
   signUp(username: string, password: string): boolean {
@@ -80,8 +77,6 @@ export class AuthService{
 
 
   validUserQ(authorizationKey: string): boolean {
-    this.initializePlayersMap();
-    this.getPlayers().subscribe();
     let validUser: boolean;
     const currentPlayer = this.playersMap.get(authorizationKey);
 
@@ -93,11 +88,11 @@ export class AuthService{
       validUser = false;
     }
 
-    return true;
+    return validUser;
   }
 
 
-  private handleError(err: HttpErrorResponse) {
+  private handleError(err: HttpErrorResponse): Observable<never> {
     let errorMessage = '';
     if (err.error instanceof ErrorEvent) {
       // A client side error occurred

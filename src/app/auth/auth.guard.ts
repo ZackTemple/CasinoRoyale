@@ -1,7 +1,5 @@
-import { registerLocaleData } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
 import { AuthService } from './auth.service';

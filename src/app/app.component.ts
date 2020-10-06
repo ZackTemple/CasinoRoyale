@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth/auth.service';
 
@@ -12,7 +13,9 @@ export class AppComponent implements OnInit {
   // loggedIn = false;
   loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router) {}
 
   ngOnInit(): any {
     this.authService.currentPlayer$.subscribe(user => {
@@ -26,11 +29,13 @@ export class AppComponent implements OnInit {
     });
   }
 
+// how to refactor this code (same as in Personal Account component)
   onLogoutClick(): any {
 
     this.authService.currentPlayer$.next(null);
     localStorage.removeItem('Authorization');
     this.authService.loggedIn$.next(false);
+    this.router.navigate(['/home']);
   }
 
   // toggleLogIn(): void {

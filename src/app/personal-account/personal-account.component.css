@@ -1,0 +1,25 @@
+.main-div {
+  height:75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.example-card {
+  width: 50vw;
+  height: 50vh;
+  min-width: fit-content;
+}
+
+.example-header-image {
+  background-image: url('../../assets/images/baseline_face_black_48dp.png');
+  background-size: cover;
+} */
+
+div.mat-card-avatar {
+  width:15vh
+}
+
+mat-list-item {
+  font-size: 50px;
+}

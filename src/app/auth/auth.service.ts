@@ -5,6 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
 import { MatDialog } from '@angular/material/dialog';
 import { FailedLoginDialogComponent } from './dialog/failed-login-dialog.component';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,10 @@ import { FailedLoginDialogComponent } from './dialog/failed-login-dialog.compone
 export class AuthService{
 
   databaseUrl = 'http://localhost:4200/api';
+  playersPath = this.databaseUrl.concat('/players');
+
   currentPlayer$: BehaviorSubject<IPlayer> = new BehaviorSubject(null);
+  currentPlayer: IPlayer = null;
   loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(null);
   allPlayers: IPlayer[];
   playersMap$: Subject<Map<string, IPlayer>> = new Subject();
@@ -32,8 +36,8 @@ export class AuthService{
 
   // Fetches player data, builds map, and returns that map
   getPlayers(): Observable<Map<string, IPlayer>> {
-    const playersPath = this.databaseUrl.concat('/players');
-    return this.httpClient.get<Map<string, IPlayer>>(playersPath).pipe(
+    console.log(this.playersPath);
+    return this.httpClient.get<Map<string, IPlayer>>(this.playersPath).pipe(
       map(players => {
         const playersMap: Map<string, IPlayer> = new Map();
 
@@ -43,6 +47,18 @@ export class AuthService{
         return playersMap;
       }),
       catchError(this.handleError)
+    );
+  }
+
+  updatePlayer(updatedPlayer: IPlayer): Observable<any> {
+    const playerUrl = this.playersPath.concat(`/${updatedPlayer._id}`);
+    const playerWithoutID = _.omit(updatedPlayer, '_id');
+    console.log(playerWithoutID);
+
+    return this.httpClient.put(playerUrl, playerWithoutID).pipe(
+      tap(message => {
+        console.log(message);
+      })
     );
   }
 

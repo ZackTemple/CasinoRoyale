@@ -5,7 +5,7 @@
       <button mat-menu-item routerLink="/games">Local Games</button>
       <button mat-menu-item>Multiplayer Games</button>
       <button mat-menu-item routerLink="/deposit-money">Deposit Money</button>
-      <button mat-menu-item *ngIf='loggedIn$ | async'>Account Settings</button>
+      <button mat-menu-item routerLink="/personal-account" *ngIf='loggedIn$ | async'>Personal Account</button>
 
       <!-- <button mat-menu-item routerLink="/home" *ngIf="(loggedIn$ | async); else notLoggedIn"> -->
       <button mat-menu-item routerLink="/home" *ngIf="(loggedIn$ | async); else notLoggedIn" (click)="onLogoutClick()">
@@ -13,7 +13,7 @@
       </button>
 
       <ng-template #notLoggedIn>
-        <button mat-menu-item routerLink="/logIn">
+        <button mat-menu-item routerLink="/login">
           Log In
         </button>
       </ng-template>
@@ -24,11 +24,11 @@
     <mat-icon>menu</mat-icon>
   </button>
   <button mat-button class="title" routerLink="/home">
+    <!-- Make badge for Casino Royal! -->
     <span class="title">{{title}}</span>
   </button>
   <span class="example-spacer"></span>
-  <button mat-icon-button class="personal-settings">
-    <!--Add route to Personal Account here-->
+  <button mat-icon-button class="personal-settings" routerLink="/personal-account" matTooltip="Personal Account">
     <span class="material-icons md-36">
       account_box
     </span>

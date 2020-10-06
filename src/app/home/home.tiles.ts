@@ -20,7 +20,7 @@ export const homeTiles = [
     color: 'lightgreen',
     class: 'personal-account',
     description: 'View account information',
-    route: '/home' // change route later
+    route: '/personal-account'
   },
   {
     text: 'Online Game Play',

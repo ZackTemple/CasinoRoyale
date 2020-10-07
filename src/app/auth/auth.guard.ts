@@ -9,25 +9,16 @@ import { AuthService } from './auth.service';
 })
 export class AuthGuard implements CanActivate {
 
-  playersMap: Map<string, IPlayer> = new Map();
-
-  constructor(
-    private router: Router,
-    private authService: AuthService) {
-      this.authService.playersMap$.pipe(
-        tap(data => console.log({ data }))
-      ).subscribe({
-        next: playersMap => {
-            this.playersMap = playersMap;
-        }
-      });
-    }
+  constructor(private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean {
 
       const authorizationKey = localStorage.getItem('Authorization');
+      if ( typeof authorizationKey !== 'string' ) {
+        this.router.navigate(['/login']);
+      }
 
       return !!authorizationKey;
     }

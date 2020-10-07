@@ -10,10 +10,15 @@
     <mat-card-content>
       <div class="content">
 
-        <button mat-raised-button class="add-money-button" matTooltip="Add money here" (click)="addMoney()">Click me!</button>
+        <button mat-raised-button class="add-money-button" matTooltip="Add money here" (click)="addMoney()">Add money!</button>
         <div>Total amount in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</div>
       </div>
     </mat-card-content>
   </mat-card>
 </div>
-<div *ngIf="moneyAdded">Added Money!</div>
+<div *ngIf="moneyAdded else noMoneyAdded">Added Money!</div>
+<ng-template #noMoneyAdded>
+  <div>
+    Please note, the maximum deposit amount is $500. If you have more than $500, you cannot deposit money into wallet.
+  </div>
+</ng-template>

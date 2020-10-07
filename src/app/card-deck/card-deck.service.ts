@@ -18,7 +18,7 @@ export class CardDeckService {
   }
 
   // Use in the future for implementing more games
-  getDeck(): any[] {
+  getDeck(): ICard[] {
     let i = 0;
     let j = 0;
     let currentSuit: string;

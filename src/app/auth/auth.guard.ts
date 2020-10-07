@@ -29,11 +29,6 @@ export class AuthGuard implements CanActivate {
 
       const authorizationKey = localStorage.getItem('Authorization');
 
-      const pageAccess =  this.authService.validUserQ(authorizationKey);
-      if (!pageAccess) {
-        this.router.navigate(['/login']);
-      }
-
-      return pageAccess;
+      return !!authorizationKey;
     }
 }

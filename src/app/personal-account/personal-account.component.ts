@@ -10,7 +10,7 @@ import { IPlayer } from '../interfaces/player';
 })
 export class PersonalAccountComponent implements OnInit {
 
-  userInfo: IPlayer;
+  player: IPlayer;
   earningsToLossesRatio: number;
 
   constructor(
@@ -18,16 +18,11 @@ export class PersonalAccountComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
-    this.authService.currentPlayer$.subscribe(
-      player => {
-        this.userInfo = player;
-        this.earningsToLossesRatio = (player.totalEarned / player.totalLost);
-      }
-    );
+     this.player = JSON.parse(localStorage.getItem('Authorization'));
+     this.earningsToLossesRatio = (this.player.totalEarned / this.player.totalLost);
   }
 
   onLogoutClick(): void {
-    this.authService.currentPlayer$.next(null);
     localStorage.removeItem('Authorization');
     this.authService.loggedIn$.next(false);
     this.router.navigate(['/home']);

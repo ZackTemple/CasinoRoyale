@@ -16,12 +16,8 @@ export class DepositMoneyComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.authService.currentPlayer$.subscribe(
-      player => {
-        this.player = player;
-        this.currentMoney = player.currentMoney;
-      }
-    );
+    this.player = JSON.parse(localStorage.getItem('Authorization'));
+    this.currentMoney = this.player.currentMoney;
   }
 
   addMoney(): void {
@@ -31,8 +27,8 @@ export class DepositMoneyComponent implements OnInit {
     else {
       this.player.currentMoney = 500;
       // do I need this?
-      this.authService.currentPlayer$.next(this.player);
       this.authService.updatePlayer(this.player).subscribe();
+      localStorage.setItem('Authorization', JSON.stringify(this.player));
       this.moneyAdded = true;
     }
   }

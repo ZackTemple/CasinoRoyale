@@ -11,35 +11,25 @@ import { AuthService } from './auth/auth.service';
 export class AppComponent implements OnInit {
   title = 'Casino Royale';
   // loggedIn = false;
-  loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  loggedIn = false;
 
   constructor(
     private authService: AuthService,
     private router: Router) {}
 
   ngOnInit(): any {
-    this.authService.currentPlayer$.subscribe(user => {
-      if (user === null) {
-        this.loggedIn$.next(false);
-      }
-      else {
-        this.loggedIn$.next(true);
-      }
-
-    });
+    this.authService.loggedIn$.subscribe(
+      loginQ => this.loggedIn = loginQ
+    );
   }
 
 // how to refactor this code (same as in Personal Account component)
   onLogoutClick(): any {
 
-    this.authService.currentPlayer$.next(null);
     localStorage.removeItem('Authorization');
+    this.loggedIn = false;
     this.authService.loggedIn$.next(false);
     this.router.navigate(['/home']);
   }
-
-  // toggleLogIn(): void {
-  //   this.loggedIn = !this.loggedIn;
-  // }
 
 }

@@ -15,11 +15,12 @@ import { AuthGuard } from '../auth/auth.guard';
       {
         path: 'games',
         canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
         component: GamesComponent,
         children: [
-          {path: 'blackjack', canActivate: [AuthGuard], component: BlackjackComponent},
-          {path: 'texas-holdem', canActivate: [AuthGuard], component: TexasHoldemComponent},
-          {path: 'omaha-holdem', canActivate: [AuthGuard], component: OmahaHoldemComponent}
+          {path: 'blackjack', component: BlackjackComponent},
+          {path: 'texas-holdem', component: TexasHoldemComponent},
+          {path: 'omaha-holdem', component: OmahaHoldemComponent}
         ]
       }
     ])

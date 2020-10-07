@@ -12,31 +12,29 @@ import * as _ from 'lodash';
 })
 export class AuthService{
 
+  // Properties used for Http calls
   databaseUrl = 'http://localhost:4200/api';
   playersPath = this.databaseUrl.concat('/players');
 
-  currentPlayer$: BehaviorSubject<IPlayer> = new BehaviorSubject(null);
-  currentPlayer: IPlayer = null;
-  loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(null);
-  allPlayers: IPlayer[];
+
+  // Properties and subjects used to track webiste information
+  loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(this.loggedInQ());
   playersMap$: Subject<Map<string, IPlayer>> = new Subject();
   playersMap: Map<string, IPlayer>;
 
+
+  // Constructor initializes playersMap and playersMap$ once it constructs
   constructor(private httpClient: HttpClient, private dialog: MatDialog ) {
-    this.getPlayers().subscribe(data => this.playersMap = data);
+
+    this.getPlayers().subscribe(data => {
+      this.playersMap = data;
+      this.playersMap$.next(data);
+    });
   }
 
-  // initializePlayersMap(): void {
-  //   this.playersMap$.subscribe({
-  //     next: playersMap => {
-  //         this.playersMap = playersMap;
-  //     }
-  //   });
-  // }
 
   // Fetches player data, builds map, and returns that map
   getPlayers(): Observable<Map<string, IPlayer>> {
-    console.log(this.playersPath);
     return this.httpClient.get<Map<string, IPlayer>>(this.playersPath).pipe(
       map(players => {
         const playersMap: Map<string, IPlayer> = new Map();
@@ -50,6 +48,9 @@ export class AuthService{
     );
   }
 
+
+  // Called inside deposit-money and blackjack to update player info to the API
+  // Depends on lodash
   updatePlayer(updatedPlayer: IPlayer): Observable<any> {
     const playerUrl = this.playersPath.concat(`/${updatedPlayer._id}`);
     const playerWithoutID = _.omit(updatedPlayer, '_id');
@@ -62,29 +63,34 @@ export class AuthService{
     );
   }
 
+
+  // Allows the user to login. Sets the loggedIn$ subject to true and creates auth key if successful
   logIn(username: string, password: string): void {
 
     const userInfo = this.playersMap.get(username);
     console.log(userInfo);
 
     if (userInfo === undefined || userInfo.password !== password) {
-      console.log('user not available or password incorrect');
       this.dialog.open(FailedLoginDialogComponent);
     }
     else if (userInfo.password === password) {
       this.loggedIn$.next(true);
-      this.currentPlayer$.next(userInfo);
-      console.log('login successful!');
-      localStorage.setItem('Authorization', userInfo.username);
+      localStorage.setItem('Authorization', JSON.stringify(userInfo));
     }
     else {
-      console.log('login failed :(');
       this.dialog.open(FailedLoginDialogComponent);
     }
   }
 
+  // Used for the default value for loggedIn$
+  // Returns true or false depending on whether there is an authorization key
+  loggedInQ(): boolean {
+    return typeof localStorage.getItem('Authorization') === 'string';
+  }
+
+
+  // A sign up method that posts to the API with new player info
   signUp(username: string, password: string): boolean {
-    // (would hash here, but come back to it later)
 
     // two-step verify same password
     // post info to database
@@ -92,22 +98,7 @@ export class AuthService{
   }
 
 
-  validUserQ(authorizationKey: string): boolean {
-    let validUser: boolean;
-    const currentPlayer = this.playersMap.get(authorizationKey);
-
-    if (currentPlayer) {
-      validUser = true;
-      this.currentPlayer$.next(currentPlayer);
-    }
-    else{
-      validUser = false;
-    }
-
-    return validUser;
-  }
-
-
+  // Handles errors for API calls
   private handleError(err: HttpErrorResponse): Observable<never> {
     let errorMessage = '';
     if (err.error instanceof ErrorEvent) {

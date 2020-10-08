@@ -1,4 +1,4 @@
-<div *ngIf='(! betLockedIn || winner)'>
+<div *ngIf='(! betLockedIn || winner || tie || bust)'>
   <input type='number' [(ngModel)]='currentBet'>
   <button mat-raised-button class='place-bet' (click)="onClickPlaceBet()">
     Place Bet
@@ -21,12 +21,21 @@
   </div>
 </div>
 
-<button mat-raised-button class='hit' *ngIf='betLockedIn' (click)='clickHit()'>
-  Hit Me
-</button>
-<button mat-raised-button class='stay' *ngIf='betLockedIn' (click)='clickStay()'>
-  Stay
-</button>
+<div *ngIf='betLockedIn'>
+  <button mat-raised-button class='hit'  (click)='!winner && clickHit()'>
+    Hit Me
+  </button>
+  <button mat-raised-button class='stay' (click)='!winner && clickStay()'>
+    Stay
+  </button>
+</div>
+
 <p *ngIf='winner'>
   Winner: {{winner}}
+</p>
+<p *ngIf='tie'>
+  Push!
+</p>
+<p *ngIf='bust'>
+  Bust!
 </p>

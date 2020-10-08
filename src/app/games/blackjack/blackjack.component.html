@@ -1,1 +1,32 @@
-<p>blackjack works!</p>
+<div *ngIf='(! betLockedIn || winner)'>
+  <input [(ngModel)]='currentBet'>
+  <button mat-raised-button class='place-bet' (click)="onClickPlaceBet()">
+    Place Bet
+  </button>
+</div>
+<br>
+<p>Money in wallet: {{playerInfo.currentMoney}}</p>
+<p *ngIf='! validBet'>Bet not valid. Please enter an amout equal to or less than the money in your wallet.</p>
+
+<div *ngIf='playerHand'>
+  Dealer Hand:
+  <div *ngFor='let card of dealerHand'>
+    &nbsp; {{card.suit}}
+    &nbsp; {{card.value}}
+  </div>
+  Player Hand:
+  <div *ngFor='let card of playerHand'>
+    &nbsp; {{card.suit}}
+    &nbsp; {{card.value}}
+  </div>
+</div>
+
+<button mat-raised-button class='hit' *ngIf='betLockedIn' (click)='clickHit()'>
+  Hit Me
+</button>
+<button mat-raised-button class='stay' *ngIf='betLockedIn' (click)='clickStay()'>
+  Stay
+</button>
+<p *ngIf='winner'>
+  Winner: {{winner}}
+</p>

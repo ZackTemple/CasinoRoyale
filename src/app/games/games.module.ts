@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { GamesRoutingModule } from './games-routing.module';
 import { GamesComponent } from './games.component';
 import { BlackjackComponent } from './blackjack/blackjack.component';
@@ -19,7 +20,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     CommonModule,
     GamesRoutingModule,
     MatTabsModule,
-    MatGridListModule
+    MatGridListModule,
+    FormsModule
   ]
 })
 export class GamesModule { }

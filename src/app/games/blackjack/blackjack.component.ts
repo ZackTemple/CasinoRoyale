@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { stringify } from 'querystring';
+import { AuthService } from 'src/app/auth/auth.service';
 import { IPlayer } from 'src/app/interfaces/player';
 import { CardDeckService } from '../../card-deck/card-deck.service';
 import { ICardBlackjack } from '../../interfaces/cards';
@@ -36,12 +37,16 @@ export class BlackjackComponent implements OnInit {
   playerInfo: IPlayer;
 
 
-  constructor(private cardDeckService: CardDeckService) {
+  constructor(
+    private cardDeckService: CardDeckService,
+    private authService: AuthService) {
     this.playerInfo = JSON.parse(localStorage.getItem('Authorization')) as IPlayer;
 
     // TODO: fix database with Shawn
     this.playerInfo.totalEarned = Number(this.playerInfo.totalEarned);
     this.playerInfo.totalLost = Number(this.playerInfo.totalLost);
+
+    console.log(this.playerInfo);
   }
 
   ngOnInit(): void {
@@ -149,12 +154,14 @@ export class BlackjackComponent implements OnInit {
       this.playerInfo.currentMoney -= this.currentBet;
       this.playerInfo.currentMoney -= this.currentBet;
     }
+
+    console.log(this.playerInfo);
   }
 
-  // ngOnDestroy() {
-  //   const newPlayerInfo = JSON.stringify(this.playerInfo);
-  //   localStorage.setItem('Authorization', newPlayerInfo);
-  //   push changes to database
-  // }
+  ngOnDestroy() {
+    const newPlayerInfo = JSON.stringify(this.playerInfo);
+    localStorage.setItem('Authorization', newPlayerInfo);
+    this.authService.updatePlayer(this.playerInfo).subscribe();
+  }
 
 }

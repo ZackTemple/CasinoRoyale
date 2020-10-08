@@ -1,5 +1,5 @@
 <div *ngIf='(! betLockedIn || winner)'>
-  <input [(ngModel)]='currentBet'>
+  <input type='number' [(ngModel)]='currentBet'>
   <button mat-raised-button class='place-bet' (click)="onClickPlaceBet()">
     Place Bet
   </button>

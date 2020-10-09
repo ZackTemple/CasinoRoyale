@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
     localStorage.removeItem('Authorization');
     this.loggedIn = false;
     this.authService.loggedIn$.next(false);
+    console.log(localStorage.getItem('Authorization'));
     this.router.navigate(['/home']);
   }
 

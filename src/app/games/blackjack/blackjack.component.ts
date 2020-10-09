@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { IPlayer } from 'src/app/interfaces/player';
-import { CardDeckService } from '../../card-deck/card-deck.service';
+import { DeckService } from '../objects/deck/deck.service';
 import { ICardBlackjack } from '../../interfaces/cards';
 
 @Component({
@@ -39,20 +39,18 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private cardDeckService: CardDeckService,
+    private deckService: DeckService,
     private authService: AuthService) {
     this.playerInfo = JSON.parse(localStorage.getItem('Authorization')) as IPlayer;
 
     // TODO: fix database with Shawn
     this.playerInfo.totalEarned = Number(this.playerInfo.totalEarned);
     this.playerInfo.totalLost = Number(this.playerInfo.totalLost);
-
-    console.log(this.playerInfo);
   }
 
   ngOnInit(): void {
     // Get deck of cards for Blackjack
-    this.deck = this.cardDeckService.getBlackjackDeck();
+    this.deck = this.deckService.getBlackjackDeck();
   }
 
   onClickPlaceBet(): void {
@@ -83,7 +81,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   dealCardsToPlayers(): void {
     // shuffle deck on start of game
-    this.shuffledDeck = this.cardDeckService.shuffleDeck(this.deck) as ICardBlackjack[];
+    this.shuffledDeck = this.deckService.shuffleDeck(this.deck) as ICardBlackjack[];
 
     // distribute cards
     this.dealerHand = this.shuffledDeck.splice(0, 1);
@@ -167,6 +165,9 @@ export class BlackjackComponent implements OnInit, OnDestroy {
       this.playerInfo.currentMoney += this.currentBet;
       this.playerInfo.totalEarned += this.currentBet;
     }
+
+    const newPlayerInfo = JSON.stringify(this.playerInfo);
+    localStorage.setItem('Authorization', newPlayerInfo);
   }
 
   playerBustQ(score: number): void {
@@ -179,8 +180,6 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
-    const newPlayerInfo = JSON.stringify(this.playerInfo);
-    localStorage.setItem('Authorization', newPlayerInfo);
     this.authService.updatePlayer(this.playerInfo).subscribe();
   }
 

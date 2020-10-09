@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CardDeckService } from './card-deck.service';
-import { ICard, ICardBlackjack } from '../interfaces/cards';
-import { faIdCard } from '@fortawesome/free-solid-svg-icons';
+import { DeckService } from './deck.service';
+import { ICard, ICardBlackjack } from '../../../interfaces/cards';
 
-fdescribe('CardDeckService', () => {
-  let service: CardDeckService;
+fdescribe('DeckService', () => {
+  let service: DeckService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CardDeckService);
+    service = TestBed.inject(DeckService);
   });
 
   describe('getDeck() method', () => {

@@ -68,7 +68,6 @@ export class AuthService{
   logIn(username: string, password: string): void {
 
     const userInfo = this.playersMap.get(username);
-    console.log(userInfo);
 
     if (userInfo === undefined || userInfo.password !== password) {
       this.dialog.open(FailedLoginDialogComponent);

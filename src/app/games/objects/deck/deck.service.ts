@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ICard, ICardBlackjack } from '../../../interfaces/cards';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -56,5 +57,27 @@ export class DeckService {
       cardWeight = parseInt(card.value, 10);
     }
     return {...card, weight: cardWeight};
+  }
+
+  shuffleDeck(deck: ICard[] | ICardBlackjack[]): ICard[] | ICardBlackjack[] {
+    let currentIndex = deck.length;
+    let temporaryValue: number;
+    let randomIndex: number;
+    const shuffledDeck = _.cloneDeep(deck);
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = shuffledDeck[currentIndex];
+      shuffledDeck[currentIndex] = shuffledDeck[randomIndex];
+      shuffledDeck[randomIndex] = temporaryValue;
+    }
+
+    return shuffledDeck;
   }
 }

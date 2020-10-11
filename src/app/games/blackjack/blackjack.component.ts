@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { IPlayer } from 'src/app/interfaces/player';
-import { DeckService } from '../objects/deck/deck.service';
-import { ICardBlackjack } from '../../interfaces/cards';
+import { ICard } from '../../interfaces/cards';
+import { Dealer } from './objects/dealer';
+import { Deck } from './objects/deck';
+import { Player } from './objects/player';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-blackjack',
@@ -12,124 +15,117 @@ import { ICardBlackjack } from '../../interfaces/cards';
 
 export class BlackjackComponent implements OnInit, OnDestroy {
 
-  // decks
-  deck: ICardBlackjack[];
-  shuffledDeck: ICardBlackjack[];
+  // Objects: deck, dealer, and player
+  deck: Deck;
+  dealer: Dealer;
+  player: Player;
+  localStoragePlayerInfo: IPlayer;
 
   // Properties for handling the initial bet
   validBet = true;
-  currentBet: number;
   betLockedIn = false;
 
-  // Dealer and Player Hands
-  dealerHand: ICardBlackjack[];
-  playerHand: ICardBlackjack[];
-
-  // User's turn and decision to hit or stay
-  playersTurn = false;
-
   // Final winner, tie, and bust
-  winner: string;
+  winner: Player | Dealer;
   tie = false;
   bust = false;
 
-  // User info from local storage
-  playerInfo: IPlayer;
-  dealer = {name: 'Dealer'};
-
-
-  constructor(
-    private deckService: DeckService,
-    private authService: AuthService) {
-    this.playerInfo = JSON.parse(localStorage.getItem('Authorization')) as IPlayer;
-
-    // TODO: fix database with Shawn
-    this.playerInfo.totalEarned = Number(this.playerInfo.totalEarned);
-    this.playerInfo.totalLost = Number(this.playerInfo.totalLost);
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    // Get deck of cards for Blackjack
-    this.deck = this.deckService.getBlackjackDeck();
+    // giving Deck(true) gives us a blackjack deck
+    this.deck = new Deck();
+    this.dealer = new Dealer();
+
+    this.localStoragePlayerInfo = JSON.parse(localStorage.getItem('Authorization')) as IPlayer;
+    // TODO: fix database with Shawn
+    this.localStoragePlayerInfo.totalEarned = Number(this.localStoragePlayerInfo.totalEarned);
+    this.localStoragePlayerInfo.totalLost = Number(this.localStoragePlayerInfo.totalLost);
+
+    this.player = new Player(this.localStoragePlayerInfo);
   }
 
   onClickPlaceBet(): void {
-    // Check to see if bet is valid
-    if ( 0 < this.currentBet && this.currentBet <= this.playerInfo.currentMoney) {
-
-      // Reset game attributes, like winners, ties, bust, etc, take bet from player wallet, and deal cards
+    if ( 0 < this.player.bet && this.player.bet <= this.player.currentMoney) {
       this.resetGameAttributes();
-      this.subtractBetFromPlayerWallet();
-      this.dealCardsToPlayers();
-    }
-    else {
-      this.validBet = false;
+      this.startGame();
     }
   }
 
   resetGameAttributes(): void {
-    this.betLockedIn = this.validBet = true;
+    this.betLockedIn = true;
     this.winner = null;
     this.tie = false;
     this.bust = false;
+    this.dealer.resetDeck(this.deck);
   }
 
-  subtractBetFromPlayerWallet(): void {
-    this.playerInfo.currentMoney -= this.currentBet;
-      this.playerInfo.totalLost -= this.currentBet;
+  startGame(): void {
+    this.dealer.subtractBetFromPlayerWallet(this.player);
+    this.dealer.shuffleDeck(this.deck);
+    console.log(this.deck);
+
+    this.dealCards();
   }
 
-  dealCardsToPlayers(): void {
-    // shuffle deck on start of game
-    this.shuffledDeck = this.deckService.shuffleDeck(this.deck) as ICardBlackjack[];
-
-    // distribute cards
-    this.dealerHand = this.shuffledDeck.splice(0, 1);
-    this.playerHand = this.shuffledDeck.splice(0, 2);
-
-    // Must check to see if user busts on deal
-    this.playerBustQ(this.getScore(this.playerHand));
+  dealCards(): void {
+    this.player.cards = this.dealer.dealCards(this.deck, 2);
+    this.dealer.cards = this.dealer.dealCards(this.deck, 1);
   }
+
+
 
   clickHit(): void {
-    this.playerHand.push(this.newCard());
-
-    // Check to see if user busts
-    this.playerBustQ(this.getScore(this.playerHand));
+    this.player.cards.push(this.newCard());
+    this.playerBustQ();
   }
 
-  newCard(): ICardBlackjack {
-    return this.shuffledDeck.splice(0, 1)[0];
+  newCard(): any {
+    return this.dealer.dealCards(this.deck, 1)[0];
   }
+
+  playerBustQ(): void {
+    this.player.score = this.getScore(this.player.cards);
+    if (this.player.score > 21) {
+      this.endGameFromUserBust();
+    }
+  }
+
+  endGameFromUserBust(): void {
+    this.bust = true;
+    this.winner = this.dealer;
+    this.updateLocalStorage();
+  }
+
+
 
   clickStay(): void {
-    const playerScore = this.getScore(this.playerHand);
-    this.playersTurn = false;
+    this.player.score = this.getScore(this.player.cards);
+    this.player.turn = false;
 
-    this.finishGame(playerScore);
+    this.finishGame();
   }
 
-  finishGame(playerScore: number): void {
-
+  finishGame(): void {
     // Let dealer make moves, decide winner, and update player info with results
-    const dealerScore = this.playDealersTurn(playerScore);
-    this.decideWinner(dealerScore, playerScore);
-    this.updatePlayerInfo();
+    this.playDealersTurn();
+    this.getGameResults();
+    this.actOnGameResults();
+    this.updateLocalStorage();
   }
 
-  playDealersTurn(playerScore: number): number {
-    let dealerScore = this.getScore(this.dealerHand);
+  playDealersTurn(): void {
+    this.dealer.score = this.getScore(this.dealer.cards);
 
     // Dealer keeps hitting until score is 17 or more
-    while (dealerScore < 17 || dealerScore < playerScore) {
-      this.dealerHand.push(this.newCard());
-      dealerScore = this.getScore(this.dealerHand);
+    while (this.dealer.score < 17 && this.dealer.score <= this.player.score) {
+      this.dealer.cards.push(this.newCard());
+      this.dealer.score = this.getScore(this.dealer.cards);
     }
-
-    return dealerScore;
   }
 
-  getScore(hand: ICardBlackjack[]): number {
+  getScore(hand: ICard[]): number {
     let totalScore = 0;
 
     hand.map(card => {
@@ -139,48 +135,34 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     return totalScore;
   }
 
-  decideWinner(dealerScore: number, playerScore: number): void {
-    if (playerScore > dealerScore) {
-      this.winner = this.playerInfo.username;
+  getGameResults(): void {
+    if (this.player.score > this.dealer.score || this.dealer.score > 21) {
+      this.winner = this.player;
     }
-    else if (dealerScore > 21) {
-      this.winner = this.playerInfo.username;
+    else if (this.dealer.score > this.player.score) {
+      this.winner = this.dealer;
     }
-    else if (dealerScore > playerScore) {
-      this.winner = this.dealer.name;
-    }
-    else if (playerScore === dealerScore) {
+    else if (this.player.score === this.dealer.score) {
       this.tie = true;
     }
   }
 
-  updatePlayerInfo(): void {
-
-    // update player info depending on game results
-    if (this.winner === this.playerInfo.username) {
-      this.playerInfo.currentMoney += 2 * this.currentBet;
-      this.playerInfo.totalEarned += 2 * this.currentBet;
+  actOnGameResults(): void {
+    if (this.winner === this.player) {
+      this.dealer.awardPlayer(this.player);
     }
     else if (this.tie === true) {
-      this.playerInfo.currentMoney += this.currentBet;
-      this.playerInfo.totalEarned += this.currentBet;
-    }
-
-    const newPlayerInfo = JSON.stringify(this.playerInfo);
-    localStorage.setItem('Authorization', newPlayerInfo);
-  }
-
-  playerBustQ(score: number): void {
-    if (score > 21) {
-      this.bust = true;
-      this.winner = this.dealer.name;
-      this.updatePlayerInfo();
+      this.dealer.returnPlayerBet(this.player);
     }
   }
 
+  updateLocalStorage(): void {
+
+    localStorage.setItem('Authorization', JSON.stringify(this.player));
+  }
 
   ngOnDestroy(): void {
-    this.authService.updatePlayer(this.playerInfo).subscribe();
+    this.authService.updatePlayer(this.player).subscribe();
   }
 
 }

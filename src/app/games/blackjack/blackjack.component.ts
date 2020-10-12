@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { IPlayer } from 'src/app/interfaces/player';
-import { ICard } from '../../interfaces/cards';
 import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
@@ -79,20 +78,21 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   }
 
   playerBustQ(): void {
-    this.player.score = this.getScore(this.player.cards);
+    this.getScore(this.player);
     if (this.player.score > 21) {
       this.endGameFromUserBust();
     }
   }
 
-  getScore(hand: ICard[]): number {
+  getScore(player: Player | Dealer): void {
     let totalScore = 0;
+    const hand = player.cards;
 
     hand.map(card => {
       totalScore += card.weight;
     });
 
-    return totalScore;
+    player.score = totalScore;
   }
 
   endGameFromUserBust(): void {
@@ -104,7 +104,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
 
   clickStay(): void {
-    this.player.score = this.getScore(this.player.cards);
+    this.getScore(this.player);
 
     this.finishGame();
   }
@@ -117,12 +117,12 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   }
 
   playDealersTurn(): void {
-    this.dealer.score = this.getScore(this.dealer.cards);
+    this.getScore(this.dealer);
 
     // Dealer keeps hitting until score is 17 or more
-    while (this.dealer.score < 17 && this.dealer.score <= this.player.score) {
+    while (this.dealer.score < 17 || this.dealer.score <= this.player.score) {
       this.dealer.dealCardToPlayer(this.dealer, 1);
-      this.dealer.score = this.getScore(this.dealer.cards);
+      this.getScore(this.dealer);
     }
   }
 

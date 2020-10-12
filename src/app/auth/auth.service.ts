@@ -54,7 +54,6 @@ export class AuthService{
   updatePlayer(updatedPlayer: IPlayer): Observable<any> {
     const playerUrl = this.playersPath.concat(`/${updatedPlayer._id}`);
     const playerWithoutID = _.omit(updatedPlayer, '_id');
-    console.log(playerWithoutID);
 
     return this.httpClient.put(playerUrl, playerWithoutID).pipe(
       tap(message => {

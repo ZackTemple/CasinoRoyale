@@ -6,20 +6,19 @@ import { Table } from './table';
 
 export class Dealer {
 
-  name = 'Dealer Dan';
+  name: string;
 
   cards: ICard[] = new Array();
   score: number;
   deck: Deck;
 
-  constructor(name = 'Dan') {
+  constructor(name = ' Dealer Dan') {
     this.deck = new Deck();
     this.name = name;
   }
 
   subtractBetFromPlayerWallet(player: Player): void {
     player.currentMoney -= player.bet;
-    player.totalLost -= player.bet;
   }
 
   shuffleDeck(): void {

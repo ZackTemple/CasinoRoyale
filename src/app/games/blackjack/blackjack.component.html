@@ -9,17 +9,18 @@
 <p *ngIf='! betLockedIn'>Please enter an amout equal to or less than the money in your wallet.</p>
 
 <div *ngIf='player.cards.length > 0'>
-  Dealer Hand:
+  <h3>Dealer Hand:</h3>
   <div *ngFor='let card of dealer.cards'>
     &nbsp; {{card.suit}}
     &nbsp; {{card.value}}
   </div>
-  Player Hand:
+  <h3>{{player.name}}'s Hand:</h3>
   <div *ngFor='let card of player.cards'>
     &nbsp; {{card.suit}}
     &nbsp; {{card.value}}
   </div>
 </div>
+<br>
 
 <div *ngIf='betLockedIn'>
   <button mat-raised-button class='hit'  (click)='!winner && clickHit()'>
@@ -29,6 +30,10 @@
     Stay
   </button>
 </div>
+
+<p *ngIf='player.score === 21'>
+  Blackjack!
+</p>
 
 <p *ngIf='winner'>
   Winner: {{winner.name}}

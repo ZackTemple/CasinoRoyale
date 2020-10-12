@@ -46,18 +46,21 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   onClickPlaceBet(): void {
     if ( 0 < this.player.bet && this.player.bet <= this.player.currentMoney) {
-      this.resetGameAttributes();
+      this.setupNewGame();
       this.startGame();
+    }
+    else {
+      this.betLockedIn = false;
     }
   }
 
-  resetGameAttributes(): void {
-    this.resetComponentAttributes();
+  setupNewGame(): void {
+    this.resetGameAttributes();
     this.dealer.collectOldCards(this.table);
     this.dealer.resetDeck();
   }
 
-  resetComponentAttributes(): void {
+  private resetGameAttributes(): void {
     this.betLockedIn = true;
     this.winner = null;
     this.tie = false;
@@ -142,10 +145,12 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     else if (this.tie === true) {
       this.dealer.returnPlayerBet(this.player);
     }
+    else {
+      this.player.totalLost += this.player.bet;
+    }
   }
 
   updateLocalStorage(): void {
-
     localStorage.setItem('Authorization', JSON.stringify(this.player));
   }
 

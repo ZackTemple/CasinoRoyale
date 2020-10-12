@@ -15,10 +15,8 @@ export class Player implements IPlayer {
   // Game information
   name: string;
   bet: number;
-  cards: ICard[];
+  cards: ICard[] = new Array();
   score: number;
-  turn: boolean; // Describes whether it is the player's turn or not
-
 
   constructor(playerInfo: IPlayer) {
     this.setPlayerInfo(playerInfo);

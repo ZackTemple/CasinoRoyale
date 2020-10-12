@@ -35,7 +35,7 @@ export class Deck {
   }
 
   // Function gets the weight for a specific card based on it's value
-  getWeight(suit: string, value: string): number {
+  private getWeight(suit: string, value: string): number {
     let cardWeight: number;
     if (value === 'J' || value === 'Q' || value === 'K') {
       cardWeight = 10;

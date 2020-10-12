@@ -2,23 +2,28 @@ import { ICard } from 'src/app/interfaces/cards';
 import * as _ from 'lodash';
 import { Deck } from './deck';
 import { Player } from './player';
+import { Table } from './table';
 
 export class Dealer {
 
-  name = 'Dealer Don';
+  name = 'Dealer Dan';
 
-  cards: ICard[];
+  cards: ICard[] = new Array();
   score: number;
+  deck: Deck;
 
-  constructor() {
+  constructor(name = 'Dan') {
+    this.deck = new Deck();
+    this.name = name;
   }
 
-  dealCards(deck: Deck, numOfCards: number): ICard[] {
-    return deck.cards.splice(0, numOfCards);
+  subtractBetFromPlayerWallet(player: Player): void {
+    player.currentMoney -= player.bet;
+    player.totalLost -= player.bet;
   }
 
-  shuffleDeck(deck: Deck): void {
-    let currentIndex = deck.cards.length;
+  shuffleDeck(): void {
+    let currentIndex = this.deck.cards.length;
     let temporaryCard: ICard;
     let randomIndex: number;
 
@@ -30,30 +35,74 @@ export class Dealer {
       currentIndex -= 1;
 
       // And swap it with the current element.
-      temporaryCard = deck.cards[currentIndex];
-      deck.cards[currentIndex] = deck.cards[randomIndex];
-      deck.cards[randomIndex] = temporaryCard;
+      temporaryCard = this.deck.cards[currentIndex];
+      this.deck.cards[currentIndex] = this.deck.cards[randomIndex];
+      this.deck.cards[randomIndex] = temporaryCard;
     }
   }
 
-  resetDeck(deck: Deck): void {
-    deck.cards = deck.getDeck();
+  dealCardsToStartGame(players: any[]): void {
+    let i: number;
+
+    for (i = 0; i < players.length; i++) {
+      this.dealCardToPlayer(
+        players[i],
+        this.determineNumberOfCards(players[i])
+      );
+    }
   }
 
-  subtractBetFromPlayerWallet(player: Player): void {
-    player.currentMoney -= player.bet;
-    player.totalLost -= player.bet;
+  private determineNumberOfCards(player: Player | Dealer): number {
+    // If the name is the dealer's name, only deal one
+    if (player.name === this.name) {
+      return 1;
+    }
+    else {
+      return 2;
+    }
+  }
+
+  dealCardToPlayer(player: Player | Dealer, numOfCards: number): void {
+    const newCards = this.deck.cards.splice(0, numOfCards);
+    player.cards = player.cards.concat(newCards);
+  }
+
+  resetDeck(): void {
+    this.deck.cards = this.deck.getDeck();
   }
 
   awardPlayer(player: Player): void {
     // update player info depending on game results
-    player.currentMoney += 2 * player.bet;
-    player.totalEarned += 2 * player.bet;
+    const multiplier = this.getBetMulitplier(player.score);
+
+    player.currentMoney += multiplier * player.bet;
+    player.totalEarned += multiplier * player.bet;
+  }
+
+  private getBetMulitplier(playerScore): number {
+    if (playerScore === 21) {
+      return 3;
+    }
+    else {
+      return 2;
+    }
   }
 
   returnPlayerBet(player: Player): void {
     player.currentMoney += player.bet;
     player.totalEarned += player.bet;
+  }
+
+  collectOldCards(table: Table): void {
+    let i: number;
+
+    for (i = 0; i < table.players.length; i++) {
+      this.gatherCardsFromPlayer(table.players[i]);
+    }
+  }
+
+  private gatherCardsFromPlayer(player: Player | Dealer): void {
+    player.cards = new Array();
   }
 
 }

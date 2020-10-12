@@ -3,9 +3,8 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { IPlayer } from 'src/app/interfaces/player';
 import { ICard } from '../../interfaces/cards';
 import { Dealer } from './objects/dealer';
-import { Deck } from './objects/deck';
 import { Player } from './objects/player';
-import * as _ from 'lodash';
+import { Table } from './objects/table';
 
 @Component({
   selector: 'app-blackjack',
@@ -15,11 +14,11 @@ import * as _ from 'lodash';
 
 export class BlackjackComponent implements OnInit, OnDestroy {
 
-  // Objects: deck, dealer, and player
-  deck: Deck;
+  // Objects: dealer, player, and table
   dealer: Dealer;
   player: Player;
   localStoragePlayerInfo: IPlayer;
+  table: Table;
 
   // Properties for handling the initial bet
   validBet = true;
@@ -34,8 +33,6 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // giving Deck(true) gives us a blackjack deck
-    this.deck = new Deck();
     this.dealer = new Dealer();
 
     this.localStoragePlayerInfo = JSON.parse(localStorage.getItem('Authorization')) as IPlayer;
@@ -44,6 +41,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.localStoragePlayerInfo.totalLost = Number(this.localStoragePlayerInfo.totalLost);
 
     this.player = new Player(this.localStoragePlayerInfo);
+    this.table = new Table([this.dealer, this.player]);
   }
 
   onClickPlaceBet(): void {
@@ -54,35 +52,27 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   }
 
   resetGameAttributes(): void {
+    this.resetComponentAttributes();
+    this.dealer.collectOldCards(this.table);
+    this.dealer.resetDeck();
+  }
+
+  resetComponentAttributes(): void {
     this.betLockedIn = true;
     this.winner = null;
     this.tie = false;
     this.bust = false;
-    this.dealer.resetDeck(this.deck);
   }
 
   startGame(): void {
     this.dealer.subtractBetFromPlayerWallet(this.player);
-    this.dealer.shuffleDeck(this.deck);
-    console.log(this.deck);
-
-    this.dealCards();
+    this.dealer.shuffleDeck();
+    this.dealer.dealCardsToStartGame(this.table.players);
   }
-
-  dealCards(): void {
-    this.player.cards = this.dealer.dealCards(this.deck, 2);
-    this.dealer.cards = this.dealer.dealCards(this.deck, 1);
-  }
-
-
 
   clickHit(): void {
-    this.player.cards.push(this.newCard());
+    this.dealer.dealCardToPlayer(this.player, 1);
     this.playerBustQ();
-  }
-
-  newCard(): any {
-    return this.dealer.dealCards(this.deck, 1)[0];
   }
 
   playerBustQ(): void {
@@ -90,6 +80,16 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     if (this.player.score > 21) {
       this.endGameFromUserBust();
     }
+  }
+
+  getScore(hand: ICard[]): number {
+    let totalScore = 0;
+
+    hand.map(card => {
+      totalScore += card.weight;
+    });
+
+    return totalScore;
   }
 
   endGameFromUserBust(): void {
@@ -102,13 +102,11 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   clickStay(): void {
     this.player.score = this.getScore(this.player.cards);
-    this.player.turn = false;
 
     this.finishGame();
   }
 
   finishGame(): void {
-    // Let dealer make moves, decide winner, and update player info with results
     this.playDealersTurn();
     this.getGameResults();
     this.actOnGameResults();
@@ -120,19 +118,9 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
     // Dealer keeps hitting until score is 17 or more
     while (this.dealer.score < 17 && this.dealer.score <= this.player.score) {
-      this.dealer.cards.push(this.newCard());
+      this.dealer.dealCardToPlayer(this.dealer, 1);
       this.dealer.score = this.getScore(this.dealer.cards);
     }
-  }
-
-  getScore(hand: ICard[]): number {
-    let totalScore = 0;
-
-    hand.map(card => {
-      totalScore += card.weight;
-    });
-
-    return totalScore;
   }
 
   getGameResults(): void {

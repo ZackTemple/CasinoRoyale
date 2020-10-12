@@ -8,7 +8,7 @@
 <p>Money in wallet: {{player.currentMoney}}</p>
 <p *ngIf='! betLockedIn'>Please enter an amout equal to or less than the money in your wallet.</p>
 
-<div *ngIf='player.cards'>
+<div *ngIf='player.cards.length > 0'>
   Dealer Hand:
   <div *ngFor='let card of dealer.cards'>
     &nbsp; {{card.suit}}

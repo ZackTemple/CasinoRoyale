@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
 import { LogInComponent } from './logIn/log-in.component';
@@ -21,4 +22,12 @@ import { DepositMoneyComponent } from './deposit-money/deposit-money.component';
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+  static components = [
+    AppComponent,
+    HomeComponent,
+    LogInComponent,
+    PersonalAccountComponent,
+    DepositMoneyComponent
+  ];
+}

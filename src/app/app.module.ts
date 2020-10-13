@@ -6,14 +6,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { GamesModule } from './games/games.module';
 
-import { HomeComponent } from './home/home.component';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LogInComponent } from './logIn/log-in.component';
-import { DepositMoneyComponent } from './deposit-money/deposit-money.component';
 
 import { FailedLoginDialogComponent } from './auth/dialog/failed-login-dialog.component';
-import { PersonalAccountComponent } from './personal-account/personal-account.component';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,15 +23,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
-import { AuthService } from './auth/auth.service';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HomeComponent,
-    LogInComponent,
-    PersonalAccountComponent,
-    DepositMoneyComponent,
+    AppRoutingModule.components,
     FailedLoginDialogComponent
 
   ],

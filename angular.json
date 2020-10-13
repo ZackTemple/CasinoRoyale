@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "CasinoRoyale"
+    }
+  },
+  "defaultProject": "CasinoRoyale",
+  "cli": {
+    "analytics": "43af1c51-f402-47f4-8977-c5e2d36fa696"
+  }
 }

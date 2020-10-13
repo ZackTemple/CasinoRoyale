@@ -38,13 +38,9 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.dealer = new Dealer();
 
     this.localStoragePlayerInfo = JSON.parse(localStorage.getItem('Authorization')) as IPlayer;
-    // TODO: fix database with Shawn
-    this.localStoragePlayerInfo.totalEarned = Number(this.localStoragePlayerInfo.totalEarned);
-    this.localStoragePlayerInfo.totalLost = Number(this.localStoragePlayerInfo.totalLost);
-
     this.player = new Player(this.localStoragePlayerInfo);
+
     this.table = new Table([this.dealer, this.player]);
-    console.log(this.player.currentMoney === 0);
   }
 
   onClickPlaceBet(): void {
@@ -68,6 +64,8 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.winner = null;
     this.tie = false;
     this.bust = false;
+    this.player.score = 0;
+    this.dealer.score = 0;
   }
 
   startGame(): void {
@@ -156,7 +154,6 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   updateLocalStorage(): void {
     localStorage.setItem('Authorization', JSON.stringify(this.player));
-    console.log(this.winner);
   }
 
   ngOnDestroy(): void {

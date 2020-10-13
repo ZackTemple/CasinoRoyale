@@ -1,3 +1,3 @@
 export const playersDB = [
-  {"username":"zack","password":"foobar","active":"false","currentMoney":0,"totalEarned":5101,"totalLost":4468,"_id":"359L8wdupW8wSroA"}
+  {"username":"zack","password":"foobar","active":"false","currentMoney":1000,"totalEarned":17083,"totalLost":11957,"_id":"359L8wdupW8wSroA"}
 ];

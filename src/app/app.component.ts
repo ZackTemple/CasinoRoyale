@@ -10,7 +10,6 @@ import { AuthService } from './auth/auth.service';
 })
 export class AppComponent implements OnInit {
   title = 'Casino Royale';
-  // loggedIn = false;
   loggedIn = false;
 
   constructor(

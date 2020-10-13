@@ -98,7 +98,7 @@ fdescribe('Dealer Object', () => {
       player.bet = 50;
       dealer.awardPlayer(player);
 
-      expect(player.currentMoney).toBe(moneyBeforeAdding + 3 * player.bet);
+      expect(player.currentMoney).toBe(moneyBeforeAdding + 2.5 * player.bet);
     });
   });
 

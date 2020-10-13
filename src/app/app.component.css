@@ -34,3 +34,7 @@ button.mat-icon-button {
 button.mat-icon-button.personal-settings {
   background-color:  rgb(29, 29, 29);
 }
+
+button.mat-icon-button.menu {
+  margin-right:10px
+}

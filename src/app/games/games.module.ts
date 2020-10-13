@@ -9,6 +9,7 @@ import { TexasHoldemComponent } from './texas-holdem/texas-holdem.component';
 
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
 @NgModule({
   declarations: [
     GamesComponent,
@@ -21,6 +22,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     GamesRoutingModule,
     MatTabsModule,
     MatGridListModule,
+    MatButtonModule,
     FormsModule
   ]
 })

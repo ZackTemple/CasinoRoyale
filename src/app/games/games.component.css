@@ -17,16 +17,16 @@ div.container {
 }
 
 .blackjack{
-  background-image: url('../../assets/images/blackjack-5.jpg');
+  background-image: url('../../assets/images/games-photos/blackjack-5.jpg');
   background-size: cover;
 }
 
 .texas-holdem{
-  background-image: url('../../assets/images/texas-holdem.jpg');
+  background-image: url('../../assets/images/games-photos/texas-holdem.jpg');
   background-size: cover;
 }
 
 .omaha-holdem{
-  background-image: url('../../assets/images/omaha-holdem-5.jpg');
+  background-image: url('../../assets/images/games-photos/omaha-holdem-5.jpg');
   background-size: cover;
 }

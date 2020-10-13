@@ -17,21 +17,21 @@ div.container {
 }
 
 .single-player{
-  background-image: url('../../assets/images/home-image-2.jpg');
+  background-image: url('../../assets/images/home/home-image-1.jpg');
   background-size: cover;
 }
 
 .multi-player{
-  background-image: url('../../assets/images/home-image-7.jpg');
+  background-image: url('../../assets/images/home/home-image-2.jpg');
   background-size: cover;
 }
 
 .deposit-money{
-  background-image: url('../../assets/images/poker.jpg');
+  background-image: url('../../assets/images/home/home-image-3.jpg');
   background-size: cover;
 }
 
 .personal-account{
-  background-image: url('../../assets/images/home-image-11.jpg');
+  background-image: url('../../assets/images/home/home-image-4.jpg');
   background-size: cover;
 }

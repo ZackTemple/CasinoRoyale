@@ -28,6 +28,9 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   tie = false;
   bust = false;
 
+  // gives user ability to see playing card
+  showHelperCard = false;
+
   constructor(private authService: AuthService) {
   }
 
@@ -120,7 +123,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.getScore(this.dealer);
 
     // Dealer keeps hitting until score is 17 or more
-    while (this.dealer.score < 17 || this.dealer.score <= this.player.score) {
+    while (this.dealer.score < 17 && this.dealer.score <= this.player.score) {
       this.dealer.dealCardToPlayer(this.dealer, 1);
       this.getScore(this.dealer);
     }
@@ -156,6 +159,10 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.authService.updatePlayer(this.player).subscribe();
+  }
+
+  toggleHelperCard(): void {
+    this.showHelperCard = !this.showHelperCard;
   }
 
 }

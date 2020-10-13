@@ -1,7 +1,12 @@
-<div *ngIf='(! betLockedIn || winner || tie || bust)'>
+<div *ngIf='((! betLockedIn || winner || tie || bust) && player.currentMoney > 0)'>
   <input type='number' [(ngModel)]='player.bet'>
   <button class='place-bet' (click)="onClickPlaceBet()">
     Place Bet
+  </button>
+</div>
+<div *ngIf='player.currentMoney === 0 && (winner || tie || bust)'>
+  <button class='deposit-money' routerLink="/deposit-money">
+    Deposit Money
   </button>
 </div>
 <br>
@@ -40,6 +45,9 @@
 </p>
 <p *ngIf='tie'>
   Push!
+</p>
+<p *ngIf='bust'>
+  Bust!
 </p>
 <p *ngIf='bust'>
   Bust!

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { Observable, BehaviorSubject, Subject, throwError } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, throwError, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
 import { MatDialog } from '@angular/material/dialog';
 import { FailedLoginDialogComponent } from './dialog/failed-login-dialog.component';
 import * as _ from 'lodash';
+import { playersDB } from '../../api/players';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,7 @@ import * as _ from 'lodash';
 export class AuthService{
 
   // Properties used for Http calls
-  databaseUrl = 'http://localhost:4200/api';
-  playersPath = this.databaseUrl.concat('/players');
+  databaseUrl = 'api/players.json';
 
 
   // Properties and subjects used to track webiste information
@@ -34,25 +34,32 @@ export class AuthService{
 
 
   // Fetches player data, builds map, and returns that map
-  getPlayers(): Observable<Map<string, IPlayer>> {
-    return this.httpClient.get<Map<string, IPlayer>>(this.playersPath).pipe(
-      map(players => {
-        const playersMap: Map<string, IPlayer> = new Map();
+  getPlayers(): any { // Observable<Map<string, IPlayer>> {
+    const playersMap: Map<string, IPlayer> = new Map();
 
-        players.forEach(player => {
+        playersDB.forEach(player => {
           playersMap.set(player.username, player);
         });
-        return playersMap;
-      }),
-      catchError(this.handleError)
-    );
+        return of(playersMap);
+
+    // return this.httpClient.get<Map<string, IPlayer>>(this.databaseUrl).pipe(
+    //   map(players => {
+    //     const playersMap: Map<string, IPlayer> = new Map();
+
+    //     players.forEach(player => {
+    //       playersMap.set(player.username, player);
+    //     });
+    //     return playersMap;
+    //   }),
+    //   catchError(this.handleError)
+    // );
   }
 
 
   // Called inside deposit-money and blackjack to update player info to the API
   // Depends on lodash
   updatePlayer(updatedPlayer: IPlayer): Observable<any> {
-    const playerUrl = this.playersPath.concat(`/${updatedPlayer._id}`);
+    const playerUrl = this.databaseUrl.concat(`/${updatedPlayer._id}`);
     const playerWithoutID = _.omit(updatedPlayer, '_id');
 
     return this.httpClient.put(playerUrl, playerWithoutID).pipe(

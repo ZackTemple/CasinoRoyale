@@ -44,6 +44,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
     this.player = new Player(this.localStoragePlayerInfo);
     this.table = new Table([this.dealer, this.player]);
+    console.log(this.player.currentMoney === 0);
   }
 
   onClickPlaceBet(): void {
@@ -155,10 +156,12 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   updateLocalStorage(): void {
     localStorage.setItem('Authorization', JSON.stringify(this.player));
+    console.log(this.winner);
   }
 
   ngOnDestroy(): void {
-    this.authService.updatePlayer(this.player).subscribe();
+    // Call below will be used when we have a database
+    // this.authService.updatePlayer(this.player).subscribe();
   }
 
   toggleHelperCard(): void {

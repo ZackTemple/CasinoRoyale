@@ -80,7 +80,7 @@ export class Dealer {
 
   private getBetMulitplier(playerScore): number {
     if (playerScore === 21) {
-      return 3;
+      return 2.5;
     }
     else {
       return 2;

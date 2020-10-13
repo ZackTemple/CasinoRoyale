@@ -24,7 +24,7 @@ export class DepositMoneyComponent implements OnInit {
     }
     else {
       this.player.currentMoney = 500;
-      this.authService.updatePlayer(this.player).subscribe();
+      // this.authService.updatePlayer(this.player).subscribe();
       localStorage.setItem('Authorization', JSON.stringify(this.player));
       this.moneyAdded = true;
     }

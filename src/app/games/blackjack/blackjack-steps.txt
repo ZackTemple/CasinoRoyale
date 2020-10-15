@@ -1,0 +1,34 @@
+After user hits play....
+
+1. Get the card deck
+
+2. Shuffle the deck
+
+3. Establish players (get info)
+
+4. Get player.bet from user (cannot be more than the available money they have)
+
+5. Deal two cards to the user and two cards to the dealer (with one face down)... gather weights of all cards
+    a. Check to see if blackjack or user has blackjack
+    b. Check to see user has two of the same card -> (then we can offer the split option to user if available)
+
+6. Get user input (hit, stay, split...)
+    a. If stay, flip over dealer card and compare weighted values
+    b. If hit, give another card to the user, and repeat step 5 in total
+    c. If split, give the user two hands and go from there (discuss with Shawn)
+
+7. Check to see who won by the weights of the cards
+    a. Get dealers weights
+    b. Get users weights (for all hands if they split)
+
+8. If user won, give them their money by adding to their money total. If dealer won, take
+money by subtracting the users money total of the player.bet
+
+9. End game, offer to play again
+
+
+Questions:
+  1. Ask Shawn how to grab user info. If we login and set the player info to something in another module... how do we get that info?
+  2. Best way to shuffle cards? (Zack, look up randomizer functions for JS)
+  3. Ask Shawn about split method
+  4. How to display components in the best way? Use *ngIf and *ngFor?

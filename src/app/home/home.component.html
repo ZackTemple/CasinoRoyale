@@ -1,0 +1,14 @@
+<div class="container">
+<mat-grid-list cols="4" rowHeight="45vh" rowWidth="100vh"> <!-- cannot refactor these properties -->
+  <ng-container *ngFor="let tile of tiles">
+    <mat-grid-tile class="grid-tile" [ngClass]='tile.class'
+        [colspan]="tile.cols"
+        [rowspan]="tile.rows">
+        <button mat-raised-button class="tile-button" [routerLink]="tile.route">
+          {{tile.text}}
+        </button>
+        <mat-grid-tile-footer>{{tile.description}}</mat-grid-tile-footer>
+    </mat-grid-tile>
+  </ng-container>
+</mat-grid-list>
+</div>

@@ -1,20 +1,34 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
+import { GamesModule } from './games/games.module';
+
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { FailedLoginDialogComponent } from './auth/dialog/failed-login-dialog.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppRoutingModule.components,
+    FailedLoginDialogComponent
+
   ],
   imports: [
     BrowserModule,
+    GamesModule,
     AppRoutingModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    BrowserAnimationsModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [FailedLoginDialogComponent]
 })
 export class AppModule { }

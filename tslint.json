@@ -6,8 +6,8 @@
   "rules": {
     "align": {
       "options": [
-        "parameters",
-        "statements"
+        "parameters"
+        // "statements"
       ]
     },
     "array-type": false,

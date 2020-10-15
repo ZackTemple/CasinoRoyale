@@ -59,7 +59,7 @@ export class AuthService{
   // Called inside deposit-money and blackjack to update player info to the API
   // Depends on lodash
   updatePlayer(updatedPlayer: IPlayer): Observable<any> {
-    const playerUrl = this.databaseUrl.concat(`/${updatedPlayer._id}`);
+    const playerUrl = this.databaseUrl.concat(`/${updatedPlayer.id}`);
     const playerWithoutID = _.omit(updatedPlayer, '_id');
 
     return this.httpClient.put(playerUrl, playerWithoutID).pipe(

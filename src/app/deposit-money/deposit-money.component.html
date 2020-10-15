@@ -1,0 +1,40 @@
+<div class="main-div" *ngIf="player">
+  <mat-card class="deposit-money-card">
+    <mat-card-header>
+      <div mat-card-avatar class="header-image"></div>
+      <mat-card-title>{{player.username}}</mat-card-title>
+      <mat-card-subtitle>Deposit Money</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <div class="content">
+
+        <button
+          mat-raised-button
+          class="deposit-money-buttons"
+          matTooltip="Add money here"
+          (click)="addMoney()"
+          *ngIf='player.currentMoney < 500' else #goPlay>
+          Add money!
+        </button>
+        <button #goPlay
+          mat-raised-button
+          class="deposit-money-buttons"
+          matTooltip="Play games"
+          routerLink='/games'
+          *ngIf='player.currentMoney > 0'>
+          Go Play!
+        </button>
+        <div>Total amount in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div *ngIf="moneyAdded else noMoneyAdded">Added Money!</div>
+<ng-template #noMoneyAdded>
+  <div>
+    Please note, the maximum deposit amount is $500. If you have more than $500, you cannot deposit money into wallet.
+  </div>
+</ng-template>
+

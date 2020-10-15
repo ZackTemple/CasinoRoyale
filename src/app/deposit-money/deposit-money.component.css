@@ -1,0 +1,47 @@
+.main-div {
+  height:75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deposit-money-card {
+  width: 50vw;
+  min-height: fit-content;
+  height: fit-content;
+  min-width: fit-content;
+}
+
+.header-image {
+  background-image: url('../../assets/images/baseline_face_black_48dp.png');
+  background-size: cover;
+} */
+
+div.mat-card-avatar {
+  width:15vh
+}
+
+div.content {
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+mat-card-footer {
+  position: aboslute;
+  bottom: 5px
+}
+
+.deposit-money-buttons {
+  border: none;
+  color: white;
+  padding: 1vh 1vw;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+  margin: 4px 2px;
+  background-color: #810000;
+  font-family: 'Times New Roman'
+}

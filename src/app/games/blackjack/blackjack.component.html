@@ -1,4 +1,4 @@
-<div *ngIf='((! betLockedIn || winner || tie || bust) && player.currentMoney > 0)'>
+<div *ngIf='((!betLockedIn || winner || tie || bust) && player.currentMoney > 0)'>
   <input type='number' [(ngModel)]='player.bet'>
   <button class='place-bet' (click)="onClickPlaceBet()">
     Place Bet

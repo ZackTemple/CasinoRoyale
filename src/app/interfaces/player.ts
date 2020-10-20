@@ -1,3 +1,4 @@
+// Interface for Player
 export interface IPlayer {
   username: string;
   password: string;

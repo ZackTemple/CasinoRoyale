@@ -11,5 +11,6 @@ pipelines:
         caches:
           - node
         script: # Modify the commands below to build your repository.
-          - npm install
-          - npm test
+          - ./node_modules/.bin/tslint --config ./tslint.json --project ./tsconfig.app.json
+          - ./node_modules/.bin/ng build --prod --output-path ./dist-prod
+          - ./node_modules/.bin/ng test --karmaConfig karma.conf.js

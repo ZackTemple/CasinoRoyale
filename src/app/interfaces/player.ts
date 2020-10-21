@@ -1,3 +1,4 @@
+// Interface for Player
 export interface IPlayer {
   username: string;
   password: string;
@@ -5,5 +6,5 @@ export interface IPlayer {
   currentMoney: number;
   totalEarned: number;
   totalLost: number;
-  _id: string;
+  id: string;
 }

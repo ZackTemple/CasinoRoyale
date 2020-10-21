@@ -25,7 +25,19 @@ const routes: Routes = [
   declarations: [],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild([
+      {
+        path: 'games',
+        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
+        component: GamesComponent,
+        children: [
+          {path: 'blackjack', component: BlackjackComponent},
+          {path: 'texas-holdem', component: TexasHoldemComponent},
+          {path: 'omaha-holdem', component: OmahaHoldemComponent}
+        ]
+      }
+    ])
   ],
   exports: [RouterModule]
 })

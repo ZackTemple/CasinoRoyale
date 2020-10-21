@@ -10,7 +10,7 @@ export class Player implements IPlayer {
   currentMoney: number;
   totalEarned: number;
   totalLost: number;
-  _id: string;
+  id: string;
 
   // Game information
   name: string;
@@ -29,6 +29,6 @@ export class Player implements IPlayer {
     this.currentMoney = playerInfo.currentMoney,
     this.totalEarned = playerInfo.totalEarned,
     this.totalLost = playerInfo.totalLost,
-    this._id = playerInfo._id;
+    this.id = playerInfo.id;
   }
 }

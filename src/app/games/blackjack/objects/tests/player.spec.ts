@@ -12,7 +12,7 @@ fdescribe('Player Object', () => {
       currentMoney: 900,
       totalEarned: 1000,
       totalLost: 100,
-      _id: 'id-here'
+      id: 'id-here'
     });
 
     expect(player.name).toBe('foo');

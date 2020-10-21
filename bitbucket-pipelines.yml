@@ -12,4 +12,5 @@ pipelines:
           - node
         script: # Modify the commands below to build your repository.
           - npm install
-          - echo pwd
+          - npm run citest
+          - cd ~/agvance-workspace/base/CasinoRoyale && ./node_modules/.bin/tslint --config ./tslint.json --project ./tsconfig.app.json

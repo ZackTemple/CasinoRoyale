@@ -20,7 +20,7 @@ fdescribe('Table Object', () => {
       currentMoney: 900,
       totalEarned: 1000,
       totalLost: 100,
-      _id: 'id-here'
+      id: 'id-here'
     });
 
     // Act
@@ -39,7 +39,7 @@ fdescribe('Table Object', () => {
       currentMoney: 900,
       totalEarned: 1000,
       totalLost: 100,
-      _id: 'id-here'
+      id: 'id-here'
     });
     table.addNewPlayer(mockPlayer);
     const tableLength = table.players.length;

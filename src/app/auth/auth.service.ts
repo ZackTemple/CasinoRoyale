@@ -60,7 +60,7 @@ export class AuthService{
   // Depends on lodash
   updatePlayer(updatedPlayer: IPlayer): Observable<any> {
     const playerUrl = this.databaseUrl.concat(`/${updatedPlayer.id}`);
-    const playerWithoutID = _.omit(updatedPlayer, '_id');
+    const playerWithoutID = _.omit(updatedPlayer, 'id');
 
     return this.httpClient.put(playerUrl, playerWithoutID).pipe(
       tap(message => {

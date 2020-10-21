@@ -16,7 +16,7 @@ fdescribe('Dealer Object', () => {
       currentMoney: 900,
       totalEarned: 1000,
       totalLost: 100,
-      _id: 'id-here'
+      id: 'id-here'
     });
   });
 

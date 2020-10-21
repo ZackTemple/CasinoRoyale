@@ -20,7 +20,7 @@ fdescribe('BlackjackComponent', () => {
       currentMoney: 900,
       totalEarned: 1000,
       totalLost: 100,
-      _id: 'id-here'
+      id: 'id-here'
     });
     component.table = new Table([component.player, component.dealer]);
   });

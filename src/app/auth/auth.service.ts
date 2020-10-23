@@ -7,6 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { FailedLoginDialogComponent } from './dialog/failed-login-dialog.component';
 import * as _ from 'lodash';
 import { playersDB } from '../../api/players';
+import { IUser } from '../interfaces/user';
+import { Auth } from 'aws-amplify';
+import { User } from './User';
 
 @Injectable({
   providedIn: 'root'
@@ -95,12 +98,32 @@ export class AuthService{
 
 
   // A sign up method that posts to the API with new player info
-  signUp(username: string, password: string): boolean {
+  async signUp(newUser: User): Promise<boolean> {
+    const username = newUser.username;
+    const password = newUser.password;
+    const email = newUser.email;
+    const phone_number = newUser.phone_number;
 
-    // two-step verify same password
-    // post info to database
-    return true; // if sign up is correct
-  }
+    try {
+        const { user } = await Auth.signUp({
+            username,
+            password,
+            attributes: {
+              email,          // optional
+              phone_number // optional - E.164 number convention
+                // other custom attributes
+            }
+        });
+
+        // Call getPlayerInfo() here to grab player statistics
+        console.log(user);
+        return true;
+    } catch (error) {
+        console.log('error signing up:', error);
+        return false;
+    }
+}
+
 
 
   // Handles errors for API calls

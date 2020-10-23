@@ -3,9 +3,10 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import Amplify from 'aws-amplify';
+import Amplify, { Auth } from 'aws-amplify';
 import awsconfig from './aws-config';
 
+/* Configure Amplify resources */
 Amplify.configure(awsconfig);
 
 if (environment.production) {

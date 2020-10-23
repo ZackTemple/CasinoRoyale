@@ -11,11 +11,13 @@ import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FailedLoginDialogComponent } from './auth/dialog/failed-login-dialog.component';
+import { SignUpComponent } from './auth/sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
     AppRoutingModule.components,
-    FailedLoginDialogComponent
+    FailedLoginDialogComponent,
+    SignUpComponent
 
   ],
   imports: [

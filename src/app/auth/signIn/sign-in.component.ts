@@ -13,8 +13,6 @@ export class SignInComponent implements OnInit {
   username: string;
   password: string;
   errorMessage = '';
-  resendConfirmationClicked = false;
-  confirmationSent = false;
 
   constructor(
     private authService: AuthService,
@@ -22,9 +20,9 @@ export class SignInComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.authService.loggedIn$.subscribe({
-      next: logInQ => {
-        if (logInQ) {
+    this.authService.signedIn$.subscribe({
+      next: signInQ => {
+        if (signInQ) {
           this.router.navigate(['/home']);
         }
       }
@@ -35,15 +33,4 @@ export class SignInComponent implements OnInit {
     // call returns true if user could be logged in
     this.authService.signIn(this.username, this.password);
   }
-
-  onClickResendEmailConfirmation(): void {
-    // call returns true if user could be logged in
-    this.authService.resendConfirmationCode(this.username);
-    this.confirmationSent = true;
-  }
-
-  signInAndResendConfimrationToggle(): void {
-    this.resendConfirmationClicked = !this.resendConfirmationClicked;
-  }
-
 }

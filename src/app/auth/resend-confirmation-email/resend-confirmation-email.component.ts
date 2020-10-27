@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-resend-confirmation-email',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ResendConfirmationEmailComponent implements OnInit {
 
-  constructor() { }
+  username: string;
+  confirmationSent = false;
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+  }
+
+  onClickResendEmailConfirmation(): void {
+    // call returns true if user could be logged in
+    this.authService.resendConfirmationCode(this.username);
+    this.confirmationSent = true;
   }
 
 }

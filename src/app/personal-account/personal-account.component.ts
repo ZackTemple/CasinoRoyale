@@ -24,7 +24,7 @@ export class PersonalAccountComponent implements OnInit {
 
   onLogoutClick(): void {
     localStorage.removeItem('Authorization');
-    this.authService.loggedIn$.next(false);
+    this.authService.signedIn$.next(false);
     this.router.navigate(['/home']);
   }
 

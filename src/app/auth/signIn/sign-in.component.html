@@ -1,10 +1,10 @@
  <mat-card class="signIn">
    <mat-card-header>
-    <mat-card-title>Log In</mat-card-title>
+    <mat-card-title>Sign In</mat-card-title>
     <mat-card-subtitle>Please input your user credentials.</mat-card-subtitle>
    </mat-card-header>
 
-    <div class="example-container" *ngIf='!resendConfirmationClicked else showResendEmailConfirmation'>
+    <div class="example-container">
       <mat-form-field appearance="fill">
         <mat-label>Name</mat-label>
         <input matInput type="text" class="example-right-align" [(ngModel)]='username'>
@@ -24,26 +24,10 @@
 
       <mat-card-content>
         <p>
-          Need to resend email cofirmation? <button mat-button (click)="signInAndResendConfimrationToggle()">Click here!</button>
+          Need to resend email cofirmation? <button mat-button routerLink='/resend-confirmation-email'>Click here!</button>
         </p>
       </mat-card-content>
     </div>
-
-    <ng-template #showResendEmailConfirmation>
-      <p>Please enter the username associated with the account.</p>
-      <mat-form-field appearance="fill">
-        <mat-label>Name</mat-label>
-        <input matInput type="text" class="example-right-align" [(ngModel)]='username'>
-      </mat-form-field>
-
-      <button mat-stroked-button (click)='onClickResendEmailConfirmation()'>
-        Resend Email
-      </button>
-
-      <mat-card-content>
-          <button mat-button (click)="signInAndResendConfimrationToggle()">Login here</button>
-      </mat-card-content>
-    </ng-template>
 
 <!-- Routes to Sign Up Page -->
     <mat-card-content>

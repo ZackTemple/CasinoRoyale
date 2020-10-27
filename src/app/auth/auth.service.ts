@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { Observable, BehaviorSubject, Subject, throwError, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
+import { Observable, BehaviorSubject} from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
 import { MatDialog } from '@angular/material/dialog';
 import { FailedSignInDialogComponent } from './dialog/failed-sign-in-dialog.component';
 import * as _ from 'lodash';
-import { playersDB } from '../../api/players';
 import { Auth } from 'aws-amplify';
 import { User } from './User';
-import { Player } from '../games/blackjack/objects/player';
 import { CognitoUser } from 'amazon-cognito-identity-js';
 
 @Injectable({
@@ -17,42 +15,38 @@ import { CognitoUser } from 'amazon-cognito-identity-js';
 })
 export class AuthService{
 
-  // Properties used for Http calls
   databaseUrl = 'http://localhost:5000/api/players';
+  signedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  allPlayers: IPlayer[];
+  currentPlayer: IPlayer;
 
 
-  // Properties and subjects used to track webiste information
-  signedIn$: BehaviorSubject<boolean> = new BehaviorSubject(this.loggedInQ());
-  playersMap$: Subject<Map<string, IPlayer>> = new Subject();
-  playersMap: Map<string, IPlayer>;
-
-
-  // Constructor initializes playersMap and playersMap$ once it constructs
+  // Constructor gets all Players
   constructor(private httpClient: HttpClient, private dialog: MatDialog ) {
 
-    this.getPlayers().subscribe(data => {
-      this.playersMap = data;
-      this.playersMap$.next(data);
-    });
+    this.getPlayers().subscribe();
+
+    Auth.currentAuthenticatedUser({bypassCache: false}).then(
+      user => {
+        console.log(user);
+        if (user !== null) {
+          this.getExistingPlayerInfo(user);
+          this.signedIn$.next(true);
+        }
+      }
+    )
+        .catch(err => console.log(err));
   }
 
 
   // Fetches player data, builds map, and returns that map
-  getPlayers(): any { // Observable<Map<string, IPlayer>> {
+  getPlayers(): Observable<IPlayer[]> {
     return this.httpClient.get(this.databaseUrl).pipe(
       map(
         (players: IPlayer[]) => {
-          const playersMap: Map<string, IPlayer> = new Map();
-
-          players.forEach(player => {
-            playersMap.set(player.username, player);
-          });
-
-          return playersMap;
+          this.allPlayers = players;
+          return players;
         }
-      ),
-      tap(
-        players => console.log( {players} )
       )
     );
   }
@@ -61,38 +55,14 @@ export class AuthService{
   // Called inside deposit-money and blackjack to update player info to the API
   // Depends on lodash
   updatePlayer(updatedPlayer: IPlayer): Observable<any> {
-    const playerUrl = this.databaseUrl.concat(`/${updatedPlayer.id}`);
-    const playerWithoutID = _.omit(updatedPlayer, 'id');
+    const playerUrl = this.databaseUrl.concat(`/${updatedPlayer.username}`);
+    const playerWithoutID = _.omit(updatedPlayer, 'username');
 
     return this.httpClient.put(playerUrl, playerWithoutID).pipe(
       tap(message => {
         console.log(message);
       })
     );
-  }
-
-
-  // // Allows the user to sign in. Sets the loggedIn$ subject to true and creates auth key if successful
-  // logIn(username: string, password: string): void {
-
-  //   const userInfo = this.playersMap.get(username);
-
-  //   if (userInfo === undefined || userInfo.password !== password) {
-  //     this.dialog.open(FailedSignInDialogComponent);
-  //   }
-  //   else if (userInfo.password === password) {
-  //     this.signedIn$.next(true);
-  //     localStorage.setItem('Authorization', JSON.stringify(userInfo));
-  //   }
-  //   else {
-  //     this.dialog.open(FailedSignInDialogComponent);
-  //   }
-  // }
-
-  // Used for the default value for loggedIn$
-  // Returns true or false depending on whether there is an authorization key
-  loggedInQ(): boolean {
-    return typeof localStorage.getItem('Authorization') === 'string';
   }
 
 
@@ -112,6 +82,7 @@ export class AuthService{
         });
 
         this.postNewPlayer(user);
+        console.log( {user} );
         return {user, userConfirmed, userSub};
     } catch (error) {
         console.log('error signing up:', error);
@@ -128,7 +99,7 @@ export class AuthService{
   async signIn(username: string, password: string): Promise<void> {
     try {
         const user = await Auth.signIn(username, password);
-        this.getExistingPlayerInfo(user);
+        await this.getExistingPlayerInfo(user);
         this.signedIn$.next(true);
     } catch (error) {
         console.log('error signing in', error);
@@ -137,21 +108,26 @@ export class AuthService{
     }
   }
 
-  private getExistingPlayerInfo(user): void {
+  private async getExistingPlayerInfo(user: CognitoUser): Promise<void> {
     const username = user['username'];
     const playerUrl = this.databaseUrl.concat(`/${username}`);
 
-    this.player$ = this.httpClient.get(playerUrl).subscribe();
+    this.httpClient.get(playerUrl).toPromise().then(
+      (player: any) => {
+        this.currentPlayer = player;
+        localStorage.setItem('Authorization', JSON.stringify(player));
+      }
+    );
   }
 
 
   async signOut(): Promise<void> {
-      try {
-          await Auth.signOut({ global: true });
-          this.signedIn$.next(false);
-      } catch (error) {
-          console.log('error signing out: ', error);
-      }
+    try {
+        await Auth.signOut({ global: true });
+        this.signedIn$.next(false);
+    } catch (error) {
+        console.log('error signing out: ', error);
+    }
   }
 
 

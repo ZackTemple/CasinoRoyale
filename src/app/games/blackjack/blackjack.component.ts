@@ -11,7 +11,7 @@ import { Table } from './objects/table';
   styleUrls: ['./blackjack.component.css']
 })
 
-export class BlackjackComponent implements OnInit, OnDestroy {
+export class BlackjackComponent implements OnInit {
 
   // Objects: dealer, player, and table
   dealer: Dealer;
@@ -154,11 +154,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   updateLocalStorage(): void {
     localStorage.setItem('Authorization', JSON.stringify(this.player));
-  }
-
-  ngOnDestroy(): void {
-    // Call below will be used when we have a database
-    // this.authService.updatePlayer(this.player).subscribe();
+    this.authService.updatePlayer(this.player).subscribe();
   }
 
   toggleHelperCard(): void {

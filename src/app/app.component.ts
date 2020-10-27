@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth/auth.service';
 
 @Component({
@@ -23,13 +22,10 @@ export class AppComponent implements OnInit {
   }
 
 // how to refactor this code (same as in Personal Account component)
-  onLogoutClick(): any {
-
-    localStorage.removeItem('Authorization');
-    this.signedIn = false;
-    this.authService.loggedIn$.next(false);
-    console.log(localStorage.getItem('Authorization'));
+  onSignOutClick(): any {
     this.router.navigate(['/home']);
+    this.authService.signOut();
+    localStorage.removeItem('Authorization');
   }
 
 }

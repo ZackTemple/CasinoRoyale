@@ -33,6 +33,6 @@ import { ResendConfirmationEmailComponent } from './auth/resend-confirmation-ema
     BrowserAnimationsModule
   ],
   bootstrap: [AppComponent],
-  entryComponents: [FailedLoginDialogComponent]
+  entryComponents: [FailedSignInDialogComponent]
 })
 export class AppModule { }

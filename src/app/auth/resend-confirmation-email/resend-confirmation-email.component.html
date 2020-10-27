@@ -1,1 +1,32 @@
-<p>resend-confirmation-email works!</p>
+<mat-card class="resendConfirmationCode">
+  <mat-card-header>
+   <mat-card-title>Resend Confirmation Email</mat-card-title>
+  </mat-card-header>
+
+    <p>Please enter the username associated with the account.</p>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput type="text" class="example-right-align" [(ngModel)]='username'>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)='onClickResendEmailConfirmation()'>
+      Resend Email
+    </button>
+
+    <p *ngIf='confirmationSent'>
+      Please check your email. If the input username is correct, a confirmation email should have sent!
+    </p>
+
+  <mat-card-content>
+    Need to sign in? <button mat-button routerLink='/sign-in'>Sign in here</button>
+  </mat-card-content>
+
+<!-- Routes to Sign Up Page -->
+   <mat-card-content>
+     <p>
+       Haven't signed up? <button mat-button routerLink="/sign-up">Sign up here</button>
+     </p>
+   </mat-card-content>
+
+</mat-card>
+

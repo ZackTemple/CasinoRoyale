@@ -1,0 +1,55 @@
+ <mat-card class="signIn">
+   <mat-card-header>
+    <mat-card-title>Log In</mat-card-title>
+    <mat-card-subtitle>Please input your user credentials.</mat-card-subtitle>
+   </mat-card-header>
+
+    <div class="example-container" *ngIf='!resendConfirmationClicked else showResendEmailConfirmation'>
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" class="example-right-align" [(ngModel)]='username'>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]='password'>
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button mat-stroked-button (click)='onClickSignIn()'>
+        Sign In
+      </button>
+
+      <mat-card-content>
+        <p>
+          Need to resend email cofirmation? <button mat-button (click)="signInAndResendConfimrationToggle()">Click here!</button>
+        </p>
+      </mat-card-content>
+    </div>
+
+    <ng-template #showResendEmailConfirmation>
+      <p>Please enter the username associated with the account.</p>
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" class="example-right-align" [(ngModel)]='username'>
+      </mat-form-field>
+
+      <button mat-stroked-button (click)='onClickResendEmailConfirmation()'>
+        Resend Email
+      </button>
+
+      <mat-card-content>
+          <button mat-button (click)="signInAndResendConfimrationToggle()">Login here</button>
+      </mat-card-content>
+    </ng-template>
+
+<!-- Routes to Sign Up Page -->
+    <mat-card-content>
+      <p>
+        Haven't signed up? <button mat-button routerLink="/sign-up">Sign up here!</button>
+      </p>
+    </mat-card-content>
+
+</mat-card>

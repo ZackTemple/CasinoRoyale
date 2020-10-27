@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FailedLoginDialogComponent } from './failed-login-dialog.component';
+import { FailedSignInDialogComponent } from './failed-sign-in-dialog.component';
 
 describe('FailedLoginDialogComponent', () => {
-  let component: FailedLoginDialogComponent;
-  let fixture: ComponentFixture<FailedLoginDialogComponent>;
+  let component: FailedSignInDialogComponent;
+  let fixture: ComponentFixture<FailedSignInDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FailedLoginDialogComponent ]
+      declarations: [ FailedSignInDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FailedLoginDialogComponent);
+    fixture = TestBed.createComponent(FailedSignInDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

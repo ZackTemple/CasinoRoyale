@@ -10,15 +10,15 @@ import { AuthService } from './auth/auth.service';
 })
 export class AppComponent implements OnInit {
   title = 'Casino Royale';
-  loggedIn = false;
+  signedIn = false;
 
   constructor(
     private authService: AuthService,
     private router: Router) {}
 
   ngOnInit(): any {
-    this.authService.loggedIn$.subscribe(
-      loginQ => this.loggedIn = loginQ
+    this.authService.signedIn$.subscribe(
+      signInQ => this.signedIn = signInQ
     );
   }
 
@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
   onLogoutClick(): any {
 
     localStorage.removeItem('Authorization');
-    this.loggedIn = false;
+    this.signedIn = false;
     this.authService.loggedIn$.next(false);
     console.log(localStorage.getItem('Authorization'));
     this.router.navigate(['/home']);

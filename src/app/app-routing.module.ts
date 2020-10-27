@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
-import { LogInComponent } from './auth/logIn/log-in.component';
+import { SignInComponent } from './auth/signIn/sign-in.component';
 import { AuthGuard } from './auth/auth.guard';
 import { PersonalAccountComponent } from './personal-account/personal-account.component';
 import { DepositMoneyComponent } from './deposit-money/deposit-money.component';
@@ -16,7 +16,7 @@ import { SignUpComponent } from './auth/sign-up/sign-up.component';
     RouterModule.forRoot([
       {path: 'home', component: HomeComponent},
       {path: 'sign-up', component: SignUpComponent},
-      {path: 'login', component: LogInComponent},
+      {path: 'sign-in', component: SignInComponent},
       {path: 'deposit-money', canActivate: [AuthGuard], component: DepositMoneyComponent},
       {path: 'personal-account', canActivate: [AuthGuard], component: PersonalAccountComponent},
       {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -30,7 +30,7 @@ export class AppRoutingModule {
     AppComponent,
     HomeComponent,
     SignUpComponent,
-    LogInComponent,
+    SignInComponent,
     PersonalAccountComponent,
     DepositMoneyComponent
   ];

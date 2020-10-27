@@ -1,35 +1,45 @@
-<mat-card class="singup">
+<mat-card class="signup">
   <mat-card-header>
    <mat-card-title>Sign Up</mat-card-title>
-   <mat-card-subtitle>Please input your login information.</mat-card-subtitle>
+   <mat-card-subtitle *ngIf="!signedUpQ">Please input your user credentials.</mat-card-subtitle>
   </mat-card-header>
-   <div class="example-container">
-     <mat-form-field appearance="fill">
-       <mat-label>Username</mat-label>
-       <input matInput type="text" class="example-right-align" [(ngModel)]='user.username'>
-     </mat-form-field>
 
-     <mat-form-field appearance="fill">
-       <mat-label>Password</mat-label>
-       <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]='user.password'>
-       <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-       <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-       </button>
-     </mat-form-field>
+  <div class="container" *ngIf="signedUpQ else notSignedUp">
+    <br>
+    You have successfully signed up! To confirm your account, please check your email inbox.
+    <br>
+    <br>
+    <a routerLink="/sign-in">
+      To sign in, click here.
+    </a>
+  </div>
 
-     <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput type="text" class="example-right-align" [(ngModel)]='user.email'>
-    </mat-form-field>
+  <ng-template #notSignedUp class="container">
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Username</mat-label>
+        <input matInput type="text" class="right-align" [(ngModel)]='user.username'>
+      </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Phone Number</mat-label>
-      <input matInput type="text" class="example-right-align" [(ngModel)]='user.phone_number'>
-    </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]='user.password'>
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
 
-     <button mat-stroked-button (click)='onClickEnter()'>
-       ENTER
-       <!-- <button mat-button *ngIf='loggedIn' (click)="openDialog()">Launch dialog</button> -->
-     </button>
-   </div>
+      <mat-form-field appearance="fill">
+         <mat-label>Email</mat-label>
+         <input matInput type="text" class="right-align" [(ngModel)]='user.email'>
+      </mat-form-field>
+
+      <button mat-stroked-button (click)='onClickEnter()'>
+        ENTER
+        <!-- <button mat-button *ngIf='loggedIn' (click)="openDialog()">Launch dialog</button> -->
+      </button>
+    </div>
+  </ng-template>
+
+
 </mat-card>

@@ -4,12 +4,13 @@ import { Observable, BehaviorSubject, Subject, throwError, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
 import { MatDialog } from '@angular/material/dialog';
-import { FailedLoginDialogComponent } from './dialog/failed-login-dialog.component';
+import { FailedSignInDialogComponent } from './dialog/failed-sign-in-dialog.component';
 import * as _ from 'lodash';
 import { playersDB } from '../../api/players';
-import { IUser } from '../interfaces/user';
 import { Auth } from 'aws-amplify';
 import { User } from './User';
+import { Player } from '../games/blackjack/objects/player';
+import { CognitoUser } from 'amazon-cognito-identity-js';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,11 @@ import { User } from './User';
 export class AuthService{
 
   // Properties used for Http calls
-  databaseUrl = 'api/players.json';
+  databaseUrl = 'http://localhost:5000/api/players';
 
 
   // Properties and subjects used to track webiste information
-  loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(this.loggedInQ());
+  signedIn$: BehaviorSubject<boolean> = new BehaviorSubject(this.loggedInQ());
   playersMap$: Subject<Map<string, IPlayer>> = new Subject();
   playersMap: Map<string, IPlayer>;
 
@@ -38,24 +39,22 @@ export class AuthService{
 
   // Fetches player data, builds map, and returns that map
   getPlayers(): any { // Observable<Map<string, IPlayer>> {
-    const playersMap: Map<string, IPlayer> = new Map();
+    return this.httpClient.get(this.databaseUrl).pipe(
+      map(
+        (players: IPlayer[]) => {
+          const playersMap: Map<string, IPlayer> = new Map();
 
-        playersDB.forEach(player => {
-          playersMap.set(player.username, player);
-        });
-        return of(playersMap);
+          players.forEach(player => {
+            playersMap.set(player.username, player);
+          });
 
-    // return this.httpClient.get<Map<string, IPlayer>>(this.databaseUrl).pipe(
-    //   map(players => {
-    //     const playersMap: Map<string, IPlayer> = new Map();
-
-    //     players.forEach(player => {
-    //       playersMap.set(player.username, player);
-    //     });
-    //     return playersMap;
-    //   }),
-    //   catchError(this.handleError)
-    // );
+          return playersMap;
+        }
+      ),
+      tap(
+        players => console.log( {players} )
+      )
+    );
   }
 
 
@@ -73,22 +72,22 @@ export class AuthService{
   }
 
 
-  // Allows the user to login. Sets the loggedIn$ subject to true and creates auth key if successful
-  logIn(username: string, password: string): void {
+  // // Allows the user to sign in. Sets the loggedIn$ subject to true and creates auth key if successful
+  // logIn(username: string, password: string): void {
 
-    const userInfo = this.playersMap.get(username);
+  //   const userInfo = this.playersMap.get(username);
 
-    if (userInfo === undefined || userInfo.password !== password) {
-      this.dialog.open(FailedLoginDialogComponent);
-    }
-    else if (userInfo.password === password) {
-      this.loggedIn$.next(true);
-      localStorage.setItem('Authorization', JSON.stringify(userInfo));
-    }
-    else {
-      this.dialog.open(FailedLoginDialogComponent);
-    }
-  }
+  //   if (userInfo === undefined || userInfo.password !== password) {
+  //     this.dialog.open(FailedSignInDialogComponent);
+  //   }
+  //   else if (userInfo.password === password) {
+  //     this.signedIn$.next(true);
+  //     localStorage.setItem('Authorization', JSON.stringify(userInfo));
+  //   }
+  //   else {
+  //     this.dialog.open(FailedSignInDialogComponent);
+  //   }
+  // }
 
   // Used for the default value for loggedIn$
   // Returns true or false depending on whether there is an authorization key
@@ -98,47 +97,70 @@ export class AuthService{
 
 
   // A sign up method that posts to the API with new player info
-  async signUp(newUser: User): Promise<boolean> {
+  async signUp(newUser: User): Promise<any> {
     const username = newUser.username;
     const password = newUser.password;
     const email = newUser.email;
-    const phone_number = newUser.phone_number;
 
     try {
-        const { user } = await Auth.signUp({
+        const { user, userConfirmed, userSub } = await Auth.signUp({
             username,
             password,
             attributes: {
-              email,          // optional
-              phone_number // optional - E.164 number convention
-                // other custom attributes
+              email
             }
         });
 
-        // Call getPlayerInfo() here to grab player statistics
-        console.log(user);
-        return true;
+        this.postNewPlayer(user);
+        return {user, userConfirmed, userSub};
     } catch (error) {
         console.log('error signing up:', error);
-        return false;
+        throw error;
     }
-}
+  }
+
+  postNewPlayer(user: CognitoUser): void {
+    const playerUsername = user['username'];
+    this.httpClient.post(this.databaseUrl, {username: playerUsername}).subscribe();
+  }
 
 
+  async signIn(username: string, password: string): Promise<void> {
+    try {
+        const user = await Auth.signIn(username, password);
+        this.getExistingPlayerInfo(user);
+        this.signedIn$.next(true);
+    } catch (error) {
+        console.log('error signing in', error);
+        this.dialog.open(FailedSignInDialogComponent);
+        throw error;
+    }
+  }
 
-  // Handles errors for API calls
-  private handleError(err: HttpErrorResponse): Observable<never> {
-    let errorMessage = '';
-    if (err.error instanceof ErrorEvent) {
-      // A client side error occurred
-      errorMessage = `An error occured: ${err.error.message}`;
+  private getExistingPlayerInfo(user): void {
+    const username = user['username'];
+    const playerUrl = this.databaseUrl.concat(`/${username}`);
+
+    this.player$ = this.httpClient.get(playerUrl).subscribe();
+  }
+
+
+  async signOut(): Promise<void> {
+      try {
+          await Auth.signOut({ global: true });
+          this.signedIn$.next(false);
+      } catch (error) {
+          console.log('error signing out: ', error);
+      }
+  }
+
+
+  async resendConfirmationCode(username: string): Promise<void> {
+    try {
+        await Auth.resendSignUp(username);
+        console.log('code resent successfully');
+    } catch (err) {
+        console.log('error resending code: ', err);
     }
-    else {
-      // The backend returned an unsuccessful response code
-      // The response body may contain clues as to what's wrong
-      errorMessage = `Server returned code: ${err.status}, error message is: ${err.message}`;
-    }
-    console.error(errorMessage);
-    return throwError(errorMessage);
   }
 }

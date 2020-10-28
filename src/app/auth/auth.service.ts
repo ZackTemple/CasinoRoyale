@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FailedSignInDialogComponent } from './dialog/failed-sign-in-dialog.component';
 import * as _ from 'lodash';
 import { Auth } from 'aws-amplify';
-import { User } from './User';
+import { User } from './user';
 import { CognitoUser } from 'amazon-cognito-identity-js';
 
 @Injectable({

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { User } from '../User';
+import { User } from '../user';
 import { CognitoUser } from 'amazon-cognito-identity-js';
 
 @Component({

@@ -100,7 +100,7 @@ export class BlackjackComponent implements OnInit {
   endGameFromUserBust(): void {
     this.bust = true;
     this.winner = this.dealer;
-    this.updateLocalStorage();
+    this.updatePlayer();
   }
 
 
@@ -115,7 +115,7 @@ export class BlackjackComponent implements OnInit {
     this.playDealersTurn();
     this.getGameResults();
     this.actOnGameResults();
-    this.updateLocalStorage();
+    this.updatePlayer();
   }
 
   playDealersTurn(): void {
@@ -152,7 +152,7 @@ export class BlackjackComponent implements OnInit {
     }
   }
 
-  updateLocalStorage(): void {
+  updatePlayer(): void {
     localStorage.setItem('Authorization', JSON.stringify(this.player));
     this.authService.updatePlayer(this.player).subscribe();
   }

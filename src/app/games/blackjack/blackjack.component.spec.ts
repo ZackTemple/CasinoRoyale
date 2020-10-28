@@ -1,4 +1,5 @@
 import { componentFactoryName } from '@angular/compiler';
+import { of } from 'rxjs';
 import { BlackjackComponent } from './blackjack.component';
 import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
@@ -84,6 +85,10 @@ fdescribe('BlackjackComponent', () => {
       // Arrange
       component.player.bet = 5;
       component.startGame();
+      component.player.cards = [
+        {suit: 'Hearts', value: '5', weight: 5},
+        {suit: 'Spades', value: '2', weight: 2},
+      ];
 
       // Act
       component.clickHit();
@@ -95,6 +100,7 @@ fdescribe('BlackjackComponent', () => {
   describe('playerBustQ()', () => {
     it('should end the game if the player score goes over 21', () => {
       // Arrange
+      mockAuthService.updatePlayer.and.returnValue(of(true));
       component.player.cards = [
         {suit: 'Clovers', value: 'K', weight: 10},
         {suit: 'Hearts', value: 'K', weight: 10},
@@ -110,6 +116,8 @@ fdescribe('BlackjackComponent', () => {
 
   describe('getScore(hand)', () => {
     it('should return the score of a player or a dealer', () => {
+      mockAuthService.updatePlayer.and.returnValue(of(true));
+
       // Arrange
       component.player.cards = [
         {suit: 'Clovers', value: 'K', weight: 10},
@@ -126,6 +134,7 @@ fdescribe('BlackjackComponent', () => {
 
   describe('endGameFromUserBust()', () => {
     it('should set the winner to dealer and end the game', () => {
+      mockAuthService.updatePlayer.and.returnValue(of(true));
       // Act
       component.endGameFromUserBust();
 
@@ -221,10 +230,11 @@ fdescribe('BlackjackComponent', () => {
 
   describe('updateLocalStorage()', () => {
     it('should store the Player information in local storage', () => {
+      mockAuthService.updatePlayer.and.returnValue(of(true));
       localStorage.removeItem('Authorization');
 
       // Act
-      component.updateLocalStorage();
+      component.updatePlayer();
       const localInfo = localStorage.getItem('Authorization');
 
       expect(localInfo).toBeTruthy();

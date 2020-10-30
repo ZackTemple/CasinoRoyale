@@ -21,8 +21,8 @@ import { ResendConfirmationEmailComponent } from './auth/resend-confirmation-ema
       {path: 'resend-confirmation-email', component: ResendConfirmationEmailComponent},
       {path: 'deposit-money', canActivate: [AuthGuard], component: DepositMoneyComponent},
       {path: 'personal-account', canActivate: [AuthGuard], component: PersonalAccountComponent},
-      {path: '', redirectTo: 'home', pathMatch: 'full'},
-      {path: '**', redirectTo: 'home', pathMatch: 'full'}
+      {path: '', redirectTo: 'home', pathMatch: 'full'}
+      // {path: '**', redirectTo: 'home', pathMatch: 'full'}
     ])
   ],
   exports: [RouterModule]

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
+import { PlayerTrackerError } from 'src/app/auth/player-tracker-error';
 import { IPlayer } from 'src/app/interfaces/player';
 import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
@@ -16,11 +17,9 @@ export class BlackjackComponent implements OnInit {
   // Objects: dealer, player, and table
   dealer: Dealer;
   player: Player;
-  localStoragePlayerInfo: IPlayer;
   table: Table;
 
-  // Properties for handling the initial bet
-  validBet = true;
+  // Property for handling the initial bet
   betLockedIn = false;
 
   // Final winner, tie, and bust
@@ -37,10 +36,13 @@ export class BlackjackComponent implements OnInit {
   ngOnInit(): void {
     this.dealer = new Dealer();
 
-    this.localStoragePlayerInfo = JSON.parse(localStorage.getItem('Authorization')) as IPlayer;
-    this.player = new Player(this.localStoragePlayerInfo);
-
-    this.table = new Table([this.dealer, this.player]);
+    this.authService.getPlayer(this.authService.playerUsername).subscribe(
+      (player: IPlayer) => {
+        this.player = new Player(player);
+        this.table = new Table([this.dealer, this.player]);
+      },
+      (err: PlayerTrackerError) => console.log(err)
+    );
   }
 
   onClickPlaceBet(): void {
@@ -154,7 +156,6 @@ export class BlackjackComponent implements OnInit {
   }
 
   updatePlayer(): void {
-    localStorage.setItem('Authorization', JSON.stringify(this.player));
     this.authService.updatePlayer(this.player).subscribe();
   }
 

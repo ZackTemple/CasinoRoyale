@@ -25,6 +25,7 @@ export class AuthGuard implements CanActivate {
         signedInQ => {
           access = signedInQ;
           if ( !signedInQ ) {
+            console.log('AuthGuard');
             this.router.navigate(['/sign-in']);
           }
         }

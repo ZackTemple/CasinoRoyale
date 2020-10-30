@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { PlayerTrackerError } from '../auth/player-tracker-error';
 import { IPlayer } from '../interfaces/player';
 
 @Component({
@@ -18,13 +19,16 @@ export class PersonalAccountComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
-    //  this.player = JSON.parse(localStorage.getItem('Authorization'));
-    this.player = this.authService.currentPlayer;
-     this.earningsToLossesRatio = (this.player.totalEarned / this.player.totalLost);
+    this.authService.getPlayer(this.authService.playerUsername).subscribe(
+      (player: IPlayer) => {
+        this.player = player,
+        this.earningsToLossesRatio = (this.player.totalEarned / this.player.totalLost);
+      },
+      (err: PlayerTrackerError) => console.log(err)
+    );
   }
 
   onLogoutClick(): void {
-    localStorage.removeItem('Authorization');
     this.authService.signedIn$.next(false);
     this.router.navigate(['/home']);
   }

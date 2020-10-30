@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
-import { SignInComponent } from './auth/signIn/sign-in.component';
+import { SignInComponent } from './auth/sign-in/sign-in.component';
 import { AuthGuard } from './auth/auth.guard';
 import { PersonalAccountComponent } from './personal-account/personal-account.component';
 import { DepositMoneyComponent } from './deposit-money/deposit-money.component';

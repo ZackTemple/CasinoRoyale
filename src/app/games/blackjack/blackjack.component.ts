@@ -100,6 +100,7 @@ export class BlackjackComponent implements OnInit {
   endGameFromUserBust(): void {
     this.bust = true;
     this.winner = this.dealer;
+    this.actOnGameResults();
     this.updatePlayer();
   }
 

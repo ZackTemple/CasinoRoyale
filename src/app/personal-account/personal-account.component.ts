@@ -18,7 +18,8 @@ export class PersonalAccountComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
-     this.player = JSON.parse(localStorage.getItem('Authorization'));
+    //  this.player = JSON.parse(localStorage.getItem('Authorization'));
+    this.player = this.authService.currentPlayer;
      this.earningsToLossesRatio = (this.player.totalEarned / this.player.totalLost);
   }
 

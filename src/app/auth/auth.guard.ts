@@ -19,36 +19,25 @@ export class AuthGuard implements CanActivate {
     }
 
   async canActivate(): Promise<boolean> {
+
+      // Passes when the user has already been authenticated (which sets this.authService.signedIn to true)
       if (this.access) {
         return of(true).toPromise();
       }
 
-      return this.currentAuthenticatedUserExists().then(
-        currentUserExists => {
-          this.access = currentUserExists;
-          if (!this.access) { this.router.navigate(['/sign-in']); }
-          return this.access;
+      // is user hasn't been authenticated (during refresh or new session), check to see if there is an authenticated user
+      return this.authService.getAuthenticatedUser().then(
+        (currentUser: CognitoUser) => {
+          if (currentUser) {
+            return true;
+          }
+        }
+      ).catch(
+        error => {
+          console.log('Failed to retrieve authenticated user.');
+          this.router.navigate(['/sign-in']);
+          return false;
         }
       );
-    }
-
-    // Called when sign in is not true and need to check on refresh or new session if their is an authenticated user
-    async currentAuthenticatedUserExists(): Promise<boolean> {
-      return await Auth.currentAuthenticatedUser({bypassCache: false}).then(
-          (user: CognitoUser) => {
-            if (user !== null) {
-              this.authService.playerUsername = user['username'];
-              this.authService.signedIn$.next(true);
-              return true;
-            }
-            else {
-              return false;
-            }
-          }
-        )
-          .catch(err => {
-            console.log(err);
-            return false;
-          });
     }
 }

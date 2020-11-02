@@ -22,6 +22,23 @@ export class AuthService{
   playerUsername: string;
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog ) {
+    this.getAuthenticatedUser().then().catch(
+      error => console.log(error)
+    );
+  }
+
+  async getAuthenticatedUser(): Promise<any> {
+    let user: CognitoUser;
+
+    try{
+      user = await Auth.currentAuthenticatedUser({bypassCache: false});
+      this.playerUsername = user['username'];
+      this.signedIn$.next(true);
+      return user;
+
+    } catch (error) {
+      throw error;
+    }
   }
 
   async signUp(newUser: User): Promise<any> {
@@ -41,7 +58,7 @@ export class AuthService{
         this.postNewPlayer(user['username']).subscribe();
         return {user, userConfirmed, userSub};
     } catch (error) {
-        console.log('error signing up:', error);
+        console.log('error signing up: ', error);
         throw error;
     }
   }

@@ -196,7 +196,7 @@ fdescribe('BlackjackComponent', () => {
       component.player.cards = [
         {suit: 'Clovers', value: 'K', weight: 10},
         {suit: 'Hearts', value: '5', weight: 5},
-        {suit: 'Spades', value: '5', weight: 5},
+        {suit: 'Spades', value: '5', weight: 5}
       ];
     });
 

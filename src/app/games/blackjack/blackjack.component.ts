@@ -5,6 +5,7 @@ import { IPlayer } from 'src/app/interfaces/player';
 import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-blackjack',
@@ -73,7 +74,15 @@ export class BlackjackComponent implements OnInit {
   startGame(): void {
     this.dealer.subtractBetFromPlayerWallet(this.player);
     this.dealer.shuffleDeck();
-    this.dealer.dealCardsToStartGame(this.table.players);
+    this.player.cards = [
+      {suit: 'Clovers', value: '3', weight: 3},
+      {suit: 'Hearts', value: '3', weight: 3},
+    ];
+    this.dealer.cards = [
+      {suit: 'Clovers', value: 'A', weight: 11},
+      {suit: 'Hearts', value: 'A', weight: 11}
+    ];
+    // this.dealer.dealCardsToStartGame(this.table.players);
   }
 
   clickHit(): void {
@@ -83,8 +92,21 @@ export class BlackjackComponent implements OnInit {
 
   playerBustQ(): void {
     this.getScore(this.player);
+    this.handleAces(this.player);
     if (this.player.score > 21) {
       this.endGameFromUserBust();
+    }
+  }
+
+  handleAces(player: Player | Dealer): void {
+    while (player.score > 21 && player.cards.findIndex(card => card['weight'] === 11) !== -1) {
+      const index = player.cards.findIndex(card => card['weight'] === 11);
+      const aceCard = _.clone(player.cards[index]);
+      aceCard['weight'] = 1;
+
+      player.cards.splice(index, 1);
+      player.cards.push(aceCard);
+      this.getScore(player);
     }
   }
 
@@ -122,12 +144,15 @@ export class BlackjackComponent implements OnInit {
   }
 
   playDealersTurn(): void {
+    // Get dealer info before entering loop to add more cards for dealer
     this.getScore(this.dealer);
+    this.handleAces(this.dealer);
 
     // Dealer keeps hitting until score is 17 or more
     while (this.dealer.score < 17 && this.dealer.score <= this.player.score) {
       this.dealer.dealCardToPlayer(this.dealer, 1);
       this.getScore(this.dealer);
+      this.handleAces(this.dealer);
     }
   }
 

@@ -22,28 +22,6 @@ export class AuthService{
   playerUsername: string;
 
   constructor(private httpClient: HttpClient, private dialog: MatDialog ) {
-    console.log('auth service');
-    this.getCurrentUserInfo();
-
-  }
-
-  async getCurrentUserInfo(): Promise<void> {
-    Auth.currentAuthenticatedUser({bypassCache: false}).then(
-      (user: CognitoUser) => {
-        console.log(user);
-        if (user !== null) {
-          this.playerUsername = user['username'];
-          this.signedIn$.next(true);
-        }
-      }
-    )
-      .catch(err => console.log(err));
-    // const localUserKey = 'CognitoIdentityServiceProvider' + '.' + awsconfig.Auth.userPoolWebClientId + '.LastAuthUser';
-    // console.log(localUserKey);
-    // this.playerUsername = localStorage.getItem(localUserKey);
-    // if (this.playerUsername !== null) {
-    //   this.signedIn$.next(true);
-    // }
   }
 
   async signUp(newUser: User): Promise<any> {

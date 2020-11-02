@@ -30,6 +30,7 @@ export class PersonalAccountComponent implements OnInit {
 
   onLogoutClick(): void {
     this.authService.signedIn$.next(false);
+    this.authService.signOut();
     this.router.navigate(['/home']);
   }
 

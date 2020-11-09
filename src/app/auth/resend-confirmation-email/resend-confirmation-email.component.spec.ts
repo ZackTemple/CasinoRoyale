@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResendConfirmationEmailComponent } from './resend-confirmation-email.component';
 
-describe('ResendConfirmationEmailComponent', () => {
+xdescribe('ResendConfirmationEmailComponent', () => {
   let component: ResendConfirmationEmailComponent;
   let fixture: ComponentFixture<ResendConfirmationEmailComponent>;
 

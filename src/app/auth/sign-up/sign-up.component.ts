@@ -14,7 +14,7 @@ export class SignUpComponent implements OnInit {
   input: string;
   hide = true;
   user = new User();
-  errorMessage = '';
+  errorMessage: string;
   signedUpQ = false;
 
   constructor(
@@ -36,7 +36,27 @@ export class SignUpComponent implements OnInit {
     ).catch(
       (error: Error) => {
         console.log(error.message);
+        this.gatherErrorMessageForSignUp(error);
       }
     );
+  }
+
+  gatherErrorMessageForSignUp(error): void {
+    console.log(typeof(error));
+
+    switch (error.code) {
+
+      case 'UsernameExistsException':
+        this.errorMessage = 'User already exists. Please choose a new username, or sign in.';
+       break;
+
+      case 'InvalidPasswordException':
+        const str = error.message;
+        this.errorMessage = str.substring(str.indexOf(':') + 1);
+        break;
+
+      case 'InvalidParameterException':
+        this.errorMessage = error.message;
+    }
   }
 }

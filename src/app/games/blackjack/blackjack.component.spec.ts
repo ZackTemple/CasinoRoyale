@@ -10,7 +10,7 @@ fdescribe('BlackjackComponent', () => {
   let mockAuthService;
 
   beforeEach(() => {
-    mockAuthService = jasmine.createSpyObj(['updatePlayer']);
+    mockAuthService = jasmine.createSpyObj(['updatePlayer', 'getPlayer']);
     component = new BlackjackComponent(mockAuthService);
 
     component.dealer = new Dealer();
@@ -24,6 +24,7 @@ fdescribe('BlackjackComponent', () => {
       id: 'id-here'
     });
     component.table = new Table([component.player, component.dealer]);
+    mockAuthService.getPlayer.and.returnValue(of(component.player));
   });
 
   it('should create', () => {
@@ -228,16 +229,14 @@ fdescribe('BlackjackComponent', () => {
     });
   });
 
-  describe('updateLocalStorage()', () => {
+  describe('updatePlayer()', () => {
     it('should store the Player information in local storage', () => {
       mockAuthService.updatePlayer.and.returnValue(of(true));
-      localStorage.removeItem('Authorization');
 
       // Act
       component.updatePlayer();
-      const localInfo = localStorage.getItem('Authorization');
 
-      expect(localInfo).toBeTruthy();
+      expect(mockAuthService.updatePlayer).toHaveBeenCalled();
     });
   });
 });

@@ -39,7 +39,9 @@
         <!-- <button mat-button *ngIf='loggedIn' (click)="openDialog()">Launch dialog</button> -->
       </button>
     </div>
+
+    <div *ngIf='errorMessage'>
+        {{errorMessage}}
+    </div>
   </ng-template>
-
-
 </mat-card>

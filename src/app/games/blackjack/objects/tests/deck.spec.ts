@@ -1,7 +1,7 @@
 import { ICard } from '../../../../interfaces/cards';
 import { Deck } from '../deck';
 
-fdescribe('Deck', () => {
+describe('Deck', () => {
   let deck: Deck;
 
   describe('getDeck() method', () => {

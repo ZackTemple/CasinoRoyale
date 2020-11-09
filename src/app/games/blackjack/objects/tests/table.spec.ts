@@ -2,7 +2,7 @@ import { IPlayer } from 'src/app/interfaces/player';
 import { Player } from '../player';
 import { Table } from '../table';
 
-fdescribe('Table Object', () => {
+describe('Table Object', () => {
   let table: Table;
   let mockPlayer: Player;
 

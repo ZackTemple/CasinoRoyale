@@ -74,15 +74,15 @@ export class BlackjackComponent implements OnInit {
   startGame(): void {
     this.dealer.subtractBetFromPlayerWallet(this.player);
     this.dealer.shuffleDeck();
+    // this.dealer.dealCardsToStartGame(this.table.players);
+
     this.player.cards = [
-      {suit: 'Clovers', value: '3', weight: 3},
-      {suit: 'Hearts', value: '3', weight: 3},
+      {suit: 'Hearts', value: 'A', weight: 11},
+      {suit: 'Spades', value: 'J', weight: 10}
     ];
     this.dealer.cards = [
-      {suit: 'Clovers', value: 'A', weight: 11},
-      {suit: 'Hearts', value: 'A', weight: 11}
+      {suit: 'Diamonds', value: 'A', weight: 11}
     ];
-    // this.dealer.dealCardsToStartGame(this.table.players);
   }
 
   clickHit(): void {
@@ -124,6 +124,7 @@ export class BlackjackComponent implements OnInit {
   endGameFromUserBust(): void {
     this.bust = true;
     this.winner = this.dealer;
+    this.getScore(this.dealer);
     this.actOnGameResults();
     this.updatePlayer();
   }

@@ -35,7 +35,6 @@ export class AuthService{
       this.playerUsername = user['username'];
       this.signedIn$.next(true);
       return user;
-
     } catch (error) {
       throw error;
     }

@@ -1,14 +1,23 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AuthService } from '../auth.service';
 
 import { ResendConfirmationEmailComponent } from './resend-confirmation-email.component';
 
-xdescribe('ResendConfirmationEmailComponent', () => {
+describe('ResendConfirmationEmailComponent', () => {
   let component: ResendConfirmationEmailComponent;
   let fixture: ComponentFixture<ResendConfirmationEmailComponent>;
+  let mockAuthService;
 
   beforeEach(async () => {
+    mockAuthService = jasmine.createSpyObj(['resendConfirmationCode']);
     await TestBed.configureTestingModule({
-      declarations: [ ResendConfirmationEmailComponent ]
+      imports: [ HttpClientTestingModule, MatDialogModule ],
+      declarations: [ ResendConfirmationEmailComponent ],
+      providers: [ {provide: AuthService, useValue: mockAuthService} ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
   });

@@ -5,7 +5,7 @@ import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
 
-fdescribe('BlackjackComponent', () => {
+describe('BlackjackComponent', () => {
   let component: BlackjackComponent;
   let mockAuthService;
 

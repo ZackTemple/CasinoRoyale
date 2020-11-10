@@ -36,24 +36,17 @@ describe('PersonalAccountComponent', () => {
   });
 
   beforeEach(() => {
+    mockAuthService.getPlayer.and.returnValue(of( playerObject ));
     fixture = TestBed.createComponent(PersonalAccountComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  // This should work, but it does not
   it('should create', () => {
-    mockAuthService.getPlayer.and.returnValue(of( playerObject ));
-    fixture.detectChanges();
-
     expect(component).toBeTruthy();
   });
 
-  // This should also work
-  it('should initialize the component player', () => {
-    mockAuthService.getPlayer.and.returnValue(of( playerObject ));
-    fixture.detectChanges();
-
+  it('should get the component player', () => {
     expect(component.player.username).toBe('foo');
   });
 });

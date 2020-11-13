@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
@@ -84,7 +84,7 @@ export class AuthService{
   getPlayer(username: string): Observable<IPlayer | PlayerTrackerError> {
     const playerUrl = this.databaseUrl.concat(`/${username}`);
 
-    return this.httpClient.get<IPlayer >(playerUrl).pipe(
+    return this.httpClient.get<IPlayer>(playerUrl).pipe(
       catchError(
         (err: HttpErrorResponse) => this.handleHttpError(err)
       )

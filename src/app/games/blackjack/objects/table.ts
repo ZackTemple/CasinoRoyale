@@ -1,21 +1,19 @@
+import { Dealer } from './dealer';
 import { Player } from './player';
 
 export class Table {
-  players = new Array();
+  player: Player;
+  dealer = new Dealer();
+  result: any;
 
-  constructor(players: any[]) {
-    this.players = players;
-  }
+  constructor(player: Player) {
+    this.player = player;
 
-  addNewPlayer(player: Player): void {
-    this.players.push(player);
-  }
+    this.player.score = 0;
+    this.dealer.score = 0;
 
-  // May have to change in the future to look for object with specific username
-  removePlayer(player: Player): void {
-    const index = this.players.indexOf(player);
-    if (index > -1) {
-      this.players.splice(index, 1);
-    }
+    this.player.cards = new Array();
+
+    this.result = null;
   }
 }

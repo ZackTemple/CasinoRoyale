@@ -12,8 +12,8 @@ export class Dealer {
   score: number;
   deck: Deck;
 
-  constructor(name = ' Dealer Dan') {
-    this.deck = new Deck();
+  constructor(name = 'Dealer Dan') {
+    // this.deck = new Deck();
     this.name = name;
   }
 
@@ -40,26 +40,26 @@ export class Dealer {
     }
   }
 
-  dealCardsToStartGame(players: any[]): void {
-    let i: number;
+  // dealCardsToStartGame(players: any[]): void {
+  //   let i: number;
 
-    for (i = 0; i < players.length; i++) {
-      this.dealCardToPlayer(
-        players[i],
-        this.determineNumberOfCards(players[i])
-      );
-    }
-  }
+  //   for (i = 0; i < players.length; i++) {
+  //     this.dealCardToPlayer(
+  //       players[i],
+  //       this.determineNumberOfCards(players[i])
+  //     );
+  //   }
+  // }
 
-  private determineNumberOfCards(player: Player | Dealer): number {
-    // If the name is the dealer's name, only deal one
-    if (player.name === this.name) {
-      return 1;
-    }
-    else {
-      return 2;
-    }
-  }
+  // private determineNumberOfCards(player: Player | Dealer): number {
+  //   // If the name is the dealer's name, only deal one
+  //   if (player.name === this.name) {
+  //     return 1;
+  //   }
+  //   else {
+  //     return 2;
+  //   }
+  // }
 
   dealCardToPlayer(player: Player | Dealer, numOfCards: number): void {
     const newCards = this.deck.cards.splice(0, numOfCards);
@@ -92,13 +92,13 @@ export class Dealer {
     player.totalEarned += player.bet;
   }
 
-  collectOldCards(table: Table): void {
-    let i: number;
+  // collectOldCards(table: Table): void {
+  //   let i: number;
 
-    for (i = 0; i < table.players.length; i++) {
-      this.gatherCardsFromPlayer(table.players[i]);
-    }
-  }
+  //   for (i = 0; i < table.players.length; i++) {
+  //     this.gatherCardsFromPlayer(table.players[i]);
+  //   }
+  // }
 
   private gatherCardsFromPlayer(player: Player | Dealer): void {
     player.cards = new Array();

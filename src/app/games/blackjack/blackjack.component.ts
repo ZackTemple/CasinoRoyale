@@ -6,6 +6,7 @@ import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
 import * as _ from 'lodash';
+import { BlackjackService } from './blackjack.service';
 
 @Component({
   selector: 'app-blackjack',
@@ -16,84 +17,73 @@ import * as _ from 'lodash';
 export class BlackjackComponent implements OnInit {
 
   // Objects: dealer, player, and table
-  dealer: Dealer;
-  player: Player;
   table: Table;
 
   // Property for handling the initial bet
   betLockedIn = false;
 
   // Final winner, tie, and bust
-  winner: Player | Dealer;
-  tie = false;
-  bust = false;
+  winner: any;
+  tie: any;
+  bust: any;
+  outcomes = {
+    Winner: 'winner',
+    Tie: 'tie',
+    Bust: 'bust'
+  };
+
+  outcome: any;
 
   // gives user ability to see playing card
   showHelperCard = false;
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private gameService: BlackjackService) {
   }
 
   ngOnInit(): void {
-    this.dealer = new Dealer();
-
     this.authService.getPlayer(this.authService.playerUsername).subscribe(
-      (player: IPlayer) => {
-        this.player = new Player(player);
-        this.table = new Table([this.dealer, this.player]);
+      (player: Player) => {
+        this.table = new Table(player);
       },
       (err: PlayerTrackerError) => console.log(err)
     );
   }
 
   onClickPlaceBet(): void {
-    if ( 0 < this.player.bet && this.player.bet <= this.player.currentMoney) {
-      this.setupNewGame();
-      this.startGame();
+    if ( 0 < this.table.player.bet && this.table.player.bet <= this.table.player.currentMoney) {
+      this.resetGame();
+      this.startNewGame();
     }
     else {
       this.betLockedIn = false;
     }
   }
 
-  setupNewGame(): void {
-    this.resetGameAttributes();
-    this.dealer.collectOldCards(this.table);
-    this.dealer.resetDeck();
-  }
-
-  private resetGameAttributes(): void {
+  private resetGame(): void {
     this.betLockedIn = true;
-    this.winner = null;
-    this.tie = false;
-    this.bust = false;
-    this.player.score = 0;
-    this.dealer.score = 0;
+    this.table = new Table(this.table.player);
   }
 
-  startGame(): void {
-    this.dealer.subtractBetFromPlayerWallet(this.player);
-    this.dealer.shuffleDeck();
-    // this.dealer.dealCardsToStartGame(this.table.players);
-
-    this.player.cards = [
-      {suit: 'Hearts', value: 'A', weight: 11},
-      {suit: 'Spades', value: 'J', weight: 10}
-    ];
-    this.dealer.cards = [
-      {suit: 'Diamonds', value: 'A', weight: 11}
-    ];
+  private startNewGame(): void {
+    this.gameService.startNewGame(this.table).subscribe(
+      table => {
+        console.log(table);
+        this.table = table;
+      }
+    );
   }
 
   clickHit(): void {
-    this.dealer.dealCardToPlayer(this.player, 1);
+    this.gameService.dealCardToPlayer(this.table);
     this.playerBustQ();
   }
 
   playerBustQ(): void {
-    this.getScore(this.player);
-    this.handleAces(this.player);
-    if (this.player.score > 21) {
+    this.getScore(this.table.player);
+    this.handleAces(this.table.player);
+    if (this.table.player.score > 21) {
       this.endGameFromUserBust();
     }
   }
@@ -122,9 +112,9 @@ export class BlackjackComponent implements OnInit {
   }
 
   endGameFromUserBust(): void {
-    this.bust = true;
-    this.winner = this.dealer;
-    this.getScore(this.dealer);
+    this.outcome = this.outcomes.Bust;
+    this.winner = this.table.dealer;
+    this.getScore(this.table.dealer);
     this.actOnGameResults();
     this.updatePlayer();
   }
@@ -132,7 +122,7 @@ export class BlackjackComponent implements OnInit {
 
 
   clickStay(): void {
-    this.getScore(this.player);
+    this.getScore(this.table.player);
 
     this.finishGame();
   }
@@ -146,43 +136,43 @@ export class BlackjackComponent implements OnInit {
 
   playDealersTurn(): void {
     // Get dealer info before entering loop to add more cards for dealer
-    this.getScore(this.dealer);
-    this.handleAces(this.dealer);
+    this.getScore(this.table.dealer);
+    this.handleAces(this.table.dealer);
 
     // Dealer keeps hitting until score is 17 or more
-    while (this.dealer.score < 17 && this.dealer.score <= this.player.score) {
-      this.dealer.dealCardToPlayer(this.dealer, 1);
-      this.getScore(this.dealer);
-      this.handleAces(this.dealer);
+    while (this.table.dealer.score < 17 && this.table.dealer.score <= this.table.player.score) {
+      this.table.dealer.dealCardToPlayer(this.table.dealer, 1);
+      this.getScore(this.table.dealer);
+      this.handleAces(this.table.dealer);
     }
   }
 
   getGameResults(): void {
-    if (this.player.score > this.dealer.score || this.dealer.score > 21) {
-      this.winner = this.player;
+    if (this.table.player.score > this.table.dealer.score || this.table.dealer.score > 21) {
+      this.winner = this.table.player;
     }
-    else if (this.dealer.score > this.player.score) {
-      this.winner = this.dealer;
+    else if (this.table.dealer.score > this.table.player.score) {
+      this.winner = this.table.dealer;
     }
-    else if (this.player.score === this.dealer.score) {
+    else if (this.table.player.score === this.table.dealer.score) {
       this.tie = true;
     }
   }
 
   actOnGameResults(): void {
-    if (this.winner === this.player) {
-      this.dealer.awardPlayer(this.player);
+    if (this.winner === this.table.player) {
+      this.table.dealer.awardPlayer(this.table.player);
     }
     else if (this.tie === true) {
-      this.dealer.returnPlayerBet(this.player);
+      this.table.dealer.returnPlayerBet(this.table.player);
     }
     else {
-      this.player.totalLost += this.player.bet;
+      this.table.player.totalLost += this.table.player.bet;
     }
   }
 
   updatePlayer(): void {
-    this.authService.updatePlayer(this.player).subscribe();
+    this.authService.updatePlayer(this.table.player).subscribe();
   }
 
   toggleHelperCard(): void {

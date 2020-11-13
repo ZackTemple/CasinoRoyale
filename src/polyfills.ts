@@ -58,6 +58,16 @@
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
 
+/*
+The following global buffer line was added due to problems with aws-cognito and setting Buffer
+
+The full solution to the problem can be found at the following link:
+
+https://stackoverflow.com/questions/50371593/angular-6-uncaught-referenceerror-buffer-is-not-defined
+*/
+global.Buffer = global.Buffer || require('buffer').Buffer;
+
+
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */

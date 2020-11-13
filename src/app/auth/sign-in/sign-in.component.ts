@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../auth.service';
 
 @Component({
-  selector: 'app-log-in',
-  templateUrl: './log-in.component.html',
-  styleUrls: ['./log-in.component.css']
+  selector: 'app-sign-in',
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.css']
 })
-export class LogInComponent implements OnInit {
+export class SignInComponent implements OnInit {
   input: string;
   hide = true;
   username: string;
@@ -20,17 +20,17 @@ export class LogInComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.authService.loggedIn$.subscribe({
-      next: logInQ => {
-        if (logInQ) {
+    this.authService.signedIn$.subscribe({
+      next: signInQ => {
+        if (signInQ) {
           this.router.navigate(['/home']);
         }
       }
     });
   }
 
-  onClickEnter(): void {
+  onClickSignIn(): void {
     // call returns true if user could be logged in
-    this.authService.logIn(this.username, this.password);
+    this.authService.signIn(this.username, this.password);
   }
 }

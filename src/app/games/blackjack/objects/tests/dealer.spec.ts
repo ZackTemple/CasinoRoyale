@@ -2,7 +2,7 @@ import { Dealer } from '../dealer';
 import { Player } from '../player';
 import { Table } from '../table';
 
-fdescribe('Dealer Object', () => {
+describe('Dealer Object', () => {
   let dealer: Dealer;
   let player: Player;
   let table: Table;

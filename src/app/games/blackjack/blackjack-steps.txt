@@ -28,7 +28,7 @@ money by subtracting the users money total of the player.bet
 
 
 Questions:
-  1. Ask Shawn how to grab user info. If we login and set the player info to something in another module... how do we get that info?
+  1. Ask Shawn how to grab user info. If we sign in and set the player info to something in another module... how do we get that info?
   2. Best way to shuffle cards? (Zack, look up randomizer functions for JS)
   3. Ask Shawn about split method
   4. How to display components in the best way? Use *ngIf and *ngFor?

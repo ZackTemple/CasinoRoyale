@@ -1,15 +1,16 @@
 import { componentFactoryName } from '@angular/compiler';
+import { of } from 'rxjs';
 import { BlackjackComponent } from './blackjack.component';
 import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
 
-fdescribe('BlackjackComponent', () => {
+describe('BlackjackComponent', () => {
   let component: BlackjackComponent;
   let mockAuthService;
 
   beforeEach(() => {
-    mockAuthService = jasmine.createSpyObj(['updatePlayer']);
+    mockAuthService = jasmine.createSpyObj(['updatePlayer', 'getPlayer']);
     component = new BlackjackComponent(mockAuthService);
 
     component.dealer = new Dealer();
@@ -23,6 +24,7 @@ fdescribe('BlackjackComponent', () => {
       id: 'id-here'
     });
     component.table = new Table([component.player, component.dealer]);
+    mockAuthService.getPlayer.and.returnValue(of(component.player));
   });
 
   it('should create', () => {
@@ -84,6 +86,10 @@ fdescribe('BlackjackComponent', () => {
       // Arrange
       component.player.bet = 5;
       component.startGame();
+      component.player.cards = [
+        {suit: 'Hearts', value: '5', weight: 5},
+        {suit: 'Spades', value: '2', weight: 2},
+      ];
 
       // Act
       component.clickHit();
@@ -95,6 +101,7 @@ fdescribe('BlackjackComponent', () => {
   describe('playerBustQ()', () => {
     it('should end the game if the player score goes over 21', () => {
       // Arrange
+      mockAuthService.updatePlayer.and.returnValue(of(true));
       component.player.cards = [
         {suit: 'Clovers', value: 'K', weight: 10},
         {suit: 'Hearts', value: 'K', weight: 10},
@@ -110,6 +117,8 @@ fdescribe('BlackjackComponent', () => {
 
   describe('getScore(hand)', () => {
     it('should return the score of a player or a dealer', () => {
+      mockAuthService.updatePlayer.and.returnValue(of(true));
+
       // Arrange
       component.player.cards = [
         {suit: 'Clovers', value: 'K', weight: 10},
@@ -126,6 +135,7 @@ fdescribe('BlackjackComponent', () => {
 
   describe('endGameFromUserBust()', () => {
     it('should set the winner to dealer and end the game', () => {
+      mockAuthService.updatePlayer.and.returnValue(of(true));
       // Act
       component.endGameFromUserBust();
 
@@ -187,7 +197,7 @@ fdescribe('BlackjackComponent', () => {
       component.player.cards = [
         {suit: 'Clovers', value: 'K', weight: 10},
         {suit: 'Hearts', value: '5', weight: 5},
-        {suit: 'Spades', value: '5', weight: 5},
+        {suit: 'Spades', value: '5', weight: 5}
       ];
     });
 
@@ -219,15 +229,14 @@ fdescribe('BlackjackComponent', () => {
     });
   });
 
-  describe('updateLocalStorage()', () => {
+  describe('updatePlayer()', () => {
     it('should store the Player information in local storage', () => {
-      localStorage.removeItem('Authorization');
+      mockAuthService.updatePlayer.and.returnValue(of(true));
 
       // Act
-      component.updateLocalStorage();
-      const localInfo = localStorage.getItem('Authorization');
+      component.updatePlayer();
 
-      expect(localInfo).toBeTruthy();
+      expect(mockAuthService.updatePlayer).toHaveBeenCalled();
     });
   });
 });

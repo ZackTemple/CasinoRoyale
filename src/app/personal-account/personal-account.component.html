@@ -1,4 +1,4 @@
-<div class="main-div">
+<div class="main-div" *ngIf='player'>
   <mat-card class="example-card">
     <mat-card-header>
       <div mat-card-avatar class="example-header-image"></div>
@@ -19,13 +19,12 @@
         <mat-tab label="Personal Settings">
           <mat-list role="list">
             <mat-list-item role="listitem">Username: {{player.username}}</mat-list-item>
-            <mat-list-item role="listitem">Password: {{player.password}}</mat-list-item>
           </mat-list>
         </mat-tab>
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button (click)='onLogoutClick()'>Logout</button>
+      <button mat-button (click)='onLogoutClick()'>Sign Out</button>
     </mat-card-actions>
   </mat-card>
 </div>

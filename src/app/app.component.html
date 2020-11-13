@@ -5,16 +5,18 @@
       <button mat-menu-item routerLink="/games">Local Games</button>
       <button mat-menu-item>Multiplayer Games</button>
       <button mat-menu-item routerLink="/deposit-money">Deposit Money</button>
-      <button mat-menu-item routerLink="/personal-account" *ngIf='loggedIn'>Personal Account</button>
+      <button mat-menu-item routerLink="/personal-account" *ngIf='signedIn'>Personal Account</button>
 
-      <!-- <button mat-menu-item routerLink="/home" *ngIf="(loggedIn$ | async); else notLoggedIn"> -->
-      <button mat-menu-item routerLink="/home" *ngIf="loggedIn else notLoggedIn" (click)="onLogoutClick()">
-        Log Out
+      <button mat-menu-item routerLink="/home" *ngIf="signedIn else notSignedIn" (click)="onSignOutClick()">
+        Sign Out
       </button>
 
-      <ng-template #notLoggedIn>
-        <button mat-menu-item routerLink="/login">
-          Log In
+      <ng-template #notSignedIn>
+        <button mat-menu-item routerLink="/sign-in">
+          Sign In
+        </button>
+        <button mat-menu-item routerLink="/sign-up">
+          Sign Up
         </button>
       </ng-template>
     </ng-template>

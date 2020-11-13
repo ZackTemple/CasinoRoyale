@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { IPlayer } from '../interfaces/player';
+import { browserRefresh } from '../app.component';
 
 @Component({
   selector: 'app-deposit-money',
@@ -11,11 +12,16 @@ export class DepositMoneyComponent implements OnInit {
 
   player: IPlayer;
   moneyAdded = false;
+  public browserRefresh: boolean;
 
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.player = JSON.parse(localStorage.getItem('Authorization'));
+    this.browserRefresh = browserRefresh;
+    console.log('refreshed?:', browserRefresh);
+    this.authService.getPlayer(this.authService.playerUsername).subscribe(
+      (player: IPlayer) => this.player = player
+    );
   }
 
   addMoney(): void {
@@ -24,8 +30,7 @@ export class DepositMoneyComponent implements OnInit {
     }
     else {
       this.player.currentMoney = 500;
-      // this.authService.updatePlayer(this.player).subscribe();
-      localStorage.setItem('Authorization', JSON.stringify(this.player));
+      this.authService.updatePlayer(this.player).subscribe();
       this.moneyAdded = true;
     }
   }

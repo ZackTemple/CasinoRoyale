@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { GamesModule } from './games/games.module';
@@ -10,12 +10,18 @@ import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { FailedLoginDialogComponent } from './auth/dialog/failed-login-dialog.component';
+import { FailedSignInDialogComponent } from './auth/dialog/failed-sign-in-dialog.component';
+import { SignUpComponent } from './auth/sign-up/sign-up.component';
+import { ResendConfirmationEmailComponent } from './auth/resend-confirmation-email/resend-confirmation-email.component';
+
+import { CacheInterceptor} from './cache/cache.interceptor';
 
 @NgModule({
   declarations: [
     AppRoutingModule.components,
-    FailedLoginDialogComponent
+    FailedSignInDialogComponent,
+    SignUpComponent,
+    ResendConfirmationEmailComponent
 
   ],
   imports: [
@@ -28,7 +34,10 @@ import { FailedLoginDialogComponent } from './auth/dialog/failed-login-dialog.co
     AppRoutingModule,
     BrowserAnimationsModule
   ],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent],
-  entryComponents: [FailedLoginDialogComponent]
+  entryComponents: [FailedSignInDialogComponent]
 })
 export class AppModule { }

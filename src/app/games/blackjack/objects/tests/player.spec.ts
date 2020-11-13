@@ -1,6 +1,6 @@
-import { Player } from "../player"
+import { Player } from '../player'
 
-fdescribe('Player Object', () => {
+describe('Player Object', () => {
 
   let player: Player;
 

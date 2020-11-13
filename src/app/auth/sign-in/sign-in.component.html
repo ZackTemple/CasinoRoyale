@@ -1,8 +1,9 @@
- <mat-card class="login">
+ <mat-card class="signIn">
    <mat-card-header>
-    <mat-card-title>Log In</mat-card-title>
-    <mat-card-subtitle>Please input your login information.</mat-card-subtitle>
+    <mat-card-title>Sign In</mat-card-title>
+    <mat-card-subtitle>Please input your user credentials.</mat-card-subtitle>
    </mat-card-header>
+
     <div class="example-container">
       <mat-form-field appearance="fill">
         <mat-label>Name</mat-label>
@@ -17,14 +18,22 @@
         </button>
       </mat-form-field>
 
-      <button mat-stroked-button (click)='onClickEnter()'>
-        ENTER
-        <!-- <button mat-button *ngIf='loggedIn' (click)="openDialog()">Launch dialog</button> -->
+      <button mat-stroked-button (click)='onClickSignIn()'>
+        Sign In
       </button>
+
+      <mat-card-content>
+        <p>
+          Need to resend email cofirmation? <button mat-button routerLink='/resend-confirmation-email'>Click here!</button>
+        </p>
+      </mat-card-content>
     </div>
+
+<!-- Routes to Sign Up Page -->
     <mat-card-content>
       <p>
-        Haven't signed up? <button mat-button routerLink="/home">Sign up here!</button>
+        Haven't signed up? <button mat-button routerLink="/sign-up">Sign up here!</button>
       </p>
     </mat-card-content>
+
 </mat-card>

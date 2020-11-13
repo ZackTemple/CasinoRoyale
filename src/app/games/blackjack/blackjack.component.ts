@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
+import { PlayerTrackerError } from 'src/app/auth/player-tracker-error';
 import { IPlayer } from 'src/app/interfaces/player';
 import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-blackjack',
@@ -11,16 +13,14 @@ import { Table } from './objects/table';
   styleUrls: ['./blackjack.component.css']
 })
 
-export class BlackjackComponent implements OnInit, OnDestroy {
+export class BlackjackComponent implements OnInit {
 
   // Objects: dealer, player, and table
   dealer: Dealer;
   player: Player;
-  localStoragePlayerInfo: IPlayer;
   table: Table;
 
-  // Properties for handling the initial bet
-  validBet = true;
+  // Property for handling the initial bet
   betLockedIn = false;
 
   // Final winner, tie, and bust
@@ -37,10 +37,13 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.dealer = new Dealer();
 
-    this.localStoragePlayerInfo = JSON.parse(localStorage.getItem('Authorization')) as IPlayer;
-    this.player = new Player(this.localStoragePlayerInfo);
-
-    this.table = new Table([this.dealer, this.player]);
+    this.authService.getPlayer(this.authService.playerUsername).subscribe(
+      (player: IPlayer) => {
+        this.player = new Player(player);
+        this.table = new Table([this.dealer, this.player]);
+      },
+      (err: PlayerTrackerError) => console.log(err)
+    );
   }
 
   onClickPlaceBet(): void {
@@ -71,7 +74,15 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   startGame(): void {
     this.dealer.subtractBetFromPlayerWallet(this.player);
     this.dealer.shuffleDeck();
-    this.dealer.dealCardsToStartGame(this.table.players);
+    // this.dealer.dealCardsToStartGame(this.table.players);
+
+    this.player.cards = [
+      {suit: 'Hearts', value: 'A', weight: 11},
+      {suit: 'Spades', value: 'J', weight: 10}
+    ];
+    this.dealer.cards = [
+      {suit: 'Diamonds', value: 'A', weight: 11}
+    ];
   }
 
   clickHit(): void {
@@ -81,8 +92,21 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   playerBustQ(): void {
     this.getScore(this.player);
+    this.handleAces(this.player);
     if (this.player.score > 21) {
       this.endGameFromUserBust();
+    }
+  }
+
+  handleAces(player: Player | Dealer): void {
+    while (player.score > 21 && player.cards.findIndex(card => card['weight'] === 11) !== -1) {
+      const index = player.cards.findIndex(card => card['weight'] === 11);
+      const aceCard = _.clone(player.cards[index]);
+      aceCard['weight'] = 1;
+
+      player.cards.splice(index, 1);
+      player.cards.push(aceCard);
+      this.getScore(player);
     }
   }
 
@@ -100,7 +124,9 @@ export class BlackjackComponent implements OnInit, OnDestroy {
   endGameFromUserBust(): void {
     this.bust = true;
     this.winner = this.dealer;
-    this.updateLocalStorage();
+    this.getScore(this.dealer);
+    this.actOnGameResults();
+    this.updatePlayer();
   }
 
 
@@ -115,16 +141,19 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.playDealersTurn();
     this.getGameResults();
     this.actOnGameResults();
-    this.updateLocalStorage();
+    this.updatePlayer();
   }
 
   playDealersTurn(): void {
+    // Get dealer info before entering loop to add more cards for dealer
     this.getScore(this.dealer);
+    this.handleAces(this.dealer);
 
     // Dealer keeps hitting until score is 17 or more
     while (this.dealer.score < 17 && this.dealer.score <= this.player.score) {
       this.dealer.dealCardToPlayer(this.dealer, 1);
       this.getScore(this.dealer);
+      this.handleAces(this.dealer);
     }
   }
 
@@ -152,13 +181,8 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateLocalStorage(): void {
-    localStorage.setItem('Authorization', JSON.stringify(this.player));
-  }
-
-  ngOnDestroy(): void {
-    // Call below will be used when we have a database
-    // this.authService.updatePlayer(this.player).subscribe();
+  updatePlayer(): void {
+    this.authService.updatePlayer(this.player).subscribe();
   }
 
   toggleHelperCard(): void {

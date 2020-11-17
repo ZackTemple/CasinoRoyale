@@ -1,4 +1,4 @@
-export class PlayerTrackerError {
+export class HttpTrackerError {
   errorCode: number;
   message: string;
 }

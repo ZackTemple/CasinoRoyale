@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError} from 'rxjs';
+import { Observable, BehaviorSubject} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,8 +9,9 @@ import * as _ from 'lodash';
 import { Auth } from 'aws-amplify';
 import { User } from './user';
 import { CognitoUser } from 'amazon-cognito-identity-js';
-import { PlayerTrackerError } from './player-tracker-error';
+import { HttpTrackerError } from '../shared/http-tracker-error';
 import awsconfig from './../../aws-config';
+import { ErrorService } from '../shared/error.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,11 @@ export class AuthService{
   signedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   playerUsername: string;
 
-  constructor(private httpClient: HttpClient, private dialog: MatDialog ) {
+  constructor(
+    private httpClient: HttpClient,
+    private dialog: MatDialog,
+    private errorService: ErrorService
+    ) {
     this.getAuthenticatedUser().then().catch(
       error => console.log(error)
     );
@@ -62,9 +67,9 @@ export class AuthService{
     }
   }
 
-  postNewPlayer(playerUsername: string): Observable<IPlayer | PlayerTrackerError> {
+  postNewPlayer(playerUsername: string): Observable<IPlayer | HttpTrackerError> {
     return this.httpClient.post<IPlayer>(this.databaseUrl, {username: playerUsername}).pipe(
-      catchError(err => this.handleHttpError(err))
+      catchError(err => this.errorService.handleHttpError(err))
     );
   }
 
@@ -81,17 +86,17 @@ export class AuthService{
   }
 
   // Gets the player from the API and sets it to the current player
-  getPlayer(username: string): Observable<IPlayer | PlayerTrackerError> {
+  getPlayer(username: string): Observable<IPlayer | HttpTrackerError> {
     const playerUrl = this.databaseUrl.concat(`/${username}`);
 
     return this.httpClient.get<IPlayer>(playerUrl).pipe(
       catchError(
-        (err: HttpErrorResponse) => this.handleHttpError(err)
+        (err: HttpErrorResponse) => this.errorService.handleHttpError(err)
       )
     );
   }
 
-  updatePlayer(updatedPlayer: IPlayer): Observable<IPlayer | PlayerTrackerError> {
+  updatePlayer(updatedPlayer: IPlayer): Observable<IPlayer | HttpTrackerError> {
     const playerUrl = this.databaseUrl.concat(`/${updatedPlayer.username}`);
     const playerWithoutID = _.omit(updatedPlayer, 'username');
 
@@ -100,16 +105,9 @@ export class AuthService{
         (player: IPlayer) => console.log(player)
       ),
       catchError(
-        err => this.handleHttpError(err)
+        err => this.errorService.handleHttpError(err)
       )
     );
-  }
-
-  handleHttpError(err: HttpErrorResponse): Observable<PlayerTrackerError> {
-    const playerRetrievalError = new PlayerTrackerError();
-    playerRetrievalError.errorCode = err.status;
-    playerRetrievalError.message = 'Error retrieving the data.';
-    return throwError(playerRetrievalError);
   }
 
   async signOut(): Promise<void> {

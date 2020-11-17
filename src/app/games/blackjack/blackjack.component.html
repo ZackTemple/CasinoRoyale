@@ -1,45 +1,48 @@
-<div class="Blackjack" *ngIf="table.player">
-  <div *ngIf='((!betLockedIn || winner || tie || bust) && table.player.currentMoney > 0)'>
-    <input type='number' [(ngModel)]='table.player.bet'>
-    <button class='place-bet' (click)="onClickPlaceBet()">
+<div class="Blackjack" *ngIf="player">
+  <div *ngIf='((!betLockedIn || winner || tie || bust) && player.currentMoney > 0)'>
+    <input type='number' #box [(ngModel)]='player.bet'>
+    <button class='place-bet' (click)="onClickPlaceBet(box.value)">
       Place Bet
     </button>
   </div>
-  <div *ngIf='table.player.currentMoney === 0 && (winner || tie || bust)'>
+  <div *ngIf='player.currentMoney === 0 && (winner || tie || bust)'>
     <button class='deposit-money' routerLink="/deposit-money">
       Deposit Money
     </button>
   </div>
   <br>
-  <p>Money in wallet: {{table.player.currentMoney}}</p>
+  <p>Money in wallet: {{player.currentMoney}}</p>
   <p *ngIf='! betLockedIn'>Please enter an amout equal to or less than the money in your wallet.</p>
 
-  <div *ngIf='table.player.cards.length > 0'>
-    <h3>Dealer Hand:</h3>
-    <div *ngFor='let card of table.player.cards'>
-      &nbsp; {{card.suit}}
-      &nbsp; {{card.value}}
-    </div>
-    <h3>{{table.player.username}}'s Hand:</h3>
-    <div *ngFor='let card of table.player.cards'>
-      &nbsp; {{card.suit}}
-      &nbsp; {{card.value}}
-    </div>
-  </div>
-  <br>
 
-  <div *ngIf='betLockedIn'>
-    <button class='hit'  (click)='!winner && clickHit()'>
-      Hit Me
-    </button>
-    <button class='stay' (click)='!winner && clickStay()'>
-      Stay
-    </button>
-  </div>
+  <div *ngIf="table">
+    <div *ngIf='table.dealer.cards.length > 0'>
+      <h3>Dealer Hand:</h3>
+      <div *ngFor='let card of table.dealer.cards'>
+        &nbsp; {{card.suit}}
+        &nbsp; {{card.value}}
+      </div>
+      <h3>{{table.player.username}}'s Hand:</h3>
+      <div *ngFor='let card of table.player.cards'>
+        &nbsp; {{card.suit}}
+        &nbsp; {{card.value}}
+      </div>
+    </div>
+    <br>
 
-  <p *ngIf='table.player.score === 21 && table.player.cards.length === 2'>
-    Blackjack!
-  </p>
+    <div *ngIf='betLockedIn'>
+      <button class='hit'  (click)='!winner && clickHit()'>
+        Hit Me
+      </button>
+      <button class='stay' (click)='!winner && clickStay()'>
+        Stay
+      </button>
+    </div>
+
+    <p *ngIf='table.player.score === 21 && table.player.cards.length === 2'>
+      Blackjack!
+    </p>
+  </div>
 
   <p *ngIf='winner'>
     <!-- Winner: {{winner.name}} -->

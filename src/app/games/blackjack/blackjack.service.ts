@@ -1,7 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { HttpTrackerError } from 'src/app/shared/http-tracker-error';
+import { ErrorService } from 'src/app/shared/error.service';
+import { Player } from './objects/player';
 import { Table } from './objects/table';
 
 @Injectable({
@@ -11,28 +14,27 @@ export class BlackjackService {
 
   baseRoute = 'http://localhost:5000/api/blackjack';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private errorService: ErrorService) { }
 
-  startNewGame(table: Table): Observable<Table> {
-    const startGameRoute = this.baseRoute.concat('/start-game');
-    console.log(table);
+  startGame(startingPlayer: Player, proposedBet: number): Observable<Table | HttpTrackerError> {
+    const betRoute = this.baseRoute.concat('/start-game');
 
-    return this.httpClient.post<Table>(startGameRoute, table).pipe(
-      catchError(err => {
-        console.log(err);
-        return throwError(err);
-      })
+    return this.httpClient.post<Table>(betRoute, {player: startingPlayer, bet: proposedBet}).pipe(
+      catchError(
+        (err: HttpErrorResponse) => {
+          return this.errorService.handleHttpError(err);
+        }
+      )
     );
   }
 
-  dealCardToPlayer(table: Table): Observable<Table> {
+  dealCardToPlayer(table: Table): Observable<Table | HttpTrackerError> {
     const route = this.baseRoute.concat('/player/deal-card');
 
     return this.httpClient.post<Table>(route, table).pipe(
-      catchError(err => {
-        console.log(err);
-        return throwError(err);
-      })
+      catchError(
+        (err: HttpErrorResponse) => this.errorService.handleHttpError(err)
+      )
     );
   }
 }

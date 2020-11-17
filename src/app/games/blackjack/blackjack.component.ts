@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { PlayerTrackerError } from 'src/app/auth/player-tracker-error';
-import { IPlayer } from 'src/app/interfaces/player';
+import { HttpTrackerError } from 'src/app/shared/http-tracker-error';
 import { Dealer } from './objects/dealer';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
@@ -18,6 +17,7 @@ export class BlackjackComponent implements OnInit {
 
   // Objects: dealer, player, and table
   table: Table;
+  player: Player;
 
   // Property for handling the initial bet
   betLockedIn = false;
@@ -27,7 +27,8 @@ export class BlackjackComponent implements OnInit {
   tie: any;
   bust: any;
   outcomes = {
-    Winner: 'winner',
+    PlayerWins: 'playerwins',
+    DealerWins: 'dealerwins',
     Tie: 'tie',
     Bust: 'bust'
   };
@@ -45,32 +46,24 @@ export class BlackjackComponent implements OnInit {
   ngOnInit(): void {
     this.authService.getPlayer(this.authService.playerUsername).subscribe(
       (player: Player) => {
-        this.table = new Table(player);
+        this.player = player;
       },
-      (err: PlayerTrackerError) => console.log(err)
+      (err: HttpTrackerError) => console.log(err)
     );
   }
 
-  onClickPlaceBet(): void {
-    if ( 0 < this.table.player.bet && this.table.player.bet <= this.table.player.currentMoney) {
-      this.resetGame();
-      this.startNewGame();
-    }
-    else {
-      this.betLockedIn = false;
-    }
-  }
+  onClickPlaceBet(betString: string): void {
+    const bet = parseInt(betString, 10);
 
-  private resetGame(): void {
-    this.betLockedIn = true;
-    this.table = new Table(this.table.player);
-  }
-
-  private startNewGame(): void {
-    this.gameService.startNewGame(this.table).subscribe(
-      table => {
-        console.log(table);
+    this.gameService.startGame(this.player, bet).subscribe(
+      (table: Table) => {
         this.table = table;
+        this.player = this.table.player;
+        this.betLockedIn = true;
+      },
+      (err: HttpTrackerError) => {
+        console.log(err.message);
+        this.betLockedIn = false;
       }
     );
   }

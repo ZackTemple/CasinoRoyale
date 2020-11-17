@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { HttpTrackerError } from 'src/app/shared/http-tracker-error';
 import { ErrorService } from 'src/app/shared/error.service';
 import { Player } from './objects/player';
@@ -28,13 +28,9 @@ export class BlackjackService {
     );
   }
 
-  dealCardToPlayer(table: Table): Observable<Table | HttpTrackerError> {
-    const route = this.baseRoute.concat('/player/deal-card');
+  hitPlayer(table: Table): Observable<Table | HttpTrackerError> {
+    const route = this.baseRoute.concat('/player/hit');
 
-    return this.httpClient.post<Table>(route, table).pipe(
-      catchError(
-        (err: HttpErrorResponse) => this.errorService.handleHttpError(err)
-      )
-    );
+    return this.httpClient.post<Table>(route, table);
   }
 }

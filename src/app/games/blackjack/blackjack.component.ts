@@ -57,6 +57,7 @@ export class BlackjackComponent implements OnInit {
 
     this.gameService.startGame(this.player, bet).subscribe(
       (table: Table) => {
+        console.log({table});
         this.table = table;
         this.player = this.table.player;
         this.betLockedIn = true;
@@ -69,8 +70,16 @@ export class BlackjackComponent implements OnInit {
   }
 
   clickHit(): void {
-    this.gameService.dealCardToPlayer(this.table);
-    this.playerBustQ();
+    this.gameService.hitPlayer(this.table).subscribe(
+      (table: Table) => {
+        console.log(table);
+        this.table = table;
+        this.player = table.player;
+      },
+      (err: HttpTrackerError) => {
+        console.log(err);
+      }
+    );
   }
 
   playerBustQ(): void {
@@ -111,7 +120,6 @@ export class BlackjackComponent implements OnInit {
     this.actOnGameResults();
     this.updatePlayer();
   }
-
 
 
   clickStay(): void {

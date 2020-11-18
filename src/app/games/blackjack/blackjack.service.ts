@@ -28,9 +28,27 @@ export class BlackjackService {
     );
   }
 
-  hitPlayer(table: Table): Observable<Table | HttpTrackerError> {
+  dealCardToPlayer(table: Table): Observable<Table | HttpTrackerError> {
     const route = this.baseRoute.concat('/player/hit');
 
-    return this.httpClient.post<Table>(route, table);
+    return this.httpClient.post<Table>(route, table).pipe(
+      catchError(
+        (err: HttpErrorResponse) => {
+          return this.errorService.handleHttpError(err);
+        }
+      )
+    );
+  }
+
+  finishGame(table: Table): Observable<Table | HttpTrackerError> {
+    const finishGameRoute = this.baseRoute.concat('/player/stay');
+
+    return this.httpClient.post<Table>(finishGameRoute, table).pipe(
+      catchError(
+        (err: HttpErrorResponse) => {
+          return this.errorService.handleHttpError(err);
+        }
+      )
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Player } from '../player'
+import { Player } from '../player';
 
 describe('Player Object', () => {
 
@@ -15,6 +15,6 @@ describe('Player Object', () => {
       id: 'id-here'
     });
 
-    expect(player.name).toBe('foo');
+    expect(player.username).toBe('foo');
   });
 });

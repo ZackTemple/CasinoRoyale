@@ -1,16 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BlackjackServiceService } from './blackjack-service.service';
+import { BlackjackService } from './blackjack.service';
 
-describe('BlackjackServiceService', () => {
-  let service: BlackjackServiceService;
+describe('BlackjackService', () => {
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(BlackjackServiceService);
-  });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
 });

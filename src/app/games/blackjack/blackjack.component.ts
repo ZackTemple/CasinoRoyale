@@ -100,4 +100,13 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.showHelperCard = !this.showHelperCard;
   }
 
+  getImage(card: any): string {
+    const imageDir = '../../../assets/images/cards/';
+    const imageValue = card.value;
+    const imageSuit = card.suit[0];
+    const imageType = '.jpg';
+
+    return imageDir.concat(imageValue, imageSuit, imageType);
+  }
+
 }

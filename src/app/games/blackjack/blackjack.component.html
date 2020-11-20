@@ -1,4 +1,6 @@
 <div class="Blackjack" *ngIf="player">
+  <p *ngIf='! gameInProgress'>Please enter an amout equal to or less than the money in your wallet.</p>
+  <p>Money in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</p>
   <div *ngIf='((!gameInProgress || table.result) && player.currentMoney > 0)'>
     <input type='number' #box [(ngModel)]='player.bet'>
     <button class='place-bet' (click)="onClickPlaceBet(box.value)">
@@ -11,22 +13,24 @@
     </button>
   </div>
   <br>
-  <p>Money in wallet: {{player.currentMoney}}</p>
-  <p *ngIf='! gameInProgress'>Please enter an amout equal to or less than the money in your wallet.</p>
 
 
   <div *ngIf="table">
     <div *ngIf='table.dealer.cards.length > 0'>
       <h3>Dealer Hand:</h3>
-      <div *ngFor='let card of table.dealer.cards'>
-        &nbsp; {{card.suit}}
-        &nbsp; {{card.value}}
-      </div>
+      <span *ngFor='let card of table.dealer.cards'>
+        <div style="display:inline-block;">
+          <!-- &nbsp; {{card.suit}}
+          &nbsp; {{card.value}} -->
+          <img [src]="getImage(card)" style="width:12vw;height:20vh;">
+        </div>
+      </span>
       <h3>{{table.player.username}}'s Hand:</h3>
-      <div *ngFor='let card of table.player.cards'>
-        &nbsp; {{card.suit}}
-        &nbsp; {{card.value}}
-      </div>
+      <span *ngFor='let card of table.player.cards'>
+        <!-- &nbsp; {{card.suit}}
+        &nbsp; {{card.value}} -->
+        <img [src]="getImage(card)" style="width:12vw;height:20vh;">
+      </span>
     </div>
     <br>
 

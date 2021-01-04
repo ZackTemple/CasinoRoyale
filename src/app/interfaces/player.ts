@@ -6,5 +6,4 @@ export interface IPlayer {
   currentMoney: number;
   totalEarned: number;
   totalLost: number;
-  id: string;
 }

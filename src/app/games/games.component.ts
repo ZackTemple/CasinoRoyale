@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-games',
@@ -7,15 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GamesComponent implements OnInit {
 
-  tiles = [
-    {text: 'Blackjack', cols: 1, rows: 2, class: 'blackjack', route: './blackjack'},
-    {text: 'Omaha Hold\'em', cols: 1, rows: 2, color: 'lightpink', class: 'omaha-holdem', route: './omaha-holdem'},
-    {text: 'Texas Hold\'em', cols: 1, rows: 2, color: 'lightpink', class: 'texas-holdem', route: './texas-holdem'}
-  ];
-
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+  }
+
+  onClick(): void {
+    this.router.navigate(['/games/blackjack']);
   }
 
 }

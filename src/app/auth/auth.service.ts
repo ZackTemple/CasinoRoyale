@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
@@ -18,7 +18,7 @@ import { ErrorService } from '../shared/error.service';
 })
 export class AuthService{
 
-  databaseUrl = 'http://localhost:5000/api/players';
+  databaseUrl = 'http://localhost:5000/api/players/';
   signedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   playerUsername: string;
 
@@ -68,7 +68,19 @@ export class AuthService{
   }
 
   postNewPlayer(playerUsername: string): Observable<IPlayer | HttpTrackerError> {
-    return this.httpClient.post<IPlayer>(this.databaseUrl, {username: playerUsername}).pipe(
+    const headerDict = {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+    };
+
+    const requestOptions = {
+      headers: new HttpHeaders(headerDict),
+    };
+
+    console.log(playerUsername);
+    console.log(this.databaseUrl);
+
+    return this.httpClient.post<IPlayer>(this.databaseUrl, JSON.stringify(playerUsername), requestOptions).pipe(
       catchError(err => this.errorService.handleHttpError(err))
     );
   }
@@ -97,10 +109,10 @@ export class AuthService{
   }
 
   updatePlayer(updatedPlayer: IPlayer): Observable<IPlayer | HttpTrackerError> {
-    const playerUrl = this.databaseUrl.concat(`/${updatedPlayer.username}`);
-    const playerWithoutID = _.omit(updatedPlayer, 'username');
+    const playerModel = this.getPlayerModel(updatedPlayer);
+    const playerUrl = this.databaseUrl.concat(`/${playerModel.username}`);
 
-    return this.httpClient.put(playerUrl, playerWithoutID).pipe(
+    return this.httpClient.put(playerUrl, playerModel).pipe(
       tap(
         (player: IPlayer) => console.log(player)
       ),
@@ -108,6 +120,14 @@ export class AuthService{
         err => this.errorService.handleHttpError(err)
       )
     );
+  }
+
+  private getPlayerModel(player: IPlayer): IPlayer {
+    const clone = _.cloneDeep(player);
+    const validKeys = ['username', 'currentMoney', 'totalEarned', 'totalLost', 'active'];
+
+    Object.keys(clone).forEach((key) => validKeys.includes(key) || delete clone[key]);
+    return clone;
   }
 
   async signOut(): Promise<void> {

@@ -1,75 +1,91 @@
-<div class="Blackjack" *ngIf="player">
-  <p *ngIf='! gameInProgress'>Please enter an amout equal to or less than the money in your wallet.</p>
-  <p>Money in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</p>
-  <div *ngIf='((!gameInProgress || table.result) && player.currentMoney > 0)'>
-    <input type='number' #box [(ngModel)]='player.bet'>
-    <button class='place-bet' (click)="onClickPlaceBet(box.value)">
-      Place Bet
-    </button>
-  </div>
-  <div *ngIf='player.currentMoney === 0 && (winner || tie || bust)'>
-    <button class='deposit-money' routerLink="/deposit-money">
-      Deposit Money
-    </button>
-  </div>
+<div class="game-background">
   <br>
-
-
-  <div *ngIf="table">
-    <div *ngIf='table.dealer.cards.length > 0'>
-      <h3>Dealer Hand:</h3>
-      <span *ngFor='let card of table.dealer.cards'>
-        <div style="display:inline-block;">
-          <!-- &nbsp; {{card.suit}}
-          &nbsp; {{card.value}} -->
-          <img [src]="getImage(card)" style="width:12vw;height:20vh;">
-        </div>
-      </span>
-      <h3>{{table.player.username}}'s Hand:</h3>
-      <span *ngFor='let card of table.player.cards'>
-        <!-- &nbsp; {{card.suit}}
-        &nbsp; {{card.value}} -->
-        <img [src]="getImage(card)" style="width:12vw;height:20vh;">
-      </span>
+  <div class="Blackjack" *ngIf="player">
+    <p *ngIf='! gameInProgress'>Please enter an amout equal to or less than the money in your wallet.</p>
+    <p>Money in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</p>
+    <div *ngIf='((!gameInProgress || table.result) && player.currentMoney > 0)'>
+      <input type='number' #box [(ngModel)]='player.bet' step="5" min="0">
+      &nbsp;
+      <button mat-button class='action-button' (click)="onClickPlaceBet(box.value)">
+        Place Bet
+      </button>
+    </div>
+    <div *ngIf='player.currentMoney === 0 && table.result'>
+      <button class='deposit-money' routerLink="/deposit-money">
+        Deposit Money
+      </button>
     </div>
     <br>
 
-    <div *ngIf='gameInProgress'>
-      <button class='hit'  (click)='!winner && clickHit()'>
-        Hit Me
-      </button>
-      <button class='stay' (click)='!winner && clickStay()'>
-        Stay
-      </button>
+
+    <div *ngIf="table">
+      <div *ngIf='table.dealer.cards.length > 0'>
+        <h3>Dealer Hand:</h3>
+        <span *ngFor='let card of table.dealer.cards'>
+          <div style="display:inline-block;">
+            <!-- &nbsp; {{card.suit}}
+            &nbsp; {{card.value}} -->
+            <img class="card" [src]="getImage(card)">
+            &nbsp;
+            <img class="card" src="../../../assets/images/cards/back-of-card.jpg" *ngIf="table.dealer.cards.length === 1">
+          </div>
+        </span>
+        <h3>{{table.player.username}}'s Hand:</h3>
+        <span *ngFor='let card of table.player.cards'>
+          <!-- &nbsp; {{card.suit}}
+          &nbsp; {{card.value}} -->
+          <img class="card" [src]="getImage(card)">
+          &nbsp;
+        </span>
+      </div>
+      <br>
+
+      <div *ngIf='gameInProgress'>
+        <button mat-button class='action-button' (click)='clickHit()'>
+          Hit Me
+        </button>
+        &nbsp;
+        <button mat-button class='action-button' (click)='clickStay()'>
+          Stay
+        </button>
+      </div>
+
+      <p *ngIf='table.player.score === 21 && table.player.cards.length === 2'>
+        Blackjack!
+      </p>
+
+      <p *ngIf='table.result==="PlayerWins"'>
+        <!-- Winner: {{winner.name}} -->
+        Winner: {{table.player.username}}
+      </p>
+      <p *ngIf='table.result==="DealerWins"'>
+        <!-- Winner: {{winner.name}} -->
+        Winner: Dealer {{table.dealer.name}}
+      </p>
+      <p *ngIf='table.result==="Tie"'>
+        Push!
+      </p>
+      <p *ngIf='table.result==="Bust"'>
+        Bust!
+      </p>
     </div>
 
-    <p *ngIf='table.player.score === 21 && table.player.cards.length === 2'>
-      Blackjack!
-    </p>
+    <br>
+    <br>
+    <br>
 
-    <p *ngIf='table.result==="PlayerWins"'>
-      <!-- Winner: {{winner.name}} -->
-      Winner: {{table.player.username}}
-    </p>
-    <p *ngIf='table.result==="DealerWins"'>
-      <!-- Winner: {{winner.name}} -->
-      Winner: Dealer {{table.dealer.name}}
-    </p>
-    <p *ngIf='table.result==="Tie"'>
-      Push!
-    </p>
-    <p *ngIf='table.result==="Bust"'>
-      Bust!
-    </p>
+    <button mat-button class='action-button' (click)="showHelperCard()" *ngIf="gameInProgress">
+      Show S17 Blackjack Card
+    </button>
   </div>
 
-  <br>
-  <br>
-  <br>
+  <!-- <div class="card" (click)="cardClicked()" [@cardFlip]="data.state">
+        <div class=" face back">
+        <img src="../../../assets/images/cards/back-of-card.jpg">
+    </div>
+    <div class="face front">
+        <img src="../../../assets/images/cards/10C.jpg">
+    </div>
+  </div> -->
 
-  <button class='show-helper-card' (click)="toggleHelperCard()">
-    {{showHelperCard ? 'Hide': 'Show'}} S17 Blackjack Card
-  </button>
-  <br>
-  <img src='../../../assets/images/blackjack/blackjack-playing-card.jpg' *ngIf='showHelperCard'>
 </div>

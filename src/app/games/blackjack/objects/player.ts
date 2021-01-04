@@ -27,7 +27,6 @@ export class Player implements IPlayer {
     this.active = playerInfo.active,
     this.currentMoney = playerInfo.currentMoney,
     this.totalEarned = playerInfo.totalEarned,
-    this.totalLost = playerInfo.totalLost,
-    this.id = playerInfo.id;
+    this.totalLost = playerInfo.totalLost;
   }
 }

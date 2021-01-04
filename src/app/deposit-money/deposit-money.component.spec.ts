@@ -18,8 +18,7 @@ describe('DepositMoneyComponent', () => {
       active: false,
       currentMoney: 900,
       totalEarned: 1000,
-      totalLost: 100,
-      id: 'id-here'
+      totalLost: 100
     });
     mockAuthService.getPlayer.and.returnValue(of(component.player));
   });

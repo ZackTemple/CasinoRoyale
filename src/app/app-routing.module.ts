@@ -9,6 +9,7 @@ import { PersonalAccountComponent } from './personal-account/personal-account.co
 import { DepositMoneyComponent } from './deposit-money/deposit-money.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { ResendConfirmationEmailComponent } from './auth/resend-confirmation-email/resend-confirmation-email.component';
+import { BlackjackComponent } from './games/blackjack/blackjack.component';
 
 @NgModule({
   declarations: [],
@@ -18,6 +19,7 @@ import { ResendConfirmationEmailComponent } from './auth/resend-confirmation-ema
       {path: 'home', component: HomeComponent},
       {path: 'sign-up', component: SignUpComponent},
       {path: 'sign-in', component: SignInComponent},
+      {path: 'blackjack', component: BlackjackComponent},
       {path: 'resend-confirmation-email', component: ResendConfirmationEmailComponent},
       {path: 'deposit-money', canActivate: [AuthGuard], component: DepositMoneyComponent},
       {path: 'personal-account', canActivate: [AuthGuard], component: PersonalAccountComponent},

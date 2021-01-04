@@ -70,7 +70,7 @@ export class AuthService{
   postNewPlayer(playerUsername: string): Observable<IPlayer | HttpTrackerError> {
     const headerDict = {
       'Content-Type': 'application/json',
-      'Accept': '*/*',
+      Accept: '*/*',
     };
 
     const requestOptions = {

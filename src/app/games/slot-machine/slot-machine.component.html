@@ -1,1 +1,86 @@
-<p>slot-machine works!</p>
+<div class="winner" *ngIf="winner">
+  You are a Winner!
+</div>
+
+<!-- <hr/> -->
+
+<div class="game-background">
+
+  <button mat-raised-button class="game-mode-menu" [matMenuTriggerFor]="menu">Game Mode: {{currentGameMode}}</button>
+  <mat-menu class="mat-menu" #menu="matMenu">
+    <button mat-menu-item (click)="setGameMode(gameModes.EASY)">Easy</button>
+    <button mat-menu-item (click)="setGameMode(gameModes.NORMAL)">Normal</button>
+    <button mat-menu-item (click)="setGameMode(gameModes.GODMODE)">God Mode</button>
+  </mat-menu>
+
+  <div class="header">
+    Lady Fortune is Your Boss!
+  </div>
+
+  <div class="wrapper">
+    <div class="machine-face">
+
+      <div class="grid-item">
+        <img class="top-left" src="{{leftSlotImages[leftWheelMiddleIndex === leftSlotImages.length - 1 ? 0 : leftWheelMiddleIndex + 1].imageUrl}}">
+      </div>
+
+      <div class="grid-item">
+        <img class="top-center" src="{{centerSlotImages[centerWheelMiddleIndex === centerSlotImages.length - 1 ? 0 : centerWheelMiddleIndex + 1].imageUrl}}">
+      </div>
+
+      <div class="grid-item">
+        <img class="top-right" src="{{rightSlotImages[rightWheelMiddleIndex === rightSlotImages.length - 1 ? 0 : rightWheelMiddleIndex + 1].imageUrl}}">
+      </div>
+
+      <div class="grid-item center-item">
+        <img class="middle-left" src={{leftSlotImages[leftWheelMiddleIndex].imageUrl}}>
+      </div>
+
+      <div class="grid-item center-item">
+        <img class="middle-center" src={{centerSlotImages[centerWheelMiddleIndex].imageUrl}}>
+      </div>
+
+      <div class="grid-item center-item">
+        <img class="middle-right" src={{rightSlotImages[rightWheelMiddleIndex].imageUrl}}>
+      </div>
+
+      <div class="grid-item">
+        <img class="bottom-left" src="{{leftSlotImages[leftWheelMiddleIndex === 0 ? leftSlotImages.length - 1 : leftWheelMiddleIndex - 1].imageUrl}}">
+      </div>
+
+      <div class="grid-item">
+        <img class="bottom-center" src="{{centerSlotImages[centerWheelMiddleIndex === 0 ? centerSlotImages.length - 1 : centerWheelMiddleIndex - 1].imageUrl}}">
+      </div>
+
+      <div class="grid-item">
+        <img class="bottom-right" src="{{rightSlotImages[rightWheelMiddleIndex === 0 ? rightSlotImages.length - 1 : rightWheelMiddleIndex - 1].imageUrl}}">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="in-game-options">
+    <div class="display-bet-options" *ngIf="player && intervalCounter === 0">
+      <p>Money in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</p>
+      <p>Place bet:
+        <span>
+          <input type='number' [(ngModel)]='player.bet' step="1" min="0" value="5">
+          &nbsp;
+
+          <button mat-raised-button class="action-button" (click)="validateBet()">
+            <span> Spin! </span>
+          </button>
+        </span>
+      </p>
+    </div>
+
+    <button mat-raised-button class="action-button" (click)="stopSpin()" *ngIf="intervalCounter !== 0">
+       Stop!
+    </button>
+  </div>
+
+
+
+
+
+</div>

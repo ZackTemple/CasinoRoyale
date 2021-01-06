@@ -7,7 +7,6 @@ import { BlackjackService } from './blackjack.service';
 import { MatDialog } from '@angular/material/dialog';
 import { HelperCardDialogComponent } from './helper-card-dialog/helper-card-dialog.component';
 import { BlackjackAnimations } from './blackjack-animations';
-import { ICard } from '../../interfaces/cards';
 
 @Component({
   selector: 'app-blackjack',
@@ -106,19 +105,5 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
     return imageDir.concat(imageValue, imageSuit, imageType);
   }
-
-
-
-  // data: any = {
-  //   state: 'default'
-  // };
-
-  // cardClicked(): void {
-  //   if (this.data.state === 'default') {
-  //     this.data.state = 'flipped';
-  //   } else {
-  //     this.data.state = 'default';
-  //   }
-  // }
 
 }

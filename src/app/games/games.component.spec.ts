@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { GamesComponent } from './games.component';
 
-fdescribe('GamesComponent', () => {
+describe('GamesComponent', () => {
   let component: GamesComponent;
   let fixture: ComponentFixture<GamesComponent>;
 

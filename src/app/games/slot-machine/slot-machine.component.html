@@ -19,39 +19,39 @@
     <div class="machine-face">
 
       <div class="grid-item">
-        <img class="top-left" src="{{leftSlotImages[leftWheelMiddleIndex === leftSlotImages.length - 1 ? 0 : leftWheelMiddleIndex + 1].imageUrl}}">
+        <img class="top-left" src="{{slotMachine.leftSlot.topImage}}">
       </div>
 
       <div class="grid-item">
-        <img class="top-center" src="{{centerSlotImages[centerWheelMiddleIndex === centerSlotImages.length - 1 ? 0 : centerWheelMiddleIndex + 1].imageUrl}}">
+        <img class="top-center" src="{{slotMachine.centerSlot.topImage}}">
       </div>
 
       <div class="grid-item">
-        <img class="top-right" src="{{rightSlotImages[rightWheelMiddleIndex === rightSlotImages.length - 1 ? 0 : rightWheelMiddleIndex + 1].imageUrl}}">
+        <img class="top-right" src="{{slotMachine.rightSlot.topImage}}">
       </div>
 
       <div class="grid-item center-item">
-        <img class="middle-left" src={{leftSlotImages[leftWheelMiddleIndex].imageUrl}}>
+        <img class="middle-left" src={{slotMachine.leftSlot.middleImage}}>
       </div>
 
       <div class="grid-item center-item">
-        <img class="middle-center" src={{centerSlotImages[centerWheelMiddleIndex].imageUrl}}>
+        <img class="middle-center" src={{slotMachine.centerSlot.middleImage}}>
       </div>
 
       <div class="grid-item center-item">
-        <img class="middle-right" src={{rightSlotImages[rightWheelMiddleIndex].imageUrl}}>
+        <img class="middle-right" src={{slotMachine.rightSlot.middleImage}}>
       </div>
 
       <div class="grid-item">
-        <img class="bottom-left" src="{{leftSlotImages[leftWheelMiddleIndex === 0 ? leftSlotImages.length - 1 : leftWheelMiddleIndex - 1].imageUrl}}">
+        <img class="bottom-left" src="{{slotMachine.leftSlot.bottomImage}}">
       </div>
 
       <div class="grid-item">
-        <img class="bottom-center" src="{{centerSlotImages[centerWheelMiddleIndex === 0 ? centerSlotImages.length - 1 : centerWheelMiddleIndex - 1].imageUrl}}">
+        <img class="bottom-center" src="{{slotMachine.centerSlot.bottomImage}}">
       </div>
 
       <div class="grid-item">
-        <img class="bottom-right" src="{{rightSlotImages[rightWheelMiddleIndex === 0 ? rightSlotImages.length - 1 : rightWheelMiddleIndex - 1].imageUrl}}">
+        <img class="bottom-right" src="{{slotMachine.rightSlot.bottomImage}}">
       </div>
     </div>
   </div>

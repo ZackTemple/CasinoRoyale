@@ -4,6 +4,7 @@ import { HttpTrackerError } from 'src/app/shared/http-tracker-error';
 import { Player } from '../blackjack/objects/player';
 import { ImagesArray, SlotMachineImage } from './slots-images';
 import * as _ from 'lodash';
+import { IGameMode } from './igame-mode';
 
 @Component({
   selector: 'app-slot-machine',
@@ -29,11 +30,11 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
 
   winner = false;
 
-  currentGameMode: any;
+  currentGameMode: IGameMode;
   gameModes = {
-    GODMODE: 'God Mode',
-    NORMAL: 'Normal',
-    EASY: 'Easy'
+    GODMODE: {description: 'God Mode', speed: 5},
+    NORMAL: {description: 'Normal', speed: 50},
+    EASY: {description: 'Easy', speed: 400}
   };
 
   private static findWinMulitplier(rowsWon: number): number {
@@ -104,19 +105,7 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   }
 
   private getSpeedFromGameMode(): number {
-    let speed: number;
-    switch (this.currentGameMode) {
-      case this.gameModes.EASY:
-        speed = 400;
-        break;
-      case this.gameModes.NORMAL:
-        speed = 50;
-        break;
-      case this.gameModes.GODMODE:
-        speed = 5;
-        break;
-    }
-    return speed;
+    return this.currentGameMode.speed;
   }
 
   private increaseWheelIndexByOne(index: number): number {
@@ -167,7 +156,7 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
     this.player.totalLost -= this.player.bet * multiplier;
   }
 
-  setGameMode(gameMode: string): void {
+  setGameMode(gameMode: IGameMode): void {
     this.currentGameMode = gameMode;
   }
 

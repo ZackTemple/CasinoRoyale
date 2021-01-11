@@ -2,15 +2,13 @@
   You are a Winner!
 </div>
 
-<!-- <hr/> -->
-
 <div class="game-background">
 
-  <button mat-raised-button class="game-mode-menu" [matMenuTriggerFor]="menu">Game Mode: {{currentGameMode}}</button>
+  <button mat-raised-button class="game-mode-menu" [matMenuTriggerFor]="menu">Game Mode: {{currentGameMode.description}}</button>
   <mat-menu class="slots-mat-menu" #menu="matMenu">
-    <button mat-menu-item (click)="setGameMode(gameModes.EASY)">Easy</button>
-    <button mat-menu-item (click)="setGameMode(gameModes.NORMAL)">Normal</button>
-    <button mat-menu-item (click)="setGameMode(gameModes.GODMODE)">God Mode</button>
+    <button mat-menu-item (click)="setGameMode(gameModes.EASY)">{{gameModes.EASY.description}}</button>
+    <button mat-menu-item (click)="setGameMode(gameModes.NORMAL)">{{gameModes.NORMAL.description}}</button>
+    <button mat-menu-item (click)="setGameMode(gameModes.GODMODE)">{{gameModes.GODMODE.description}}</button>
   </mat-menu>
 
   <div class="header">

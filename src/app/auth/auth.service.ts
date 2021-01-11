@@ -18,7 +18,7 @@ import { ErrorService } from '../shared/error.service';
 })
 export class AuthService{
 
-  databaseUrl = 'http://localhost:5000/api/players/';
+  databaseUrl = 'http://localhost:5000/api/players';
   signedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   playerUsername: string;
 

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OmahaHoldemComponent } from './omaha-holdem.component';
+import { SlotMachineComponent } from './slot-machine.component';
 
-describe('OmahaHoldemComponent', () => {
-  let component: OmahaHoldemComponent;
-  let fixture: ComponentFixture<OmahaHoldemComponent>;
+describe('SlotMachineComponent', () => {
+  let component: SlotMachineComponent;
+  let fixture: ComponentFixture<SlotMachineComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OmahaHoldemComponent ]
+      declarations: [ SlotMachineComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OmahaHoldemComponent);
+    fixture = TestBed.createComponent(SlotMachineComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

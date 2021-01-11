@@ -75,33 +75,39 @@ describe('SlotMachineComponent', () => {
   });
 
   describe('validateBet', () => {
-    it('should reset winner attribute to false for the new round', () => {
+    beforeEach(() => {
       component.player.bet = 25;
       component.player.currentMoney = 50;
       component.winner = true;
+    });
+
+    it('should reset winner attribute to false for the new round', () => {
+      const moneyBeforeValidation = component.player.currentMoney;
+      spyOn(component, 'startSpin').and.callThrough();
 
       component.validateBet();
 
-      clearInterval(component.leftSlot);
-      clearInterval(component.centerSlot);
-      clearInterval(component.rightSlot);
-
       expect(component.winner).toBeFalsy();
+      expect(component.player.currentMoney).toBe(moneyBeforeValidation - component.player.currentMoney);
     });
 
     it('should start the spinning if the bet is valid', () => {
-
-    });
-
-    it('should do nothing if the bet is invalid', () => {
-      component.player.bet = 50;
-      component.player.currentMoney = 25;
+      spyOn(component, 'startSpin').and.callThrough();
 
       component.validateBet();
 
-      clearInterval(component.leftSlot);
-      clearInterval(component.centerSlot);
-      clearInterval(component.rightSlot);
+      expect(component.startSpin).toHaveBeenCalledTimes(1);
+    });
+
+    it('should do nothing if the bet is invalid', () => {
+      component.player.bet = component.player.currentMoney + 1;
+      const moneyBeforeValidation = component.player.currentMoney;
+      spyOn(component, 'startSpin').and.callThrough();
+
+      component.validateBet();
+
+      expect(component.winner).toBeTruthy();
+      expect(component.player.currentMoney).toBe(moneyBeforeValidation);
     });
   });
 

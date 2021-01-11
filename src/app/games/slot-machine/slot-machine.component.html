@@ -7,7 +7,7 @@
 <div class="game-background">
 
   <button mat-raised-button class="game-mode-menu" [matMenuTriggerFor]="menu">Game Mode: {{currentGameMode}}</button>
-  <mat-menu class="mat-menu" #menu="matMenu">
+  <mat-menu class="slots-mat-menu" #menu="matMenu">
     <button mat-menu-item (click)="setGameMode(gameModes.EASY)">Easy</button>
     <button mat-menu-item (click)="setGameMode(gameModes.NORMAL)">Normal</button>
     <button mat-menu-item (click)="setGameMode(gameModes.GODMODE)">God Mode</button>
@@ -59,8 +59,8 @@
   </div>
 
 
-  <div class="in-game-options">
-    <div class="display-bet-options" *ngIf="player && intervalCounter === 0">
+  <div class="pre-game-options">
+    <div class="display-bet-options" *ngIf="player && intervalQueue.length === 0">
       <p>Money in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</p>
       <p>Place bet:
         <span>
@@ -74,13 +74,13 @@
       </p>
     </div>
 
-    <button mat-raised-button class="action-button" (click)="stopSpin()" *ngIf="intervalCounter !== 0">
-       Stop!
-    </button>
+    <div class="in-game-options" *ngIf="player && intervalQueue.length !== 0">
+      <div class="display-bet-options">
+        <p>Good luck!</p>
+
+        <button mat-raised-button class="action-button" (click)="stopSpin()">
+          Stop!
+        </button>
+      </div>
   </div>
-
-
-
-
-
 </div>

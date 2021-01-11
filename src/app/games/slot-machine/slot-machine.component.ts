@@ -25,10 +25,7 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   centerSlotImages: SlotMachineImage[];
   rightSlotImages: SlotMachineImage[];
 
-  leftSlot: any;
-  centerSlot: any;
-  rightSlot: any;
-  intervalCounter = 0;
+  intervalQueue: any[] = [];
 
   winner = false;
 
@@ -93,19 +90,17 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
 
   startSpin(): void {
     const speed = this.getSpeedFromGameMode();
-    this.leftSlot = setInterval(() => {
-      this.leftWheelMiddleIndex = this.increaseWheelIndexByOne(this.leftWheelMiddleIndex);
-    }, speed);
-
-    this.centerSlot = setInterval(() => {
-      this.centerWheelMiddleIndex = this.increaseWheelIndexByOne(this.centerWheelMiddleIndex);
-    }, speed);
-
-    this.rightSlot = setInterval(() => {
-      this.rightWheelMiddleIndex = this.increaseWheelIndexByOne(this.rightWheelMiddleIndex);
-    }, speed);
-
-    this.intervalCounter = 3;
+    this.intervalQueue = [
+      setInterval(() => {
+        this.leftWheelMiddleIndex = this.increaseWheelIndexByOne(this.leftWheelMiddleIndex);
+      }, speed),
+      setInterval(() => {
+        this.centerWheelMiddleIndex = this.increaseWheelIndexByOne(this.centerWheelMiddleIndex);
+      }, speed),
+      setInterval(() => {
+        this.rightWheelMiddleIndex = this.increaseWheelIndexByOne(this.rightWheelMiddleIndex);
+      }, speed)
+    ];
   }
 
   private getSpeedFromGameMode(): number {
@@ -129,20 +124,9 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   }
 
   stopSpin(): void {
-    if (this.intervalCounter === 3) {
-      clearInterval(this.leftSlot);
-    }
-    else if (this.intervalCounter === 2) {
-      clearInterval(this.centerSlot);
-    }
-    else {
-      clearInterval(this.rightSlot);
-    }
-    this.intervalCounter--;
-
-    if (this.intervalCounter === 0) {
-      this.checkForWinner();
-    }
+    const columnToStop = this.intervalQueue.shift();
+    clearInterval(columnToStop);
+    if (this.intervalQueue.length === 0) { this.checkForWinner(); }
   }
 
   checkForWinner(): void {

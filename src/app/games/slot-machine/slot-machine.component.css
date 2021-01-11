@@ -19,15 +19,10 @@
   width: auto
 }
 
-.mat-menu {
+.slots-mat-menu {
   background-color: rgba(250, 235, 215, 1) !important;
   position: absolute;
   right: 1vw;
-}
-
-.mat-menu-item {
-  font-size: 18px;
-  font-family: 'Times New Roman';
 }
 
 .header {
@@ -70,6 +65,7 @@ img {
 .action-button {
   color: black;
   padding: 1vh 2vw;
+  margin-top: .5vh;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -80,7 +76,7 @@ img {
   max-width: 10vw;
 }
 
-.in-game-options {
+.pre-game-options {
   align-content: center;
   text-align: center;
 }

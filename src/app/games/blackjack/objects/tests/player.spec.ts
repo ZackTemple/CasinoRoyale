@@ -1,4 +1,4 @@
-import { Player } from '../player'
+import { Player } from '../player';
 
 describe('Player Object', () => {
 
@@ -11,10 +11,9 @@ describe('Player Object', () => {
       active: false,
       currentMoney: 900,
       totalEarned: 1000,
-      totalLost: 100,
-      id: 'id-here'
+      totalLost: 100
     });
 
-    expect(player.name).toBe('foo');
+    expect(player.username).toBe('foo');
   });
 });

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
-import { PlayerTrackerError } from '../auth/player-tracker-error';
+import { HttpTrackerError } from '../shared/http-tracker-error';
 import { IPlayer } from '../interfaces/player';
 
 @Component({
@@ -24,7 +24,7 @@ export class PersonalAccountComponent implements OnInit {
         this.player = player,
         this.earningsToLossesRatio = (this.player.totalEarned / this.player.totalLost);
       },
-      (err: PlayerTrackerError) => console.log(err)
+      (err: HttpTrackerError) => console.log(err)
     );
   }
 

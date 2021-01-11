@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError} from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { IPlayer } from '../interfaces/player';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,19 +9,24 @@ import * as _ from 'lodash';
 import { Auth } from 'aws-amplify';
 import { User } from './user';
 import { CognitoUser } from 'amazon-cognito-identity-js';
-import { PlayerTrackerError } from './player-tracker-error';
+import { HttpTrackerError } from '../shared/http-tracker-error';
 import awsconfig from './../../aws-config';
+import { ErrorService } from '../shared/error.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService{
 
-  databaseUrl = 'http://localhost:5000/api/players';
+  databaseUrl = 'http://localhost:5000/api/players/';
   signedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   playerUsername: string;
 
-  constructor(private httpClient: HttpClient, private dialog: MatDialog ) {
+  constructor(
+    private httpClient: HttpClient,
+    private dialog: MatDialog,
+    private errorService: ErrorService
+    ) {
     this.getAuthenticatedUser().then().catch(
       error => console.log(error)
     );
@@ -62,9 +67,21 @@ export class AuthService{
     }
   }
 
-  postNewPlayer(playerUsername: string): Observable<IPlayer | PlayerTrackerError> {
-    return this.httpClient.post<IPlayer>(this.databaseUrl, {username: playerUsername}).pipe(
-      catchError(err => this.handleHttpError(err))
+  postNewPlayer(playerUsername: string): Observable<IPlayer | HttpTrackerError> {
+    const headerDict = {
+      'Content-Type': 'application/json',
+      Accept: '*/*',
+    };
+
+    const requestOptions = {
+      headers: new HttpHeaders(headerDict),
+    };
+
+    console.log(playerUsername);
+    console.log(this.databaseUrl);
+
+    return this.httpClient.post<IPlayer>(this.databaseUrl, JSON.stringify(playerUsername), requestOptions).pipe(
+      catchError(err => this.errorService.handleHttpError(err))
     );
   }
 
@@ -81,35 +98,36 @@ export class AuthService{
   }
 
   // Gets the player from the API and sets it to the current player
-  getPlayer(username: string): Observable<IPlayer | PlayerTrackerError> {
+  getPlayer(username: string): Observable<IPlayer | HttpTrackerError> {
     const playerUrl = this.databaseUrl.concat(`/${username}`);
 
-    return this.httpClient.get<IPlayer >(playerUrl).pipe(
+    return this.httpClient.get<IPlayer>(playerUrl).pipe(
       catchError(
-        (err: HttpErrorResponse) => this.handleHttpError(err)
+        (err: HttpErrorResponse) => this.errorService.handleHttpError(err)
       )
     );
   }
 
-  updatePlayer(updatedPlayer: IPlayer): Observable<IPlayer | PlayerTrackerError> {
-    const playerUrl = this.databaseUrl.concat(`/${updatedPlayer.username}`);
-    const playerWithoutID = _.omit(updatedPlayer, 'username');
+  updatePlayer(updatedPlayer: IPlayer): Observable<IPlayer | HttpTrackerError> {
+    const playerModel = this.getPlayerModel(updatedPlayer);
+    const playerUrl = this.databaseUrl.concat(`/${playerModel.username}`);
 
-    return this.httpClient.put(playerUrl, playerWithoutID).pipe(
+    return this.httpClient.put(playerUrl, playerModel).pipe(
       tap(
         (player: IPlayer) => console.log(player)
       ),
       catchError(
-        err => this.handleHttpError(err)
+        err => this.errorService.handleHttpError(err)
       )
     );
   }
 
-  handleHttpError(err: HttpErrorResponse): Observable<PlayerTrackerError> {
-    const playerRetrievalError = new PlayerTrackerError();
-    playerRetrievalError.errorCode = err.status;
-    playerRetrievalError.message = 'Error retrieving the data.';
-    return throwError(playerRetrievalError);
+  private getPlayerModel(player: IPlayer): IPlayer {
+    const clone = _.cloneDeep(player);
+    const validKeys = ['username', 'currentMoney', 'totalEarned', 'totalLost', 'active'];
+
+    Object.keys(clone).forEach((key) => validKeys.includes(key) || delete clone[key]);
+    return clone;
   }
 
   async signOut(): Promise<void> {

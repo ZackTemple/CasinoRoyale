@@ -1,20 +1,25 @@
-<!-- <div class="container">
-  <mat-grid-list cols="3" rowHeight="25vh" rowWidth="100vh">
-    <ng-container *ngFor="let tile of tiles">
-      <mat-grid-tile class="grid-tile" [ngClass]='tile.class'
-          [colspan]="tile.cols"
-          [rowspan]="tile.rows">
-          <button mat-raised-button class="tile-button" [routerLink]="tile.route">
-            Play {{tile.text}}
-          </button>
-      </mat-grid-tile>
-    </ng-container>
-  </mat-grid-list>
-  </div>
+<div class="games-background">
+  <span>
 
-  <router-outlet></router-outlet> -->
+    <button mat-button class="game-button" (click)="onClick()">
+      Play Blackjack
+    </button>
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 
-  <mat-tab-group>
+    <button mat-button class="game-button" routerLink="/games/omaha-holdem">
+      Play Omaha Hold'em
+    </button>
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+
+    <button mat-button class="game-button" routerLink="/games/texas-holdem">
+      Play Texas Hold'em
+    </button>
+
+  </span>
+</div>
+
+  <!-- <router-outlet></router-outlet> -->
+  <!-- <mat-tab-group>
     <mat-tab label="Blackjack">
       <app-blackjack></app-blackjack>
     </mat-tab>
@@ -24,5 +29,5 @@
     <mat-tab label="Omaha Hold'em">
       <app-omaha-holdem></app-omaha-holdem>
     </mat-tab>
-  </mat-tab-group>
+  </mat-tab-group> -->
 

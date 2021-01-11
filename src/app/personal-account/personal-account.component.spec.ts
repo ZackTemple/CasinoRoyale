@@ -22,8 +22,7 @@ describe('PersonalAccountComponent', () => {
       active: false,
       currentMoney: 900,
       totalEarned: 1000,
-      totalLost: 100,
-      id: 'id-here'
+      totalLost: 100
     });
 
     await TestBed.configureTestingModule({

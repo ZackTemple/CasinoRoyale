@@ -13,22 +13,20 @@ export class Player implements IPlayer {
   id: string;
 
   // Game information
-  name: string;
   bet: number;
-  cards: ICard[] = new Array();
+  cards: ICard[];
   score: number;
 
   constructor(playerInfo: IPlayer) {
     this.setPlayerInfo(playerInfo);
   }
 
-  setPlayerInfo(playerInfo): void {
-    this.username = this.name = playerInfo.username,
+  setPlayerInfo(playerInfo: IPlayer): void {
+    this.username = playerInfo.username,
     this.password = playerInfo.password,
     this.active = playerInfo.active,
     this.currentMoney = playerInfo.currentMoney,
     this.totalEarned = playerInfo.totalEarned,
-    this.totalLost = playerInfo.totalLost,
-    this.id = playerInfo.id;
+    this.totalLost = playerInfo.totalLost;
   }
 }

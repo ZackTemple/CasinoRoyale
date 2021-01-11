@@ -26,13 +26,13 @@ import { CacheInterceptor} from './cache/cache.interceptor';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     GamesModule,
     AppRoutingModule,
     SharedModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule,
-    BrowserAnimationsModule
+    AppRoutingModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true}

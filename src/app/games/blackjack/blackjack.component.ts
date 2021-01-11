@@ -1,192 +1,124 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { PlayerTrackerError } from 'src/app/auth/player-tracker-error';
-import { IPlayer } from 'src/app/interfaces/player';
-import { Dealer } from './objects/dealer';
+import { HttpTrackerError } from 'src/app/shared/http-tracker-error';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
-import * as _ from 'lodash';
+import { BlackjackService } from './blackjack.service';
+import { MatDialog } from '@angular/material/dialog';
+import { HelperCardDialogComponent } from './helper-card-dialog/helper-card-dialog.component';
+import { BlackjackAnimations } from './blackjack-animations';
+import { ICard } from '../../interfaces/cards';
 
 @Component({
   selector: 'app-blackjack',
   templateUrl: './blackjack.component.html',
-  styleUrls: ['./blackjack.component.css']
+  styleUrls: ['./blackjack.component.css'],
+  animations: BlackjackAnimations
 })
 
-export class BlackjackComponent implements OnInit {
+export class BlackjackComponent implements OnInit, OnDestroy {
 
-  // Objects: dealer, player, and table
-  dealer: Dealer;
-  player: Player;
+  gameInProgress = false;
   table: Table;
+  player: Player;
+  outcomes = {
+    PlayerWins: 'playerwins',
+    DealerWins: 'dealerwins',
+    Tie: 'tie',
+    Bust: 'bust'
+  };
 
-  // Property for handling the initial bet
-  betLockedIn = false;
-
-  // Final winner, tie, and bust
-  winner: Player | Dealer;
-  tie = false;
-  bust = false;
-
-  // gives user ability to see playing card
-  showHelperCard = false;
-
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private gameService: BlackjackService,
+    public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.dealer = new Dealer();
-
     this.authService.getPlayer(this.authService.playerUsername).subscribe(
-      (player: IPlayer) => {
-        this.player = new Player(player);
-        this.table = new Table([this.dealer, this.player]);
-      },
-      (err: PlayerTrackerError) => console.log(err)
+      (player: Player) => this.player = player,
+      (err: HttpTrackerError) => console.log(err)
     );
   }
 
-  onClickPlaceBet(): void {
-    if ( 0 < this.player.bet && this.player.bet <= this.player.currentMoney) {
-      this.setupNewGame();
-      this.startGame();
-    }
-    else {
-      this.betLockedIn = false;
-    }
-  }
+  onClickPlaceBet(betString: string): void {
+    const bet = parseInt(betString, 10);
 
-  setupNewGame(): void {
-    this.resetGameAttributes();
-    this.dealer.collectOldCards(this.table);
-    this.dealer.resetDeck();
-  }
-
-  private resetGameAttributes(): void {
-    this.betLockedIn = true;
-    this.winner = null;
-    this.tie = false;
-    this.bust = false;
-    this.player.score = 0;
-    this.dealer.score = 0;
-  }
-
-  startGame(): void {
-    this.dealer.subtractBetFromPlayerWallet(this.player);
-    this.dealer.shuffleDeck();
-    // this.dealer.dealCardsToStartGame(this.table.players);
-
-    this.player.cards = [
-      {suit: 'Hearts', value: 'A', weight: 11},
-      {suit: 'Spades', value: 'J', weight: 10}
-    ];
-    this.dealer.cards = [
-      {suit: 'Diamonds', value: 'A', weight: 11}
-    ];
+    this.gameService.startGame(this.player, bet).subscribe(
+      (table: Table) => {
+        this.table = table;
+        this.player = this.table.player;
+        console.log({table});
+        this.gameInProgress = true;
+      },
+      (err: HttpTrackerError) => {
+        console.log(err.message);
+      }
+    );
   }
 
   clickHit(): void {
-    this.dealer.dealCardToPlayer(this.player, 1);
-    this.playerBustQ();
+    this.gameService.dealCardToPlayer(this.table).subscribe(
+      (table: Table) => {
+        this.table = table;
+        console.log({table});
+        this.player = table.player;
+        if (table.result) { this.gameInProgress = false; }
+      },
+      (err: HttpTrackerError) => {
+        console.log(err);
+      }
+    );
   }
-
-  playerBustQ(): void {
-    this.getScore(this.player);
-    this.handleAces(this.player);
-    if (this.player.score > 21) {
-      this.endGameFromUserBust();
-    }
-  }
-
-  handleAces(player: Player | Dealer): void {
-    while (player.score > 21 && player.cards.findIndex(card => card['weight'] === 11) !== -1) {
-      const index = player.cards.findIndex(card => card['weight'] === 11);
-      const aceCard = _.clone(player.cards[index]);
-      aceCard['weight'] = 1;
-
-      player.cards.splice(index, 1);
-      player.cards.push(aceCard);
-      this.getScore(player);
-    }
-  }
-
-  getScore(player: Player | Dealer): void {
-    let totalScore = 0;
-    const hand = player.cards;
-
-    hand.map(card => {
-      totalScore += card.weight;
-    });
-
-    player.score = totalScore;
-  }
-
-  endGameFromUserBust(): void {
-    this.bust = true;
-    this.winner = this.dealer;
-    this.getScore(this.dealer);
-    this.actOnGameResults();
-    this.updatePlayer();
-  }
-
-
 
   clickStay(): void {
-    this.getScore(this.player);
-
-    this.finishGame();
+    this.gameService.finishGame(this.table).subscribe(
+      (table: Table) => {
+        this.table = table;
+        console.log({table});
+        this.player = table.player;
+        this.gameInProgress = false;
+        this.updatePlayer();
+      },
+      (err: HttpTrackerError) => {
+        console.log(err);
+      }
+    );
   }
 
-  finishGame(): void {
-    this.playDealersTurn();
-    this.getGameResults();
-    this.actOnGameResults();
+  ngOnDestroy(): void {
     this.updatePlayer();
-  }
-
-  playDealersTurn(): void {
-    // Get dealer info before entering loop to add more cards for dealer
-    this.getScore(this.dealer);
-    this.handleAces(this.dealer);
-
-    // Dealer keeps hitting until score is 17 or more
-    while (this.dealer.score < 17 && this.dealer.score <= this.player.score) {
-      this.dealer.dealCardToPlayer(this.dealer, 1);
-      this.getScore(this.dealer);
-      this.handleAces(this.dealer);
-    }
-  }
-
-  getGameResults(): void {
-    if (this.player.score > this.dealer.score || this.dealer.score > 21) {
-      this.winner = this.player;
-    }
-    else if (this.dealer.score > this.player.score) {
-      this.winner = this.dealer;
-    }
-    else if (this.player.score === this.dealer.score) {
-      this.tie = true;
-    }
-  }
-
-  actOnGameResults(): void {
-    if (this.winner === this.player) {
-      this.dealer.awardPlayer(this.player);
-    }
-    else if (this.tie === true) {
-      this.dealer.returnPlayerBet(this.player);
-    }
-    else {
-      this.player.totalLost += this.player.bet;
-    }
   }
 
   updatePlayer(): void {
     this.authService.updatePlayer(this.player).subscribe();
   }
 
-  toggleHelperCard(): void {
-    this.showHelperCard = !this.showHelperCard;
+  showHelperCard(): void {
+    this.dialog.open(HelperCardDialogComponent);
   }
+
+  getImage(card: any): string {
+    const imageDir = '../../../assets/images/cards/';
+    const imageValue = card.value;
+    const imageSuit = card.suit[0];
+    const imageType = '.jpg';
+
+    return imageDir.concat(imageValue, imageSuit, imageType);
+  }
+
+
+
+  // data: any = {
+  //   state: 'default'
+  // };
+
+  // cardClicked(): void {
+  //   if (this.data.state === 'default') {
+  //     this.data.state = 'flipped';
+  //   } else {
+  //     this.data.state = 'default';
+  //   }
+  // }
 
 }

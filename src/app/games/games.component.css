@@ -2,7 +2,7 @@ div.container {
   background-color: black;
 }
 
-.tile-button {
+.game-button {
   border: none;
   color: white;
   padding: 2vh 1vw;
@@ -16,7 +16,18 @@ div.container {
 
 }
 
-.blackjack{
+.games-background {
+  background-image: url('../../assets/images/games-photos/blackjack-5.jpg');
+  background-size: cover;
+  min-height: 92vh;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+}
+
+/* .blackjack{
   background-image: url('../../assets/images/games-photos/blackjack-5.jpg');
   background-size: cover;
 }
@@ -29,4 +40,5 @@ div.container {
 .omaha-holdem{
   background-image: url('../../assets/images/games-photos/omaha-holdem-5.jpg');
   background-size: cover;
-}
+} */
+

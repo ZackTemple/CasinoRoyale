@@ -1,1 +1,62 @@
+.game-background {
+  background-color: rgb(16, 78, 4);
+  color: antiquewhite;
+  height: 95vh;
+  margin-top: 0px;
+  margin-right: 0px;
+  background-size: inherit;
+}
+
+.Blackjack {
+  /* display: flex; */
+  align-items: center;
+  align-content: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.action-button {
+  background-color: white;
+  color: black;
+}
+
+.show-helper-card {
+  background-color: white;
+  color: black;
+}
+
+:host {
+  display: block;
+  perspective: 600px;
+}
+
+.card {
+  box-shadow: 10px 10px 43px -18px rgba(0, 0, 0, 0.75);
+  border-radius: 5px;
+  height:25vh;
+  width:16vh;
+
+  cursor: pointer;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.face {
+  display: block;
+  position: absolute;
+  height:25vh;
+  width:16vh;
+  border-radius: inherit;
+  backface-visibility: hidden;
+}
+
+.face > img {
+  height:25vh;
+  width:16vh;
+  object-fit: fill;
+  border-radius: inherit;
+}
+.front {
+  transform: rotateY(180deg);
+}
 

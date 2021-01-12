@@ -1,5 +1,3 @@
-import { SlotMachineComponent } from './slot-machine.component';
-
 export const ImagesArray = [
   '../../../assets/images/slots/cherries.png',
   '../../../assets/images/slots/seven.png',

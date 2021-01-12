@@ -13,7 +13,7 @@ export class Player implements IPlayer {
   id: string;
 
   // Game information
-  bet: number;
+  currentBet: number;
   cards: ICard[];
   score: number;
 

@@ -1,5 +1,6 @@
 .game-background {
-  background-image: url('../../../assets/images/games-photos/casino.jpg');
+  /* background-image: url('../../../assets/images/games-photos/casino.jpg'); */
+  background-color: black;
   background-position: center;
   background-size: cover;
   min-height: 92vh;
@@ -27,25 +28,47 @@
 
 .header {
   text-align: center;
-  font-family:'Brush Script MT', cursive;
-  font-size: 8vh;
+  font-family: cursive;
+  font-size: 6vh;
   padding: 1vh;
+  padding-top: 0vh;
   color: rgba(250, 235, 215, 1);
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: rgb(1, 83, 1);
 }
 
-.machine-face{
- display: grid;
- grid-template-columns: 20vw 20vw 20vw;
- grid-template-rows: 20vh 20vh 20vh;
- background-color: rgb(1, 83, 1);
- padding: 10px;
- border-radius: 25px;
- width: 60vw;
- justify-content: center;
- margin-right: auto;
- margin-left: auto;
+.glow {
+  color: rgba(250, 235, 215, 1);
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px rgba(250, 235, 215, 1), 0 0 20px rgba(250, 235, 215, 1), 0 0 30px rgb(1, 83, 1), 0 0 40px rgb(1, 83, 1), 0 0 50px rgb(1, 83, 1), 0 0 60px rgb(1, 83, 1), 0 0 70px rgb(1, 83, 1);
+  }
+  to {
+    text-shadow: 0 0 20px rgba(250, 235, 215, 1), 0 0 30px rgb(0, 150, 0), 0 0 40px rgb(0, 150, 0), 0 0 50px rgb(0, 150, 0), 0 0 60px rgb(0, 150, 0), 0 0 70px rgb(0, 150, 0), 0 0 80px rgb(1, 83, 1);
+  }
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+.machine-face {
+  order: 2;
+  display: grid;
+  grid-template-columns: 20vw 20vw 20vw;
+  grid-template-rows: 15vh 15vh 15vh;
+  background-color: rgb(1, 83, 1);
+  padding: 10px;
+  border-radius: 25px;
+  width: 60vw;
+  justify-content: center;
 }
 
 .grid-item {
@@ -58,14 +81,14 @@
 }
 
 img {
-  width: 12vw;
-  height: 20vh;
+  width: 9vw;
+  height: 15vh;
 }
 
 .action-button {
   color: black;
   padding: 1vh 2vw;
-  margin-top: .5vh;
+  margin: 1vh 1vw 0 1vw;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -84,25 +107,114 @@ img {
   -webkit-text-stroke-width: .5px;
   -webkit-text-stroke-color: rgb(1, 83, 1);
 }
+
 .winner {
-  color: rgb(1, 83, 1);
-  text-decoration: underline;
+  color: rgba(250, 235, 215, 1);
   -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: black;
-  font-size: 10vh;
-  font-family:'Brush Script MT', cursive;
-  position: absolute;
-  margin: 35vh auto 0 35vw;
-  transform: rotate(-15deg);
+  -webkit-text-stroke-color: rgb(1, 83, 1);
+  font-size: 8vh;
+  font-family:cursive;
+  position: fixed;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+  bottom: 45%;
+  transform: rotate(-25deg)
 }
 
+.lights-row {
+ display: flex;
+ justify-content: center;
+}
+
+.light {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: rgba(250, 235, 215, 1);
+  border: 3px solid rgb(1, 83, 1);
+  flex-shrink: 0
+}
+
+.top-bottom-lights {
+  width: 61vw;
+  margin-left: 19.5vw;
+  /* overflow: hidden; */
+}
+
+.left-lights {
+  order: 1;
+  flex-direction: column;
+  margin-right: 0;
+  height: 48vh;
+  /* overflow: hidden; */
+}
+
+.right-lights {
+  order: 3;
+  flex-direction: column;
+  height: 48vh;
+  /* overflow: hidden; */
+}
+
+@keyframes myAnimation {
+  0% {background-color: rgb(1, 83, 1); border: 3px solid rgba(250, 235, 215, 1);}
+  50%{background-color:rgba(250, 235, 215, 1); border: 3px solid rgb(1, 83, 1);}
+  100%{background-color:rgb(1, 83, 1); border: 3px solid rgba(250, 235, 215, 1);}
+}
+
+.flashing-light {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: myAnimation 0.25s infinite;
+}
+
+.chips {
+  margin: 0vh 0 1vh 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+ }
+
+.chip-button {
+  width: 3em;
+  height: 3em;
+  font-size: 30px;
+  margin: 1vh 2vw 0 2vw;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: rgba(250, 235, 215, 1);
+  text-align: center;
+  border: 7px dashed rgba(250, 235, 215, 1);
+  padding: 0;
+}
+
+.chip-1 {
+  background-color: rgb(139, 0, 0);
+}
+.chip-5 {
+  background-color: rgb(148, 121, 3);
+}
+.chip-10 {
+  background-color: rgb(16, 134, 0);
+}
+.chip-25 {
+  background-color: rgb(1, 12, 165);
+}
+.chip-100 {
+  background-color: rgb(88, 0, 69);
+}
 
 @media (max-width: 1000px) {
 
   .game-background {
     background-image: none;
     background-color: black;
-    display: block
+    display: block;
+    min-height: 100vh;
+    overflow: hidden;
   }
 
   .game-mode-menu {
@@ -120,8 +232,8 @@ img {
   }
 
   .header {
-    padding-top: 4vh;
-    font-size: 10vw;
+    padding-top: 0vh;
+    font-size: 8vw;
     position: relative;
     top: 3vh
   }
@@ -129,26 +241,40 @@ img {
   .machine-face{
    margin-top: 3vh;
    grid-template-columns: 26vw 26vw 26vw;
-   grid-template-rows: 16vh 16vh 16vh;
+   grid-template-rows: 14vh 14vh 14vh;
    width: 82vw;
    border-radius: 5px;
   }
 
   img {
     width: 26vw;
-    height: 16vh;
+    height: 14vh;
   }
 
   .action-button {
     font-size: 18px;
     background-color: rgba(250, 235, 215, 1);
     font-family: 'Times New Roman';
-    max-width: 20vw;
-    width: 20vw;
+    max-width: 25vw;
+    width: 25vw;
   }
 
-  .winner {
-    margin: 20vh auto 0 20vw;
+  .chip-button {
+    width: 2em;
+    height: 4em;
+    font-size: 15px;
+    margin: .5vh 2vw 0 2vw;
+    border-radius: 50%;
+    flex-shrink: 0;
+    color: rgba(250, 235, 215, 1);
+    text-align: center;
+    border: 7px dashed rgba(250, 235, 215, 1);
+    padding: 0;
+  }
+
+  .p {
+    margin-block-start: 0em;
+    margin-block-end: 0em;
   }
 }
 

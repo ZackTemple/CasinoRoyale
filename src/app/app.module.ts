@@ -8,7 +8,6 @@ import { GamesModule } from './games/games.module';
 
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FailedSignInDialogComponent } from './auth/dialog/failed-sign-in-dialog.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
@@ -26,7 +25,6 @@ import { CacheInterceptor} from './cache/cache.interceptor';
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     GamesModule,
     AppRoutingModule,
     SharedModule,

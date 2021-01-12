@@ -1,9 +1,13 @@
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { HttpTrackerError } from 'src/app/shared/http-tracker-error';
 import { Player } from '../blackjack/objects/player';
 import { IGameMode } from './igame-mode';
 import { SlotMachine } from './slot-machine';
+import * as _ from 'lodash';
+import { BreakpointSizesArray, numOfLightsForTopBottom, numOfLightsForSides, BreakpointsWidthSizes } from './breakpoints';
+import { stat } from 'fs';
 
 @Component({
   selector: 'app-slot-machine',
@@ -13,7 +17,9 @@ import { SlotMachine } from './slot-machine';
 })
 export class SlotMachineComponent implements OnInit, OnDestroy {
 
-  private static winMultiplierArray = [0, 2, 20, 1000];
+  topBottomLightsArray: number[];
+  sidesLightsArray: number[];
+  isDesktopView: boolean;
   currentGameMode: IGameMode;
   gameModes = {
     GODMODE: {description: 'God Mode', speed: 5},
@@ -25,20 +31,42 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   slotMachine: SlotMachine;
   winner = false;
 
-  public constructor(public authService: AuthService) {
+  public constructor(public authService: AuthService, private breakpointObserver: BreakpointObserver) {
   }
 
   ngOnInit(): void {
     this.currentGameMode = this.gameModes.NORMAL;
     this.authService.getPlayer(this.authService.playerUsername).subscribe(
-      (player: Player) => this.player = player,
+      (player: Player) => {
+        this.player = player;
+        this.player.currentBet = 0;
+      },
       (err: HttpTrackerError) => console.log(err)
     );
     this.slotMachine = new SlotMachine();
+
+    this.observeWindowSize();
+  }
+
+  observeWindowSize(): void {
+    this.breakpointObserver.observe(BreakpointSizesArray)
+      .subscribe( (state: BreakpointState) => {
+      this.topBottomLightsArray = _.range(numOfLightsForTopBottom(state));
+      this.sidesLightsArray = _.range(numOfLightsForSides(state));
+      this.isDesktopView = state.breakpoints[BreakpointsWidthSizes.XSmall.widthStr];
+    });
+  }
+
+  increasePlayerBet(betAmount: number): void {
+    this.player.currentBet += betAmount;
+  }
+
+  resetPlayerBet(): void {
+    this.player.currentBet = 0;
   }
 
   validateBet(): void {
-    if (this.player.bet <= this.player.currentMoney) {
+    if (this.player.currentBet <= this.player.currentMoney) {
       this.winner = false;
       this.subtractPlayerBet();
       this.intervalQueue = this.slotMachine.startSpin(this.currentGameMode.speed);
@@ -46,15 +74,18 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   }
 
   private subtractPlayerBet(): void {
-    this.player.currentMoney -= this.player.bet;
-    this.player.totalLost += this.player.bet;
+    this.player.currentMoney -= this.player.currentBet;
+    this.player.totalLost += this.player.currentBet;
     this.updatePlayer();
   }
 
   stopSpin(): void {
     const columnToStop = this.intervalQueue.shift();
     clearInterval(columnToStop);
-    if (this.intervalQueue.length === 0) { this.checkForWinner(); }
+    if (this.intervalQueue.length === 0) {
+      this.checkForWinner();
+      this.resetPlayerBet();
+    }
   }
 
   checkForWinner(): void {
@@ -63,11 +94,16 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
     this.winner = numOfRowsWon > 0;
   }
 
+  // TODO: alter payouts
   private awardPlayer(numOfRowsWon: number): void {
-    const winMultiplier = SlotMachineComponent.winMultiplierArray[numOfRowsWon];
-    this.player.currentMoney += this.player.bet * winMultiplier;
-    this.player.totalEarned += this.player.bet * winMultiplier;
-    this.player.totalLost -= this.player.bet * winMultiplier;
+    this.player.currentMoney += this.payoutEquation(numOfRowsWon);
+    this.player.totalEarned += this.payoutEquation(numOfRowsWon);
+    this.player.totalLost -= this.player.currentBet;
+  }
+
+  // This can be set to whatever, but this will allow great payouts at high speeds, and lower payouts for lower speeds
+  payoutEquation(numOfRowsWon: number): number {
+    return this.player.currentBet * (100 / this.currentGameMode.speed) * numOfRowsWon;
   }
 
   setGameMode(gameMode: IGameMode): void {

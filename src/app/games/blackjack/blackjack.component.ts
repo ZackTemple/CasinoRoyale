@@ -36,13 +36,20 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authService.getPlayer(this.authService.playerUsername).subscribe(
-      (player: Player) => this.player = player,
+      (player: Player) => {
+        this.player = player;
+        this.player.currentBet = 0;
+      },
       (err: HttpTrackerError) => console.log(err)
     );
   }
 
+  increasePlayerBet(betAmount: number): void {
+    this.player.currentBet += betAmount;
+  }
+
   clickPlaceBet(): void {
-    this.gameService.startGame(this.player, this.player.bet).subscribe(
+    this.gameService.startGame(this.player, this.player.currentBet).subscribe(
       (table: Table) => {
         this.table = table;
         this.player = this.table.player;
@@ -61,7 +68,9 @@ export class BlackjackComponent implements OnInit, OnDestroy {
         this.table = table;
         console.log({table});
         this.player = table.player;
-        if (table.result) { this.gameInProgress = false; }
+        if (table.result) {
+          this.resetPlayerBet();
+        }
       },
       (err: HttpTrackerError) => {
         console.log(err.message);
@@ -73,15 +82,22 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.gameService.finishGame(this.table).subscribe(
       (table: Table) => {
         this.table = table;
-        console.log({table});
         this.player = table.player;
-        this.gameInProgress = false;
+        this.resetPlayerBet();
         this.updatePlayer();
       },
       (err: HttpTrackerError) => {
         console.log(err.message);
       }
     );
+  }
+
+  resetPlayerBet(): void {
+    this.player.currentBet = 0;
+  }
+
+  clickPlayAgain(): void {
+    this.gameInProgress = false;
   }
 
   ngOnDestroy(): void {

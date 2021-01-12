@@ -12,3 +12,24 @@
     </ng-container>
   </mat-grid-list>
 </div>
+
+<div class="mobile-container">
+  <div class="mobile-option local-game-play">
+    <button mat-raised-button class="tile-button glow" [routerLink]="'/games'">
+      Local Game Play
+    </button>
+  </div>
+  <div class="mobile-option deposit-money">
+    <button mat-raised-button class="tile-button glow" [routerLink]="'/deposit-money'">
+      Deposit Money
+    </button>
+  </div>
+  <div class="mobile-option personal-account">
+    <button mat-raised-button class="tile-button glow" [routerLink]="'/personal-account'">
+      Personal Account
+    </button>
+    <div class="footer glow-footer">
+      Thank you for playing!
+    </div>
+  </div>
+</div>

@@ -1,6 +1,4 @@
-import { ImagesArray } from './slots-images';
 import * as _ from 'lodash';
-import { IGameMode } from './igame-mode';
 import { SlotColumn } from './slot-column';
 
 

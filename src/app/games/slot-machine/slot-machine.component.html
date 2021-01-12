@@ -57,28 +57,26 @@
   </div>
 
 
-  <div class="pre-game-options">
-    <div class="display-bet-options" *ngIf="player && intervalQueue.length === 0">
-      <p>Money in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</p>
-      <p>Place bet:
-        <span>
-          <input type='number' [(ngModel)]='player.bet' step="1" min="0" value="5">
-          &nbsp;
 
-          <button mat-raised-button class="action-button" (click)="validateBet()">
-            <span> Spin! </span>
-          </button>
-        </span>
-      </p>
-    </div>
+  <div class="display-bet-options" *ngIf="player && intervalQueue.length === 0">
+    <p>Money in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}</p>
+    <p>Place bet:
+      <span>
+        <input type='number' [(ngModel)]='player.bet' step="1" min="0" value="5">
+        &nbsp;
 
-    <div class="in-game-options" *ngIf="player && intervalQueue.length !== 0">
-      <div class="display-bet-options">
-        <p>Good luck!</p>
-
-        <button mat-raised-button class="action-button" (click)="stopSpin()">
-          Stop!
+        <button mat-raised-button class="action-button" (click)="validateBet()">
+          <span> Spin! </span>
         </button>
-      </div>
+      </span>
+    </p>
+  </div>
+
+  <div class="in-game-options" *ngIf="player && intervalQueue.length !== 0">
+    <p>Good luck!</p>
+
+    <button mat-raised-button class="action-button" (click)="stopSpin()">
+      Stop!
+    </button>
   </div>
 </div>

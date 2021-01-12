@@ -7,7 +7,6 @@
     "align": {
       "options": [
         "parameters"
-        // "statements"
       ]
     },
     "array-type": false,

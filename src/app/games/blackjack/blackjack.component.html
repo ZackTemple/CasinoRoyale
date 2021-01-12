@@ -6,7 +6,7 @@
     <div *ngIf='((!gameInProgress || table.result) && player.currentMoney > 0)'>
       <input type='number' #box [(ngModel)]='player.bet' step="5" min="0">
       &nbsp;
-      <button mat-button class='action-button' (click)="onClickPlaceBet(box.value)">
+      <button mat-button class='blackjack-action-button' (click)="clickPlaceBet(box.value)">
         Place Bet
       </button>
     </div>
@@ -23,8 +23,6 @@
         <h3>Dealer Hand:</h3>
         <span *ngFor='let card of table.dealer.cards'>
           <div style="display:inline-block;">
-            <!-- &nbsp; {{card.suit}}
-            &nbsp; {{card.value}} -->
             <img class="card" [src]="getImage(card)">
             &nbsp;
             <img class="card" src="../../../assets/images/cards/back-of-card.jpg" *ngIf="table.dealer.cards.length === 1">
@@ -32,8 +30,6 @@
         </span>
         <h3>{{table.player.username}}'s Hand:</h3>
         <span *ngFor='let card of table.player.cards'>
-          <!-- &nbsp; {{card.suit}}
-          &nbsp; {{card.value}} -->
           <img class="card" [src]="getImage(card)">
           &nbsp;
         </span>
@@ -41,11 +37,11 @@
       <br>
 
       <div *ngIf='gameInProgress'>
-        <button mat-button class='action-button' (click)='clickHit()'>
+        <button mat-button class='blackjack-action-button' (click)='clickHit()'>
           Hit Me
         </button>
         &nbsp;
-        <button mat-button class='action-button' (click)='clickStay()'>
+        <button mat-button class='blackjack-action-button' (click)='clickStay()'>
           Stay
         </button>
       </div>
@@ -55,11 +51,9 @@
       </p>
 
       <p *ngIf='table.result==="PlayerWins"'>
-        <!-- Winner: {{winner.name}} -->
         Winner: {{table.player.username}}
       </p>
       <p *ngIf='table.result==="DealerWins"'>
-        <!-- Winner: {{winner.name}} -->
         Winner: Dealer {{table.dealer.name}}
       </p>
       <p *ngIf='table.result==="Tie"'>
@@ -74,7 +68,7 @@
     <br>
     <br>
 
-    <button mat-button class='action-button' (click)="showHelperCard()" *ngIf="gameInProgress">
+    <button mat-button class='blackjack-action-button' (click)="showHelperCard()" *ngIf="gameInProgress">
       Show S17 Blackjack Card
     </button>
   </div>

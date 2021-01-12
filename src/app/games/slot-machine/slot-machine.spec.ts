@@ -88,5 +88,4 @@ describe('SlotMachine', () => {
       expect(numOfRowsWon).toBe(3);
     });
   });
-
 });

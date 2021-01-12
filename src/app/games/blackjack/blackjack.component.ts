@@ -7,6 +7,7 @@ import { BlackjackService } from './blackjack.service';
 import { MatDialog } from '@angular/material/dialog';
 import { HelperCardDialogComponent } from './helper-card-dialog/helper-card-dialog.component';
 import { BlackjackAnimations } from './blackjack-animations';
+import { ICard } from 'src/app/interfaces/cards';
 
 @Component({
   selector: 'app-blackjack',
@@ -40,10 +41,8 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     );
   }
 
-  onClickPlaceBet(betString: string): void {
-    const bet = parseInt(betString, 10);
-
-    this.gameService.startGame(this.player, bet).subscribe(
+  clickPlaceBet(): void {
+    this.gameService.startGame(this.player, this.player.bet).subscribe(
       (table: Table) => {
         this.table = table;
         this.player = this.table.player;
@@ -65,7 +64,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
         if (table.result) { this.gameInProgress = false; }
       },
       (err: HttpTrackerError) => {
-        console.log(err);
+        console.log(err.message);
       }
     );
   }
@@ -80,7 +79,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
         this.updatePlayer();
       },
       (err: HttpTrackerError) => {
-        console.log(err);
+        console.log(err.message);
       }
     );
   }
@@ -97,7 +96,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.dialog.open(HelperCardDialogComponent);
   }
 
-  getImage(card: any): string {
+  getImage(card: ICard): string {
     const imageDir = '../../../assets/images/cards/';
     const imageValue = card.value;
     const imageSuit = card.suit[0];

@@ -76,12 +76,9 @@ img {
   max-width: 10vw;
 }
 
-.pre-game-options {
+.display-bet-options, .in-game-options {
   align-content: center;
   text-align: center;
-}
-
-.display-bet-options {
   color: rgba(250, 235, 215, 1);
   font-size: 20px;
   -webkit-text-stroke-width: .5px;

@@ -141,4 +141,89 @@ describe('SlotMachineComponent', () => {
     });
   });
 
+  describe('The front end', () => {
+
+    describe('winner', () => {
+      it('should display a winner flag only if there is a winner', () => {
+        component.winner = true;
+        fixture.detectChanges();
+
+        const winnerTag = fixture.nativeElement.querySelector('.winner') as HTMLScriptElement;
+        expect(winnerTag.innerHTML).toContain('Winner');
+      });
+
+      it('should not display a winner flag if there is no winner', () => {
+        component.winner = false;
+        fixture.detectChanges();
+
+        const winnerTag = fixture.nativeElement.querySelector('.winner') as HTMLScriptElement;
+        expect(winnerTag).toBeNull();
+      });
+    });
+
+    describe('betting-options', () => {
+      it('should display betting options only if there is a player and has not begun a game', () => {
+        component.player = playerObject;
+        component.intervalQueue = [];
+        fixture.detectChanges();
+
+        const winnerTag = fixture.nativeElement.querySelector('.display-bet-options') as HTMLScriptElement;
+        expect(winnerTag).not.toBeNull();
+      });
+
+      it('should not display betting options if a game has begun', () => {
+        component.player = playerObject;
+        component.intervalQueue = ['interval1', 'interval2', 'interval3'];
+        fixture.detectChanges();
+
+        const winnerTag = fixture.nativeElement.querySelector('.display-bet-options') as HTMLScriptElement;
+        expect(winnerTag).toBeNull();
+      });
+
+      it('should not display betting options if there is no player', () => {
+        component.player = null;
+        component.intervalQueue = [];
+        fixture.detectChanges();
+
+        const winnerTag = fixture.nativeElement.querySelector('.display-bet-options') as HTMLScriptElement;
+        expect(winnerTag).toBeNull();
+      });
+    });
+
+    describe('in-game-options', () => {
+      it('should display in-game options only if there is a player and a game has begun', () => {
+        component.player = playerObject;
+        component.intervalQueue = ['interval1', 'interval2', 'interval3'];
+        fixture.detectChanges();
+
+        const winnerTag = fixture.nativeElement.querySelector('.in-game-options') as HTMLScriptElement;
+        expect(winnerTag).not.toBeNull();
+      });
+
+      it('should not display in-game options if a game has not begun', () => {
+        component.player = playerObject;
+        component.intervalQueue = [];
+        fixture.detectChanges();
+
+        const winnerTag = fixture.nativeElement.querySelector('.in-game-options') as HTMLScriptElement;
+        expect(winnerTag).toBeNull();
+      });
+
+      it('should not display in-game options if there is no player', () => {
+        component.player = null;
+        component.intervalQueue = ['interval1', 'interval2', 'interval3'];
+        fixture.detectChanges();
+
+        const winnerTag = fixture.nativeElement.querySelector('.in-game-options') as HTMLScriptElement;
+        expect(winnerTag).toBeNull();
+      });
+    });
+  });
+
+  describe('updatePlayer()', () => {
+    it('makes an http call to update the player', () => {
+      component.updatePlayer();
+      expect(mockAuthService.updatePlayer).toHaveBeenCalled();
+    });
+  });
 });

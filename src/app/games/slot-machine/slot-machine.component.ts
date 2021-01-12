@@ -78,7 +78,7 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
     this.updatePlayer();
   }
 
-  private updatePlayer(): void {
+  updatePlayer(): void {
     this.authService.updatePlayer(this.player).subscribe();
   }
 }

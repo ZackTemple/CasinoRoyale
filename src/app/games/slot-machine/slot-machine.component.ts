@@ -13,6 +13,7 @@ import { SlotMachine } from './slot-machine';
 })
 export class SlotMachineComponent implements OnInit, OnDestroy {
 
+  private static winMultiplierArray = [0, 2, 20, 1000];
   currentGameMode: IGameMode;
   gameModes = {
     GODMODE: {description: 'God Mode', speed: 5},
@@ -25,17 +26,6 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   winner = false;
 
   public constructor(public authService: AuthService) {
-
-  }
-
-  private static findWinMulitplier(rowsWon: number): number {
-    const oneRowWinner = 2;
-    const twoRowWinner = 20;
-    const threeRowWinner = 1000;
-
-    return rowsWon === 1 ? oneRowWinner :
-      rowsWon === 2 ? twoRowWinner :
-      threeRowWinner;
   }
 
   ngOnInit(): void {
@@ -57,7 +47,7 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
 
   private subtractPlayerBet(): void {
     this.player.currentMoney -= this.player.bet;
-    this.player.totalLost -= this.player.bet;
+    this.player.totalLost += this.player.bet;
     this.updatePlayer();
   }
 
@@ -69,18 +59,15 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
 
   checkForWinner(): void {
     const numOfRowsWon = this.slotMachine.findNumberOfRowsWon();
-
-    if (numOfRowsWon > 0) {
-      this.winner = true;
-      const winMulitplier = SlotMachineComponent.findWinMulitplier(numOfRowsWon);
-      this.awardPlayer(winMulitplier);
-    }
+    this.awardPlayer(numOfRowsWon);
+    this.winner = numOfRowsWon > 0;
   }
 
-  private awardPlayer(multiplier: number): void {
-    this.player.currentMoney += this.player.bet * multiplier;
-    this.player.totalEarned += this.player.bet * multiplier;
-    this.player.totalLost -= this.player.bet * multiplier;
+  private awardPlayer(numOfRowsWon: number): void {
+    const winMultiplier = SlotMachineComponent.winMultiplierArray[numOfRowsWon];
+    this.player.currentMoney += this.player.bet * winMultiplier;
+    this.player.totalEarned += this.player.bet * winMultiplier;
+    this.player.totalLost -= this.player.bet * winMultiplier;
   }
 
   setGameMode(gameMode: IGameMode): void {

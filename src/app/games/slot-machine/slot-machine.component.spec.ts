@@ -9,7 +9,7 @@ import { Player } from '../blackjack/objects/player';
 import { SlotMachine } from './slot-machine';
 import { SlotMachineComponent } from './slot-machine.component';
 
-fdescribe('SlotMachineComponent', () => {
+describe('SlotMachineComponent', () => {
   let component: SlotMachineComponent;
   let fixture: ComponentFixture<SlotMachineComponent>;
   let mockAuthService: jasmine.SpyObj<AuthService>;

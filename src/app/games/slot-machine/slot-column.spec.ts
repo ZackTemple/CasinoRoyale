@@ -41,21 +41,5 @@ describe('SlotColumn', () => {
 
       expect(slotColumn.middleIndex).toBe(expectedIndex);
     });
-
-    it('should update the top, middle, and bottom images for the class', () => {
-       const middleIndexBeforeSpin = slotColumn.middleIndex;
-       const topIndexBeforeSpin = slotColumn.topIndex;
-       const bottomIndexBeforeSpin = slotColumn.bottomIndex;
-       const numOfImages = slotColumn.columnImages.length;
-
-       slotColumn.spinWheel();
-
-       const expectedNewTopImage = slotColumn.columnImages[middleIndexBeforeSpin === numOfImages ? 0 : topIndexBeforeSpin + 1].imageUrl;
-       expect(slotColumn.topImage).toBe(expectedNewTopImage);
-
-       const expectedBottomTopImage =
-          slotColumn.columnImages[middleIndexBeforeSpin === numOfImages ? 0 : bottomIndexBeforeSpin + 1].imageUrl;
-       expect(slotColumn.bottomImage).toBe(expectedBottomTopImage);
-    });
   });
 });

@@ -1,9 +1,9 @@
 .game-background {
-  /* background-image: url('../../../assets/images/games-photos/casino.jpg'); */
   background-color: black;
   background-position: center;
   background-size: cover;
-  min-height: 92vh;
+  height: 92vh;
+  min-height: fit-content;
   justify-content: center;
 }
 

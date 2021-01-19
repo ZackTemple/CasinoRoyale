@@ -36,6 +36,10 @@ div.container {
   background-size: cover;
 }
 
+.mobile-container {
+  display: none
+}
+
 
 @media (max-width: 1000px) {
 

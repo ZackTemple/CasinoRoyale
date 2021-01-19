@@ -7,7 +7,6 @@ import { IGameMode } from './igame-mode';
 import { SlotMachine } from './slot-machine';
 import * as _ from 'lodash';
 import { BreakpointSizesArray, numOfLightsForTopBottom, numOfLightsForSides, BreakpointsWidthSizes } from './breakpoints';
-import { stat } from 'fs';
 
 @Component({
   selector: 'app-slot-machine',
@@ -66,7 +65,7 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   }
 
   validateBet(): void {
-    if (this.player.currentBet <= this.player.currentMoney) {
+    if (this.player.currentBet <= this.player.currentMoney && this.player.currentBet > 0) {
       this.winner = false;
       this.subtractPlayerBet();
       this.intervalQueue = this.slotMachine.startSpin(this.currentGameMode.speed);
@@ -82,10 +81,7 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   stopSpin(): void {
     const columnToStop = this.intervalQueue.shift();
     clearInterval(columnToStop);
-    if (this.intervalQueue.length === 0) {
-      this.checkForWinner();
-      this.resetPlayerBet();
-    }
+    if (this.intervalQueue.length === 0) { this.checkForWinner(); }
   }
 
   checkForWinner(): void {

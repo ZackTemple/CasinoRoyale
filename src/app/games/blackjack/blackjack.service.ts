@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { HttpTrackerError } from 'src/app/shared/http-tracker-error';
 import { ErrorService } from 'src/app/shared/error.service';
 import { Player } from './objects/player';

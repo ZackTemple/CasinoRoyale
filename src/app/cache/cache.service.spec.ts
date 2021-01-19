@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { CacheService } from './cache.service';
 
-fdescribe('CacheService', () => {
+describe('CacheService', () => {
   let service: CacheService;
 
   beforeEach(() => {

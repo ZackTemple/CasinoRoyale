@@ -10,15 +10,15 @@ import { Auth } from 'aws-amplify';
 import { User } from './user';
 import { CognitoUser } from 'amazon-cognito-identity-js';
 import { HttpTrackerError } from '../shared/http-tracker-error';
-import awsconfig from './../../aws-config';
 import { ErrorService } from '../shared/error.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService{
 
-  databaseUrl = 'http://localhost:5000/api/players';
+  databaseUrl = `${environment.apiBaseUrl}/api/players`;
   signedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   playerUsername: string;
 
@@ -58,7 +58,6 @@ export class AuthService{
               email
             }
         });
-
         this.postNewPlayer(user['username']).subscribe();
         return {user, userConfirmed, userSub};
     } catch (error) {
@@ -76,9 +75,6 @@ export class AuthService{
     const requestOptions = {
       headers: new HttpHeaders(headerDict),
     };
-
-    console.log(playerUsername);
-    console.log(this.databaseUrl);
 
     return this.httpClient.post<IPlayer>(this.databaseUrl, JSON.stringify(playerUsername), requestOptions).pipe(
       catchError(err => this.errorService.handleHttpError(err))
@@ -114,7 +110,7 @@ export class AuthService{
 
     return this.httpClient.put(playerUrl, playerModel).pipe(
       tap(
-        (player: IPlayer) => console.log(player)
+        (player: IPlayer) => {}
       ),
       catchError(
         err => this.errorService.handleHttpError(err)

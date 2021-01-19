@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { CognitoUser } from 'amazon-cognito-identity-js';
-import { Auth } from 'aws-amplify';
 import { of } from 'rxjs';
 
 @Injectable({
@@ -13,7 +12,7 @@ export class AuthGuard implements CanActivate {
   access: boolean;
 
   constructor(
-    private router: Router,
+    public router: Router,
     private authService: AuthService) {
       this.authService.signedIn$.subscribe(signedInQ => this.access = signedInQ);
     }

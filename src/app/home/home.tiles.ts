@@ -27,6 +27,7 @@ export const homeTiles = [
     cols: 1, rows: 1,
     class: 'multi-player',
     description: 'Play with others around the world',
-    route: '/home'} // change route later
+    route: '/online-gaming'
+  }
 
 ];

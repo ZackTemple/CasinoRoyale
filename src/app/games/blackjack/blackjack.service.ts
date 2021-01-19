@@ -1,18 +1,19 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { HttpTrackerError } from 'src/app/shared/http-tracker-error';
 import { ErrorService } from 'src/app/shared/error.service';
 import { Player } from './objects/player';
 import { Table } from './objects/table';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlackjackService {
 
-  baseRoute = 'http://localhost:5000/api/blackjack';
+  baseRoute = `${environment.apiBaseUrl}/api/blackjack`;
 
   constructor(private httpClient: HttpClient, private errorService: ErrorService) { }
 

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { HttpTrackerError } from '../shared/http-tracker-error';
 import { IPlayer } from '../interfaces/player';
+import { SharedModule } from '../shared/shared.module';
 
 @Component({
   selector: 'app-personal-account',
@@ -16,7 +17,7 @@ export class PersonalAccountComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router) { }
+    public router: Router) { }
 
   ngOnInit(): void {
     this.authService.getPlayer(this.authService.playerUsername).subscribe(

@@ -25,8 +25,8 @@ export class SignUpComponent implements OnInit {
 
   }
 
-  onClickEnter(): void {
-    this.authService.signUp(this.user).then(
+  async onClickEnter(): Promise<void> {
+    await this.authService.signUp(this.user).then(
       ({user, userConfirmed, userSub}: {user: CognitoUser, userConfirmed: boolean, userSub: string}) => {
         if ( !!user ) {
           console.log(user);
@@ -41,9 +41,7 @@ export class SignUpComponent implements OnInit {
     );
   }
 
-  gatherErrorMessageForSignUp(error): void {
-    console.log(typeof(error));
-
+  gatherErrorMessageForSignUp(error: any): void {
     switch (error.code) {
 
       case 'UsernameExistsException':

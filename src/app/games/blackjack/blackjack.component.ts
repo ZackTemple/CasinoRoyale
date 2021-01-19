@@ -7,7 +7,7 @@ import { BlackjackService } from './blackjack.service';
 import { MatDialog } from '@angular/material/dialog';
 import { HelperCardDialogComponent } from './helper-card-dialog/helper-card-dialog.component';
 import { BlackjackAnimations } from './blackjack-animations';
-import { ICard } from '../../interfaces/cards';
+import { ICard } from 'src/app/interfaces/cards';
 
 @Component({
   selector: 'app-blackjack',
@@ -36,15 +36,20 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authService.getPlayer(this.authService.playerUsername).subscribe(
-      (player: Player) => this.player = player,
+      (player: Player) => {
+        this.player = player;
+        this.player.currentBet = 0;
+      },
       (err: HttpTrackerError) => console.log(err)
     );
   }
 
-  onClickPlaceBet(betString: string): void {
-    const bet = parseInt(betString, 10);
+  increasePlayerBet(betAmount: number): void {
+    this.player.currentBet += betAmount;
+  }
 
-    this.gameService.startGame(this.player, bet).subscribe(
+  clickPlaceBet(): void {
+    this.gameService.startGame(this.player, this.player.currentBet).subscribe(
       (table: Table) => {
         this.table = table;
         this.player = this.table.player;
@@ -63,10 +68,12 @@ export class BlackjackComponent implements OnInit, OnDestroy {
         this.table = table;
         console.log({table});
         this.player = table.player;
-        if (table.result) { this.gameInProgress = false; }
+        // if (table.result) {
+        //   this.resetPlayerBet();
+        // }
       },
       (err: HttpTrackerError) => {
-        console.log(err);
+        console.log(err.message);
       }
     );
   }
@@ -75,15 +82,22 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.gameService.finishGame(this.table).subscribe(
       (table: Table) => {
         this.table = table;
-        console.log({table});
         this.player = table.player;
-        this.gameInProgress = false;
+        // this.resetPlayerBet();
         this.updatePlayer();
       },
       (err: HttpTrackerError) => {
-        console.log(err);
+        console.log(err.message);
       }
     );
+  }
+
+  resetPlayerBet(): void {
+    this.player.currentBet = 0;
+  }
+
+  clickPlayAgain(): void {
+    this.gameInProgress = false;
   }
 
   ngOnDestroy(): void {
@@ -98,7 +112,7 @@ export class BlackjackComponent implements OnInit, OnDestroy {
     this.dialog.open(HelperCardDialogComponent);
   }
 
-  getImage(card: any): string {
+  getImage(card: ICard): string {
     const imageDir = '../../../assets/images/cards/';
     const imageValue = card.value;
     const imageSuit = card.suit[0];
@@ -106,19 +120,5 @@ export class BlackjackComponent implements OnInit, OnDestroy {
 
     return imageDir.concat(imageValue, imageSuit, imageType);
   }
-
-
-
-  // data: any = {
-  //   state: 'default'
-  // };
-
-  // cardClicked(): void {
-  //   if (this.data.state === 'default') {
-  //     this.data.state = 'flipped';
-  //   } else {
-  //     this.data.state = 'default';
-  //   }
-  // }
 
 }

@@ -1,1 +1,125 @@
-<p>slot-machine works!</p>
+<div class="winner glow" *ngIf="winner">
+  Winner!!!
+</div>
+
+<div class="game-background">
+
+  <button mat-raised-button class="game-mode-menu" [matMenuTriggerFor]="menu" *ngIf="isDesktopView">Game Mode: {{currentGameMode.description}}</button>
+  <mat-menu class="slots-mat-menu" #menu="matMenu">
+    <button mat-menu-item (click)="setGameMode(gameModes.EASY)">{{gameModes.EASY.description}}</button>
+    <button mat-menu-item (click)="setGameMode(gameModes.NORMAL)">{{gameModes.NORMAL.description}}</button>
+    <button mat-menu-item (click)="setGameMode(gameModes.GODMODE)">{{gameModes.GODMODE.description}}</button>
+  </mat-menu>
+
+  <div class="header glow">
+    Lady Fortune is Your Boss!
+  </div>
+
+  <div class="lights-row top-bottom-lights" *ngIf="isDesktopView">
+    <ng-container *ngIf="!winner else flashingLightsTopBottom">
+      <span class="light" *ngFor="let light of topBottomLightsArray"></span>
+    </ng-container>
+  </div>
+
+  <div class="wrapper">
+    <div class="lights-row left-lights" *ngIf="isDesktopView">
+      <ng-container *ngIf="!winner else flashingLightsSides">
+        <span class="light" *ngFor="let light of sidesLightsArray"></span>
+      </ng-container>
+    </div>
+
+    <div class="machine-face">
+      <div class="grid-item">
+        <img class="top-left" src="{{slotMachine.leftSlot.topImage}}">
+      </div>
+
+      <div class="grid-item">
+        <img class="top-center" src="{{slotMachine.centerSlot.topImage}}">
+      </div>
+
+      <div class="grid-item">
+        <img class="top-right" src="{{slotMachine.rightSlot.topImage}}">
+      </div>
+
+      <div class="grid-item center-item">
+        <img class="middle-left" src={{slotMachine.leftSlot.middleImage}}>
+      </div>
+
+      <div class="grid-item center-item">
+        <img class="middle-center" src={{slotMachine.centerSlot.middleImage}}>
+      </div>
+
+      <div class="grid-item center-item">
+        <img class="middle-right" src={{slotMachine.rightSlot.middleImage}}>
+      </div>
+
+      <div class="grid-item">
+        <img class="bottom-left" src="{{slotMachine.leftSlot.bottomImage}}">
+      </div>
+
+      <div class="grid-item">
+        <img class="bottom-center" src="{{slotMachine.centerSlot.bottomImage}}">
+      </div>
+
+      <div class="grid-item">
+        <img class="bottom-right" src="{{slotMachine.rightSlot.bottomImage}}">
+      </div>
+    </div>
+
+    <div class="lights-row right-lights" *ngIf="isDesktopView">
+      <ng-container *ngIf="!winner else flashingLightsSides">
+        <span class="light" *ngFor="let light of sidesLightsArray"></span>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="lights-row top-bottom-lights" *ngIf="isDesktopView">
+    <ng-container *ngIf="!winner else flashingLightsTopBottom">
+      <span class="light" *ngFor="let light of topBottomLightsArray"></span>
+    </ng-container>
+  </div>
+
+
+  <div class="display-bet-options" *ngIf="player && intervalQueue.length === 0">
+    <p>
+      Money in wallet: {{player.currentMoney | currency: 'USD': 'symbol': '1.2-2'}}.
+      <span *ngIf="isDesktopView else breakLine">&#9827; &#9828; &#9829; &#9830;</span>
+      Current bet: {{(player.currentBet ? player.currentBet : 0) | currency: 'USD': 'symbol': '1.2-2'}}
+    </p>
+    <ng-template #breakLine>
+      <br>
+    </ng-template>
+    <span>
+      <div class="chips">
+        <button mat-button class='chip-button chip-1' (click)="increasePlayerBet(1)">$1</button>
+        <button mat-button class='chip-button chip-5' (click)="increasePlayerBet(5)">$5</button>
+        <button mat-button class='chip-button chip-10' (click)="increasePlayerBet(10)">$10</button>
+        <button mat-button class='chip-button chip-25' (click)="increasePlayerBet(25)">$25</button>
+        <button mat-button class='chip-button chip-100' (click)="increasePlayerBet(100)">$100</button>
+      </div>
+
+      <button mat-raised-button class="action-button" (click)="validateBet()">
+        <span> Spin! </span>
+      </button>
+
+      <button mat-raised-button class="action-button" (click)="resetPlayerBet()">
+        <span> Reset Bet! </span>
+      </button>
+    </span>
+  </div>
+
+  <div class="in-game-options" *ngIf="player && intervalQueue.length !== 0">
+    <p>Good luck!</p>
+
+    <button mat-raised-button class="action-button" (click)="stopSpin()">
+      Stop!
+    </button>
+  </div>
+</div>
+
+<ng-template #flashingLightsTopBottom>
+    <span class="flashing-light" *ngFor="let light of topBottomLightsArray"></span>
+</ng-template>
+<ng-template #flashingLightsSides>
+    <span class="flashing-light" *ngFor="let light of sidesLightsArray"></span>
+</ng-template>

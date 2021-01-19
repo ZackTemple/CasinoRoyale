@@ -13,6 +13,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [],
@@ -33,7 +34,8 @@ import { MatListModule } from '@angular/material/list';
     MatDialogModule,
     MatTooltipModule,
     MatTabsModule,
-    MatListModule
+    MatListModule,
+    BrowserAnimationsModule
   ]
 })
 export class SharedModule { }

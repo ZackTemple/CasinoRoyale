@@ -1,0 +1,20 @@
+.texas-hold-em-background {
+  background-color: rgb(250, 206, 149);
+  background-size: cover;
+  min-height: 92vh;
+  width: 100vw;
+
+}
+
+.message {
+  color: black;
+  text-align: center;
+  font-family:'Brush Script MT', cursive;
+  font-size: 9vh;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: rgb(1, 83, 1);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

@@ -1,14 +1,35 @@
 <div class="container">
-<mat-grid-list cols="4" rowHeight="45vh" rowWidth="100vh"> <!-- cannot refactor these properties -->
-  <ng-container *ngFor="let tile of tiles">
-    <mat-grid-tile class="grid-tile" [ngClass]='tile.class'
-        [colspan]="tile.cols"
-        [rowspan]="tile.rows">
-        <button mat-raised-button class="tile-button" [routerLink]="tile.route">
-          {{tile.text}}
-        </button>
-        <mat-grid-tile-footer>{{tile.description}}</mat-grid-tile-footer>
-    </mat-grid-tile>
-  </ng-container>
-</mat-grid-list>
+  <mat-grid-list cols="4" rowHeight="46vh" rowWidth="100vh"> <!-- cannot refactor these properties -->
+    <ng-container *ngFor="let tile of tiles">
+      <mat-grid-tile class="grid-tile" [ngClass]='tile.class'
+          [colspan]="tile.cols"
+          [rowspan]="tile.rows">
+          <button mat-raised-button class="tile-button" [routerLink]="tile.route">
+            {{tile.text}}
+          </button>
+          <mat-grid-tile-footer>{{tile.description}}</mat-grid-tile-footer>
+      </mat-grid-tile>
+    </ng-container>
+  </mat-grid-list>
+</div>
+
+<div class="mobile-container">
+  <div class="mobile-option local-game-play">
+    <button mat-raised-button class="tile-button glow" [routerLink]="'/games'">
+      Local Game Play
+    </button>
+  </div>
+  <div class="mobile-option deposit-money">
+    <button mat-raised-button class="tile-button glow" [routerLink]="'/deposit-money'">
+      Deposit Money
+    </button>
+  </div>
+  <div class="mobile-option personal-account">
+    <button mat-raised-button class="tile-button glow" [routerLink]="'/personal-account'">
+      Personal Account
+    </button>
+    <div class="footer glow-footer">
+      Thank you for playing!
+    </div>
+  </div>
 </div>

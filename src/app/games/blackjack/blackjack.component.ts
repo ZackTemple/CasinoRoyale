@@ -68,9 +68,6 @@ export class BlackjackComponent implements OnInit, OnDestroy {
         this.table = table;
         console.log({table});
         this.player = table.player;
-        // if (table.result) {
-        //   this.resetPlayerBet();
-        // }
       },
       (err: HttpTrackerError) => {
         console.log(err.message);
@@ -83,7 +80,6 @@ export class BlackjackComponent implements OnInit, OnDestroy {
       (table: Table) => {
         this.table = table;
         this.player = table.player;
-        // this.resetPlayerBet();
         this.updatePlayer();
       },
       (err: HttpTrackerError) => {

@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { BlackjackComponent } from './blackjack.component';
-import { MockComponent, MockModule } from 'ng-mocks';
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Player } from './objects/player';
@@ -16,7 +15,7 @@ describe('BlackjackComponent', () => {
   let component: BlackjackComponent;
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockGameService: jasmine.SpyObj<BlackjackService>;
-  let mockDialog: any;
+  let matDialogSpy: jasmine.SpyObj<MatDialog>;
   let consoleSpy: jasmine.Spy;
   let playerObject: Player;
   let tableObject: Table;
@@ -24,7 +23,7 @@ describe('BlackjackComponent', () => {
 
   beforeEach(async () => {
     mockAuthService = jasmine.createSpyObj(['updatePlayer', 'getPlayer']);
-    mockDialog = MockComponent(MatDialog);
+    matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
     playerObject = new Player({
       username: 'MichaelScott',
       password: 'password',
@@ -44,7 +43,7 @@ describe('BlackjackComponent', () => {
       providers: [
         {provide: AuthService , useValue: mockAuthService},
         {provide: BlackjackService, useValue: mockGameService},
-        {provide: MatDialog , useValue: MockComponent(MatDialog)},
+        {provide: MatDialog , useValue: matDialogSpy},
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
@@ -55,17 +54,56 @@ describe('BlackjackComponent', () => {
     mockAuthService = jasmine.createSpyObj(['updatePlayer', 'getPlayer']);
     mockGameService = jasmine.createSpyObj(['startGame', 'dealCardToPlayer', 'finishGame']);
     consoleSpy = spyOn(console, 'log').and.callThrough();
-    mockDialog = MockModule(MatDialogModule);
-    component = new BlackjackComponent(mockAuthService, mockGameService, mockDialog);
+    component = new BlackjackComponent(mockAuthService, mockGameService, matDialogSpy);
 
-    mockAuthService.getPlayer.and.returnValue(of(component.player));
-    mockAuthService.updatePlayer.and.returnValue(of(component.player));
+    mockAuthService.getPlayer.and.returnValue(of(playerObject));
+    mockAuthService.updatePlayer.and.returnValue(of(playerObject));
     component.player = playerObject;
     component.table = tableObject;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('ngOnInit()', () => {
+    it('should get the player and set his/her current bet to 0', () => {
+      component.player = null;
+
+      component.ngOnInit();
+
+      expect(component.player.username).toBe(playerObject.username);
+    });
+  });
+
+  describe('increasePlayerBet(num)', () => {
+    it('should increase the current player bet by the given input', () => {
+      component.player.currentBet = 102;
+
+      component.increasePlayerBet(5);
+
+      expect(component.player.currentBet).toBe(107);
+    });
+  });
+
+  describe('resetPlayerBet()', () => {
+    it('should set the players current bet to zero', () => {
+      component.player.currentBet = 102;
+
+      component.resetPlayerBet();
+
+      expect(component.player.currentBet).toBe(0);
+    });
+  });
+
+  describe('clickPlayAgain()', () => {
+    it('should set gameInProgress attribute to false', () => {
+      component.gameInProgress = true;
+
+      component.clickPlayAgain();
+
+      expect(component.gameInProgress).toBeFalsy();
+    });
   });
 
   describe('clickPlaceBet()', () => {
@@ -142,6 +180,38 @@ describe('BlackjackComponent', () => {
   describe('getImage()', () => {
     it('takes a card and returns a string url for the location of the image', () => {
       component.updatePlayer();
+      expect(mockAuthService.updatePlayer).toHaveBeenCalled();
+    });
+  });
+
+  describe('showHelperCard()', () => {
+    it('should open a helper card for the user', () => {
+      matDialogSpy.open.and.callThrough();
+
+      component.showHelperCard();
+
+      expect(matDialogSpy.open).toHaveBeenCalled();
+    });
+  });
+
+  describe('getImage()', () => {
+    it('should return a string, giving the url path to the card iamge', () => {
+      const card = {
+        value: 'K',
+        suit: 'Hearts',
+        weight: 10
+      };
+
+      const returnedPath = component.getImage(card);
+
+      expect(returnedPath).toContain('assets/images/cards/KH.jpg');
+    });
+  });
+
+  describe('ngDestroy()', () => {
+    it('should make auth service call to update player', () => {
+      component.ngOnDestroy();
+
       expect(mockAuthService.updatePlayer).toHaveBeenCalled();
     });
   });

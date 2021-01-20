@@ -107,6 +107,43 @@ describe('BlackjackService', () => {
     });
   });
 
+  describe('finishGame()', () => {
+    it('should return expected table', () => {
+      const casinoTable = new Table();
+      casinoTable.player = playerObject;
 
+      httpClientSpy.post.and.returnValue(of(casinoTable));
+
+      blackjackService.finishGame(casinoTable).subscribe(
+        (table: Table) => {
+          expect(table.player.username).toBe(playerObject.username);
+         },
+        fail
+      );
+
+      expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+    });
+
+    it('should handle errors when thrown', () => {
+      const casinoTable = new Table();
+      const httpError = new HttpErrorResponse({
+        status: 400,
+        error: 'testing is fun'
+      });
+
+      httpClientSpy.post.and.returnValue(throwError(httpError));
+
+      blackjackService.finishGame(casinoTable).subscribe(
+        (table: Table) => fail('expected an error, not heroes'),
+        (err: HttpTrackerError) => {
+          console.log({err});
+          expect(err.errorCode).toBe(httpError.status);
+          expect(err.message).toContain(httpError.error);
+        }
+      );
+
+      expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+    });
+  });
 
 });

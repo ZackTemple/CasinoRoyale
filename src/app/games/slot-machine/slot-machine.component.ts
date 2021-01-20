@@ -81,7 +81,10 @@ export class SlotMachineComponent implements OnInit, OnDestroy {
   stopSpin(): void {
     const columnToStop = this.intervalQueue.shift();
     clearInterval(columnToStop);
-    if (this.intervalQueue.length === 0) { this.checkForWinner(); }
+    if (this.intervalQueue.length === 0) {
+      this.checkForWinner();
+      this.updatePlayer();
+    }
   }
 
   checkForWinner(): void {
